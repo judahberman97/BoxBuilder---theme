@@ -1,0 +1,42 @@
+{{ 'so-section-product-trustpilot.css' | asset_url | stylesheet_tag }}
+
+<section id="ShineOnTrustpilot-{{ section.id }}" class="shineon-theme shineon-theme--primary page-width section-{{ section.id }}-padding" data-section="{{ section.id }}">
+    {%- assign reviews = 'reviews' | t | split: '|||' -%}
+    <div class="so-grid so-grid-cols-1 sm:so-grid-cols-2 lg:so-grid-cols-3 xl:so-grid-cols-4 so-gap-8 so-items-start">
+        {%- for review in reviews -%}
+            {%- assign review_item = review | split: '@' -%}
+            <div class="so-bg-gray-100 so-rounded-md so-px-4 so-py-6 so-text-center so-shadow-sm">
+                <h4 class="so-text-gray-600 so-font-semibold so-text-lg so-leading-tight">{{ review_item[1] }}</h4>
+                <p class="so-text-gray-500 so-text-base so-mt-1">
+                    {{ review_item[3] }}
+                </p>
+                <p class="so-font-semibold so-text-lg so-mt-2 so-text-[#910ec0] so-uppercase">{{ review_item[2] }}</p>
+            </div>
+        {%- endfor -%}
+    </div>
+</section>
+
+{% schema %}
+{
+  "name": "ShineOn Trustpilot",
+  "tag": "section",
+  "class": "section",
+  "locales": {
+    "en": {
+      "reviews": "5@We received excellent quality@L North@We received excellent quality. Shipping and Customer Service was spot on! Will definitely order more soon!|||5@Amazing product and excellent service@Z Sheppard@Amazing product and excellent service. I will again be placing an order in future for sure! It’s the best option if you want to make sure that it is certified and authentic!!!|||5@Fast shipping@S Miah@Fast shipping. Great communication and got a little hook up! Def legit energy changing stone. I love mine|||5@It was even more amazing than I thought…@R Nelson@It was even more amazing than I thought it was going to be. The shipping was real easy and I got a beautiful peice. I would definitely shop here again."
+    },
+    "fr": {
+      "reviews": "5@Nous avons reçu une excellente qualité@L North@Nous avons reçu une excellente qualité. La livraison et le service client étaient parfaits ! Je commanderai certainement plus bientôt !|||5@Produit et service excellents@Z Sheppard@Produit et service excellents. Je passerai à nouveau une commande à l'avenir à coup sûr ! C'est la meilleure option si vous voulez vous assurer qu'elle est certifiée et authentique !!!|||5@Expédition rapide@S Miah@Expédition rapide. Excellente communication ! Vraie pierre d'énergie changeante. J'adore la mienne|||5@C'était encore plus incroyable que je ne le pensais…@R Nelson@C'était encore plus incroyable que je ne le pensais. L'expédition a été vraiment facile et j'ai reçue une belle pièce. J'y retournerais sans hésiter."
+    },
+    "es": {
+      "reviews": "5@Recibido con excelente calidad@L North@Recibido con excelente calidad. ¡El envío y el servicio al cliente fue perfecto! ¡Definitivamente volveré a ordenar pronto!|||5@Producto sorprendente y excelente servicio@Z Sheppard@Producto sorprendente y excelente servicio. ¡Seguro estaré ordenando nuevamente! ¡¡Es la mejor opción si quieres asegurarte de que es auténtico y esta certificado!!!|||5@Envío rápido@S Miah@Envío rápido. Excelente comunicación! Es legítimamente una piedra que cambia la enrgía. Me encanta el mio|||5@Aún más hermoso de lo que imaginaba…@R Nelson@Aún más hermoso de lo que imaginé que sería. El envío fue muy fácil y me llego algo extremadamente bello. Definitivamente compraré aquí de nuevo."
+    },
+    "de": {
+      "reviews": "5@Wir haben eine ausgezeichnete Qualität erhalten@L North@Wir haben eine exzellente Qualität erhalten. Versandt und Kundenbetreuung waren 1A! Werde definitiv bald mehr bestellen!|||5@Tolles Produkt und exzellenter Service@Z Sheppard@Tolles Produkt und exzellenter Service Ich werde definitiv noch einmal bestellen! Es ist wirklich die beste Option, wenn man sicher gehen will, dass es zertifiziert und authentisch ist!!!|||5@Schneller Versandt@S Miah@Schneller Versandt. Tolle Kommunikation und mein Auftreten hat sich verbessert! Der Stein verändert deine Energie. Ich liebe mein Exemplar|||5@Es war noch toller, als ich gedacht hatte@R Nelson@Es war noch toller, als ich gedacht hatte. Der Versandt war echt einfach und ich hab ein schönes Teil erhalten. Ich würde hier definitv noch einmal bestellen."
+    },
+    "nl": {
+      "reviews": "5@We kregen uitstekende kwaliteit@L North@We kregen uitstekende kwaliteit. De verzending en klantenservice was perfect! Zal binnenkort zeker meer bestellen!|||5@ Geweldig product en uitstekende service@Z Sheppard@Geweldig product en uitstekende service. In de toekomst zal ik zeker weer een bestelling plaatsen! Het is de beste optie als je er zeker van wilt zijn dat het gecertificeerd en authentiek is!!!|||5@Snelle verzending@S Miah@Snelle verzending. Geweldige communicatie! Zeker een echte energieveranderende steen. Ik hou van de mijne|||5@Het was nog verbazingwekkender dan ik dacht...@R Nelson@Het was nog verbazingwekkender dan ik dacht dat het zou worden. De verzending ging zeer vlot en ik kreeg een prachtig stuk. Ik zou hier zeker nog een keer shoppen."
+    }
+  }
+}
+{% endschema %}

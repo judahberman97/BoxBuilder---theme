@@ -1,0 +1,575 @@
+{% include 'product-shineon-image-slider-slick' %}
+
+{% assign featured_carousel = 'so-slick-featured-carousel-' | append: product.id %}
+{% assign thumbnail_carousel = 'so-slick-thumbnail-carousel-' | append: product.id %}
+{% assign featured_img = so_current_variant.featured_image | default: product.featured_image %}
+
+{% if section.settings.enable_gallery_slider == false %}
+  {% assign show_gallery_thumbnails = false %}
+  {% assign featured_gallery_class = 'so-col-12' %}
+{% elsif section.settings.enable_gallery_slider != 'false' or so_bu_missing_default_images.size > 0 or section.settings.image_thumbnails != 'none' and product.images.size > 1 %}
+  {% assign show_gallery_thumbnails = true %}
+  {% assign featured_gallery_class = 'so-col-10' %}
+{% else %}
+  {% assign show_gallery_thumbnails = false %}
+  {% assign featured_gallery_class = 'so-col-12' %}
+{% endif %}
+{% if show_gallery_thumbnails %}
+<style>
+  @media(min-width: 768px) {
+    .so-col-images-thumb-wrap.so-loading {
+      position: relative;
+      z-index: -10000;
+      overflow: hidden;
+    }
+  }
+  @media(max-width: 767px) {
+    .so-col-images-thumb-wrap.so-loading {
+      position: relative;
+      z-index: -10000;
+      overflow: hidden;
+      height: 70px;
+    }
+  }
+  #{{ thumbnail_carousel }} .so_slick-slide:not(.so_slick-current) {
+    opacity: .7;
+  }
+  #{{ thumbnail_carousel }} .so_slick-slide:not(.so_slick-current) img{
+    cursor: pointer;
+  }
+  #{{ thumbnail_carousel }} .so_slick-slide img.so-static-thumbnails {
+    cursor: default;
+    pointer-events: none;
+  }
+  #{{ thumbnail_carousel }}.so_slick-prev.so_slick-arrow {
+    margin: auto;
+    top: -30px;
+    right: 50%;
+    transform: translateX(150%) rotate(90deg);
+    filter: invert(100%);
+  }
+  #{{ thumbnail_carousel }}.so_slick-next.so_slick-arrow {
+    margin: auto;
+    top: 100%;
+    right: 50%;
+    transform: translateX(50%) translateY(50%) rotate(90deg);
+    filter: invert(100%);
+  }
+  @media(max-width: 767px) {
+    #so-gallery-wrap:not(.so-hidden-carousel) {
+      display: flex;
+      flex-direction: column-reverse;
+    }
+    #{{ thumbnail_carousel }} .so_slick-track .so_slick-slide + .so_slick-slide {
+      margin-left: 10px;
+    }
+    {% if product.images.size <= section.settings.image_slides %}
+    .so-col-images-thumb-wrap .so_slick-track {
+      display: flex;
+    }
+    {% endif %}
+  }
+
+  #{{ featured_carousel }} {
+    display: flex;
+  }
+  #{{ featured_carousel }} .so_slick-list {
+    height: auto;
+  }
+  #{{ featured_carousel }} .so_slick-list > div > div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+</style>
+{% endif %}
+{% if so_bu_product_explainer_images.size > 0 %}
+  {% include 'product-shineon-buyer-upload-explainer-slider' %}
+{% endif %}
+
+<div id="so-gallery-wrap"
+   style="position: relative;"
+   class="so-row {% if so_bu_product_explainer_images.size > 0 %}so-hidden-carousel{% endif %}"
+   data-enable_gallery_slider="{{ section.settings.enable_gallery_slider }}"
+   data-image_slides="{{ section.settings.image_slides }}"
+   data-image_thumbnails="{{ section.settings.image_thumbnails }}"
+   data-image_dots="{% if section.settings.image_dots == true and product.images.size > 1 %}true{% else %}false{% endif %}">
+  {% if show_gallery_thumbnails %}
+  <div class="so-col-2 so-col-images-thumb-wrap {% if section.settings.image_thumbnails == 'none' %}so-hidden{% elsif section.settings.image_thumbnails == 'desktop' %}so-hidden-sm{% endif %} so-loading">
+  <div id="{{ thumbnail_carousel }}">
+    {% if product.metafields.shineon.uploadable == 1 %}
+      {% for default_transf_image_str in so_bu_missing_default_images %}
+      {% assign default_transf_image_arr = default_transf_image_str | split: ',' %}
+      <div>
+        <img class="so-carousel-img so-carousel-lazy-load"
+          style="width: 100%; height: auto;"
+          data-index="{% increment image_index_th %}"
+          data-transformation_id="{{ default_transf_image_arr[0] }}"
+          data-src="{{ no_image_url }}"
+          crossorigin="anonymous"
+        >
+      </div>
+      {% endfor %}
+    {% else %}
+    {% for image in product.images %}
+      {% assign image_id_str = image.id | downcase %}
+      {% if image contains '_hidden_' or hidden_images contains image_id_str %}
+      {% continue %}
+      {% else %}
+      <div>
+        <img class="so-carousel-img so-carousel-lazy-load"
+             style="width: 100%; height: auto;"
+           data-index="{% increment image_index_th %}"
+           data-image_id="{{ image.id }}"
+           data-src="{{ image.src | img_url: '86x' }}"
+           alt="{{ image.alt | escape }}"
+          />
+      </div>
+      {% endif %}
+    {% endfor %}
+    {% endif %}
+  </div>
+  </div>
+  {% endif %}
+  <div class="{{ featured_gallery_class }} so-col-images-featured-wrap">
+    {% if product.metafields.shineon.uploadable == 1 %}
+      {% if so_bu_product_explainer_images.size == 0 %}
+        {% include 'product-shineon-scripts' with 'upload-design-wizard' %}
+      {% endif %}
+    {% endif %}
+    <div class="so-product-images-featured-wrap">
+        {% assign total_images = product.images.size | plus: so_bu_missing_default_images.size %}
+        {% if total_images > 1 %}
+        <div id="{{ featured_carousel }}">
+
+      {% if product.metafields.shineon.uploadable == 1 %}
+      {% for default_transf_image_str in so_bu_missing_default_images %}
+        {% assign default_transf_image_arr = default_transf_image_str | split: ',' %}
+        <div>
+          <img class="so-carousel-img so-carousel-lazy-load"
+           style="width: 100%; height: auto;"
+           data-index="{% increment image_index_th %}"
+           data-transformation_id="{{ default_transf_image_arr[0] }}"
+           data-src="{{ no_image_url }}"
+           crossorigin="anonymous"
+           />
+        </div>
+      {% endfor %}
+      {% else %}
+      {% for image in product.images %}
+          {% assign image_id_str = image.id | downcase %}
+          {% if image contains '_hidden_' or hidden_images contains image_id_str %}
+            {% continue %}
+          {% else %}
+            <div>
+            <img class="so-carousel-img so-carousel-featured"
+                 style="display:none; width: 100%; height: auto; {% if section.settings.enable_gallery_slider == false %}display:none;{% endif %}"
+                 data-index="{% increment image_index %}"
+                 data-image_id="{{ image.id }}"
+                 data-source="{{ image.src | img_url: '720x' }}"
+                 alt="{{ image.alt | escape }}"
+            />
+            </div>
+          {% endif %}
+      {% endfor %}
+      {% endif %}
+    </div>
+    {% else %}
+      <div class="so-product-images-featured-single">
+      {% if so_bu_missing_default_images.size == 1 %}
+        {% assign so_bu_missing_default_image = so_bu_missing_default_images[0] | split: ',' %}
+        <img data-transformation_id="{{ default_transf_image_arr[0] }}"
+           data-image_id="transformation_{{ default_transf_image_arr[0] }}"
+           class="so-featured-image"
+           data-bu-default-image="1"
+            {% if default_transf_image_arr[1] contains 'https://' %}
+                src="{{ so_bu_missing_default_image[1] }}"
+                crossorigin="anonymous"
+            {% else %}
+                src="{{ so_bu_missing_default_image[1] | asset_url }}"
+            {% endif %}
+        >
+      {% elsif product.images.size == 1 and featured_img contains '_hidden_' %}
+        <img src="{{ no_image_url | img_url: '720x' }}"
+           alt="No Image"
+           class="so-featured-image">
+                {% elsif product.images.size == 1 %}
+        <img src="{{ featured_img.src | img_url: '720x' }}"
+           alt="{{ featured_img.alt }}"
+           class="so-featured-image"
+           {% if image == so_bu_default_image %}
+            data-bu-default-image="1"
+           {% endif %}
+           >
+            {% else %}
+        <img src="{{ no_image_url | img_url: '720x' }}"
+           alt="No Image"
+           class="so-featured-image">
+      {% endif %}
+      </div>
+        {% endif %}
+    </div>
+    {% if product.metafields.shineon.uploadable == 1 %}
+      <div id="so-bu-back-to-img-wizard">
+        <small><a href="#">{% include 'shineon-app-icons' with 'fa-long-arrow-left', add_wrap: true %} {{ 'buyer_upload_btn_upload_new' | t }}</a></small>
+      </div>
+    {% endif %}
+  </div>
+</div>
+
+{{ section.settings.snippet_below_gallery }}
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+jQuery( document ).ready(function($) {
+    /** 2158 **/
+    var featured_carousel_image = $('#{{ featured_carousel }} .so-carousel-featured'),
+        featured_carousel_image_width = $('.so-col-images-featured-wrap').width();
+
+    featured_carousel_image.css({
+        'min-width': featured_carousel_image_width,
+        'min-height': featured_carousel_image_width
+    });
+    /** /. 2158 **/
+    if ($(window).width() > 767)
+    {
+      $('.so-col-images-thumb-wrap.so-loading').css({'height': featured_carousel_image_width});
+    }
+
+    var $form = $('#{{ product_form_id }}'),
+        $container = $('#so-gallery-wrap'),
+        lazy_loader = {
+            settings: {
+                template: '{{ template }}'
+            },
+            callback: null,
+            product: null,
+            variant: null,
+            init: function () {
+                this.$imgs = $container.find('.so-carousel-lazy-load');
+                this.loaded = 0;
+                this.completed = {
+                    images: false,
+                    metal_filter: false,
+                    callback: false
+                };
+                var self = this;
+                this.$imgs
+                    .on('error', function () {
+                        $(this).parent().remove();
+                    })
+                    .on('load error', function () {
+                        if (++self.loaded === self.$imgs.length) {
+                            self.completed.images = true;
+                            self.handleIfFinished();
+                        }
+                    })
+                    .each(function () {
+                        if (this.hasAttribute('data-src')) {
+                            this.src = this.getAttribute('data-src');
+                            this.removeAttribute('data-src');
+                        } else {
+                            $(this).trigger('load');
+                        }
+                    });
+
+                if (this.isMetalFilterEnabled()) {
+                    this.completed.metal_filter = false;
+                    $form.off('shineon/metal_filter').on('shineon/metal_filter', function (evt, product, selected_metal, selected_variants) {
+                        self.removeImageVariants(product, selected_metal, selected_variants);
+                    });
+                } else {
+                    this.completed.metal_filter = true;
+                }
+            },
+            isMetalFilterEnabled: function () {
+                return this.completed.metal_filter === false && this.settings.template === 'product.shineon'
+                    && (window.location.search.indexOf('metal=stainless') !== -1 || window.location.search.indexOf('metal=gold') !== -1)
+            },
+            isReady: function () {
+                return this.completed.images === true && this.completed.metal_filter === true;
+            },
+            ready: function (callback) {
+                this.callback = callback;
+                this.handleIfFinished();
+            },
+            setVariant: function (p, v) {
+                this.product = p;
+                this.variant = v;
+            },
+            handleIfFinished: function () {
+                if (this.isReady() && this.completed.callback === false) {
+                    $container.find('.so-removed-metal').remove();
+                    if (this.callback) {
+                        this.callback();
+                    }
+                    this.completed.callback = true;
+                    if ($('.so-col-images-thumb-wrap').hasClass('so-loading'))
+                    {
+                      $('.so-col-images-thumb-wrap').removeClass('so-loading');
+                    }
+                    if (this.product && this.variant) {
+                        $form.trigger('variant_changed.slider', [this.product, this.variant]);
+                    }
+                }
+            },
+            removeImageVariants: function (product, selected_metal, selected_variants) {
+                var self = this, selected_image_ids = [], product_template_ids = [];
+                for (var i = 0; i < selected_variants.length; i++) {
+                    if (selected_variants[i].featured_image) {
+                        selected_image_ids.push(selected_variants[i].featured_image.id);
+                    }
+                    if (selected_variants[i].metafields && selected_variants[i].metafields.product_template_id) {
+                        product_template_ids.push(selected_variants[i].metafields.product_template_id);
+                    }
+                }
+                this.$imgs.each(function () {
+                    var $this = $(this),
+                        image_id = $this.data('image_id'),
+                        image_name = $this.prop('src').replace(/^.*[\\\/]/, ''),
+                        image_product_template_id = parseInt(self.getProductTemplateIdFromImgSrc(image_name)),
+                        testImageId = selected_image_ids.indexOf(image_id) !== -1,
+                        testTemplateId = image_product_template_id && product_template_ids.indexOf(image_product_template_id) !== -1,
+                        testMetalName = image_name.indexOf(selected_metal) !== -1;
+
+                    if (! testImageId && ! testTemplateId && ! testMetalName) {
+                        $this.parent().addClass('so-removed-metal');
+                    }
+                });
+                this.completed.metal_filter = true;
+                this.handleIfFinished();
+            },
+            getProductTemplateIdFromImgSrc: function(img_src) {
+                var matches = img_src.match(/asset_(\d*)_transformation/i);
+
+                return matches === null || matches.length === 0  ? null : matches[1];
+            }
+        };
+
+    var isMobile = function () {
+        try {document.createEvent("TouchEvent");return true;}
+        catch (e) {return false;}
+    };
+
+    var initCarousels = function() {
+        $form = $('#{{ product_form_id }}');
+        $container = $('#so-gallery-wrap');
+
+        var $thumbnail_carousel = $('#{{ thumbnail_carousel }}'),
+            $featured_carousel = $('#{{ featured_carousel }}');
+
+        lazy_loader.init();
+
+        if ($container.data('enable_gallery_slider') !== false) {
+            lazy_loader.ready(function(){
+
+                thumbnail_carousel = $thumbnail_carousel.length
+                    ? $thumbnail_carousel.so_slick({
+                        slidesToShow: parseInt($container.data('image_slides')),
+                        slidesToScroll: 1,
+                        arrows: false,
+                        vertical: true,
+                        centerMode: false,
+                        responsive: [
+                            {
+                                breakpoint: 767,
+                                settings: {
+                                    vertical: false
+                                }
+                            }
+                        ]
+                    }).get(0).so_slick
+                    : null;
+                var adaptiveHeightMobile = false;
+                if ($(window).width() < 768)
+                {
+                  adaptiveHeightMobile = true;
+                }
+                featured_carousel = $featured_carousel.length
+                    ? $featured_carousel.so_slick({
+                        arrows: true,
+                        dots: $container.data('image_dots'),
+                        fade: true,
+                        adaptiveHeight: adaptiveHeightMobile,
+                        cssEase: 'linear',
+                        prevArrow: '<button type="button" class="so_slick-prev so_slick-arrow">{% include "shineon-app-icons" with "chevron-left" %}</button>',
+                        nextArrow: '<button type="button" class="so_slick-next so_slick-arrow">{% include "shineon-app-icons" with "chevron-right" %}</button>'
+                    }).get(0).so_slick
+                    : null;
+
+                $thumbnail_carousel.on('afterChange', function(event, slick){
+                    if (featured_carousel && featured_carousel.currentSlide !== thumbnail_carousel.currentSlide) {
+                        featured_carousel.slickGoTo(slick.currentSlide);
+                    }
+                });
+
+                {% if product.metafields.shineon.uploadable != 1 %}
+                $featured_carousel.on('afterChange', function(event, slick)
+                {
+                    //Featured Carousel Lazyloading for slides
+                    var slideImage = $featured_carousel.find('.so-carousel-featured')[featured_carousel.currentSlide];
+                    if (!slideImage.src)
+                    {
+                      slideImage.src = slideImage.getAttribute('data-source');
+                      $(slideImage).fadeIn();
+                      slideImage.setAttribute('data-src', slideImage.src);
+                      this.removeAttribute('data-src');
+                      {% if section.settings.image_zoom %}
+                        shineon.zoom.init();
+                      {% endif %}
+                    }
+
+                    if (thumbnail_carousel && thumbnail_carousel.currentSlide !== featured_carousel.currentSlide) {
+                        thumbnail_carousel.slickGoTo(slick.currentSlide);
+                    }
+                });
+                {% endif %}
+
+                $thumbnail_carousel.on('click', '.so-carousel-img', function(e) {
+                    var index = parseInt($(this).data('index'));
+                    thumbnail_carousel.slickGoTo(index);
+                    featured_carousel.slickGoTo(index);
+                });
+      });
+        }
+        var goToSlideByIndex = function (index){
+      var index_int = parseInt(index);
+            if (! isNaN(index_int)) {
+                if ($container.data('enable_gallery_slider') === false) {
+                    $container.find('img').css('display', 'none');
+                    $container.find('img[data-index="' + index + '"]').css('display', 'block');
+                    return true;
+                } else if(featured_carousel) {
+                    featured_carousel.slickGoTo(index_int);
+                    return true;
+                }
+            }
+            return false;
+    };
+        var goToSlideByDataAttribute = function (name, value) {
+            var index = $featured_carousel.find('img.so-carousel-img[data-'+name+'='+value+']').data('index');
+            if (typeof index !== 'undefined') {
+                return goToSlideByIndex(index);
+            }
+
+            return false;
+        };
+
+        $form.off('variant_changed.slider')
+            .on('variant_changed.slider', function(e, p, v) {
+
+            //Featured Carousel Lazyloading for slides
+            if (v.featured_image)
+            {
+              var index = $featured_carousel.find('img.so-carousel-img[data-image_id='+v.featured_image.id+']').data('index');
+            }
+            else
+            {
+              var index = 0;
+            }
+            var slideImage = $container.find('.so-carousel-featured')[index];
+            if (slideImage)
+            {
+              slideImage.src = slideImage.getAttribute('data-source');
+              $(slideImage).fadeIn();
+              slideImage.setAttribute('data-src', slideImage.src);
+              this.removeAttribute('data-src');
+              {% if section.settings.image_zoom %}
+                shineon.zoom.init();
+              {% endif %}
+            }
+
+            if(lazy_loader.isReady() === false && lazy_loader.completed.callback === false){
+                lazy_loader.setVariant(p, v);
+                return;
+      }
+
+      // This variant has a featured image?
+      if (v.featured_image && goToSlideByDataAttribute('image_id', v.featured_image.id)) {
+        return;
+      }
+
+      // By variant id
+      if (goToSlideByDataAttribute('variant_id', v.id)) {
+        return;
+      }
+
+      // By transformation id
+      {% if product.metafields.shineon.uploadable == 1 %}
+      if(v.metafields && v.metafields.transformations) {
+        if (goToSlideByDataAttribute('transformation_id', v.metafields.transformations.id)) {
+          return;
+        }
+      }
+      {% endif %}
+
+      // lets try to find a non-featured variant image
+      // by product_template_id and src name
+      if(v.metafields && v.metafields.product_template_id){
+        var src_substring = 'asset_' + v.metafields.product_template_id + '_';
+        var $images = $thumbnail_carousel.filter(':not(.so_slick-cloned)').find('img');
+
+        {% if product.metafields.shineon.uploadable == 1 %}
+          var $default_images = $images.filter('[data-bu-default-image="1"][data-src*="' + src_substring + '"]');
+          if (goToSlideByDataAttribute('index', $default_images.first().data('index'))) {
+            return;
+          }
+        {% endif %}
+
+        $images = $images.filter('img[src*="'+src_substring+'"]');
+        if (goToSlideByDataAttribute('index', $images.first().data('index'))) {
+          return;
+        }
+      }
+
+      // Try engraving sibling
+      if (typeof p.getRespectiveEngravingVariant === 'function') {
+                var engravingSibling = p.getRespectiveEngravingVariant(!p.currentVariantHasEngraving());
+                if (engravingSibling.featured_image) {
+                    return goToSlideByDataAttribute('image_id', engravingSibling.featured_image.id);
+                }
+            }
+    });
+    };
+
+    var destroyCarousels = function () {
+        var $thumbnail_carousel = $('#{{ thumbnail_carousel }}'),
+            $featured_carousel = $('#{{ featured_carousel }}');
+
+        if ($thumbnail_carousel.length) {
+            $thumbnail_carousel.so_slick('destroy').off('click afterChange');
+        }
+        if ($featured_carousel.length) {
+            $featured_carousel.so_slick('destroy').off('afterChange');
+        }
+    };
+
+  initCarousels();
+
+  document.addEventListener('shopify:section:unload', function() {
+    destroyCarousels();
+  });
+
+  document.addEventListener('shopify:section:load', function() {
+    initCarousels();
+  });
+
+  document.addEventListener('shopify:section:select', function() {
+    destroyCarousels();
+    initCarousels();
+  });
+
+    window.shineon = window.shineon || {};
+    window.shineon.carousels = {
+        init: initCarousels,
+        destroy: destroyCarousels
+    };
+}(jQuery));
+
+});
+
+</script>
+
+{% if section.settings.image_zoom %}
+    {% include 'product-shineon-image-zoom' %}
+{% endif %}

@@ -1,0 +1,45 @@
+{% assign additional_product = all_products[product_handle] %}
+{% assign addons = product.metafields.shineon.addons.value | default: product.metafields.shineon.addons %}
+
+<div class="so-modal fade"
+     {% if addons.items.size > 0 or ignore_addons %}
+     id="modal-info-{{ additional_product.handle }}"
+     {% else %}
+     id="modal-info"
+     {% endif %}
+     tabindex="-1"
+     role="dialog">
+    <div class="so-modal-dialog so-modal-lg so-modal-box" role="document">
+        <div class="so-modal-content">
+
+            <div class="so-modal-header">
+                <button type="button"
+                        class="close"
+                        data-dismiss="so-modal"
+                        aria-label="Close">
+                    <span aria-hidden="true"></span>
+                </button>
+            </div><!-- END so-modal-header -->
+
+            <div class="so-modal-body so-modal-body-info">
+                <h2 class="content-header">
+              <span class="content-header-icon">
+                <img src="{{ additional_product.featured_image | img_url: 'x58' }}" alt="">
+              </span>
+                    <!-- /.content-header-icon -->
+                    <p>{{ additional_product.title }}</p>
+                </h2>
+                {% assign additional_description = additional_product.description | strip_html | strip_newlines %}
+                {% assign addons_description_splitter = section.settings.addons_description_splitter | strip_html | escape %}
+                {% if additional_description contains addons_description_splitter %}
+                    {% assign description_array = additional_product.description | split: addons_description_splitter %}
+                    {{ description_array | last }}
+                {% else %}
+                    {% assign description_metafield = additional_product.metafields.shineon.modal_description.value | default: additional_product.metafields.shineon.modal_description.value %}
+                    {{ description_metafield | default: additional_product.description }}
+                {% endif %}
+            </div>
+            <!-- /.so-modal-body -->
+        </div><!-- END modal-content -->
+    </div><!-- END modal-dialog -->
+</div><!-- END modal -->

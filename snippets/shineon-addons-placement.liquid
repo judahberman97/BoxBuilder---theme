@@ -1,0 +1,86 @@
+{% case shineon-addons-placement %}
+    {% when 'shineon-above-atc' %}
+        <!-- shineon-above-atc -->
+        {% include 'shineon-addons',
+                product: product,
+                placement: 'ProductPage::Feature::Addons::AboveATC',
+                type: 'product_addon'
+        %}
+
+        {% comment %}
+        if product has coupon and coupon has Shopify's json type
+        {% endcomment %}
+        {% if product.metafields.shineon.displayed_coupon.type == null and product.metafields.shineon.displayed_coupon.value != null %}
+        {% comment %}OLD{% endcomment %}
+        {% assign coupon = product.metafields.shineon.displayed_coupon %}
+        {% elsif product.metafields.shineon.displayed_coupon.type == 'json' and product.metafields.shineon.displayed_coupon.value.value != null %}
+        {% comment %}NEW{% endcomment %}
+        {% assign coupon = product.metafields.shineon.displayed_coupon.value %}
+        {% else %}
+        {% assign coupon = false %}
+        {% endif %}
+
+        {% if coupon %}
+
+        {% assign allow_show = false %}
+        {% assign shop_discounts = shop.metafields.shineon.discounts.value | default: shop.metafields.shineon.discounts %}
+        {% if shop_discounts[coupon.code] %}
+            {% assign ends_at = shop_discounts[coupon.code].ends_at %}
+            {% if ends_at == nil %}
+                {% assign allow_show = true %}
+            {% else %}
+                {% assign ends_at = ends_at | date: '%s' %}
+                {% assign now = 'now' | date: '%s' %}
+                {% if ends_at > now %}
+                    {% assign allow_show = true %}
+                {% endif %}
+            {% endif %}
+        {% endif %}
+        
+            {% if coupon.value_type == 'fixed_amount' %}
+            {% assign coupon_text = 'Get an extra $' | append: coupon.value | append: ' off!' %}
+            {% else %}
+            {% assign coupon_text = 'Get an extra ' | append: coupon.value | append: '% off!' %}
+            {% endif %}
+            <div class="so-displayed-coupon-preview">
+            <div>
+                <p>{{ coupon_text}} Use code: <span class="code">{{ coupon.code }}</span></p>
+                <small>(enter code at checkout)</small>
+            </div>
+            </div>
+
+            <style>
+            .so-displayed-coupon-preview {
+                background-color: rgba(200, 200, 0, .2);
+                padding: .25rem;
+                text-align: center;
+                margin-top: 1rem;
+            }
+            @media(min-width: 768px) {
+                .so-displayed-coupon-preview {
+                margin-bottom: -20px;
+                }
+            }
+            .so-displayed-coupon-preview > div {
+                border: 1px dashed black;
+                padding: .75rem;
+            }
+            .so-displayed-coupon-preview .code {
+                color: #00b70f;
+            }
+            .so-displayed-coupon-preview p {
+                margin-bottom: -.75rem;
+                font-weight: bold;
+            }
+            </style>
+        {% endif %}
+
+    {% when 'shineon-below-atc' %}
+        <!-- shineon-below-atc -->
+
+        {% include 'shineon-addons',
+                product: product,
+                placement: 'ProductPage::Feature::Addons::BelowATC',
+                type: 'product_addon'
+        %}
+{% endcase %}

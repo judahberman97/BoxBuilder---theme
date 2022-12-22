@@ -1,0 +1,370 @@
+<!-- ./snippets/shineon-addon-in-prop.liquid -->
+
+{% comment %}
+    @param type<string>
+    @param placement<string>
+    @param product<Product>
+    @param cart<Cart>
+{% endcomment %}
+
+<style type="text/css">
+    .so-icons.so-icon-info svg {
+        display: inline-block;
+        width: 15px;
+        height: 15px;
+    }
+    .so-addon-input-wrap .left-side {
+        width: 100%;
+    }
+    .addon-textarea-counter {
+        margin-right: 3px;
+        display: inline-block;
+    }
+    .so-error-message {
+        color: red;
+    }
+</style>
+
+{% if type == 'product_addon' %}
+    {% assign addons = product.metafields.shineon.addons.value | default: product.metafields.shineon.addons %}
+    {% assign addon_items = addons.items | where: 'name', name | sort: 'order' %}
+
+    {% assign valid_addons = null | sort %}
+    {% for addon in addon_items %}
+        {% if addon.placement.size > 1 %}
+            {% if addon.placement == placement and addon.type == type %}
+                {% assign _product = all_products[addon.handle] | sort %}
+                {% assign valid_addons = valid_addons | concat: _product %}
+            {% endif %}
+        {% else %}
+            {% if addon.placement[0] == placement and addon.type == type %}
+                {% assign _product = all_products[addon.handle] | sort %}
+                {% assign valid_addons = valid_addons | concat: _product %}
+            {% endif %}
+        {% endif %}
+    {% endfor %}
+
+    {% if valid_addons.size > 0 %}
+        <div class="tailwind">
+            <div class="tw-font-sans tw-mt-6 tw-font-sans tw-bg-white tw-rounded-md tw-shadow-sm tw-border tw-border-solid tw-border-[#c0cbd3] tw-overflow-hidden">
+                <div class="so-product-page-addons tw-divide-y tw-divide-[#c0cbd3]">
+                    {% for addon in addon_items %}
+                        {% assign addon_product = all_products[addon.handle] %}
+                        {% assign hide_gift_wrap = false %}
+
+                        {% assign should_show_information_modal = false %}
+
+                        {% liquid
+                            assign information_modal_description = addon_product.metafields.shineon.modal_description
+
+                            if information_modal_description != blank
+                                assign should_show_information_modal = true
+                            endif
+                        %}
+
+                        {% if addon.handle == section.settings.gift_bag_kit_handle or addon.name == 'Gift Wrap Kit' or addon.handle == 'do-it-yourself-gift-wrap' %}
+                        {% if section.settings.show_gift_bag_kit == true %}
+                            {% assign hide_gift_wrap = true %}
+                        {% endif %}
+                        {% endif %}
+
+                        {% unless hide_gift_wrap %}
+                            {% assign addon_schema_v2_obj = addon_product.metafields.shineon.schema_v2.value | default: addon_product.metafields.shineon.schema_v2 %}
+                            {% assign pt_id = 'pt_' | append: addon_schema_v2_obj.product_template_id %}
+                            {% assign shop_pt_id_obj = shop.metafields.shineon[pt_id].value | default: shop.metafields.shineon[pt_id] %}
+                            {% assign addon_cf_obj = shop_pt_id_obj.custom_fields %}
+                            {% for addon_cf_id in addon_cf_obj %}
+                                {% assign shop_cf = shop.metafields.shineon[addon_cf_id.key].value | default: shop.metafields.shineon[addon_cf_id.key] %}
+                            {% endfor %}
+                            <label for="{{ shop_cf.slug }}__addon" class="addon_product-label tw-px-6 tw-py-4 tw-mb-0 tw-flex tw-items-center tw-space-x-8 hover:tw-bg-gray-50 hover:tw-cursor-pointer{% if show_quantity and addon.singular != true %} addon__quantity-label{% endif %}">
+                                <div class="so-flex tw-text-gray-700 hover:tw-text-gray-900 tw-font-semibold">
+                                    <input id="{{ shop_cf.slug }}__addon"
+                                        name="{{ shop_cf.slug }}__addon"
+                                        type="checkbox"
+                                        class="checkbox__addon form-checkbox so-border-solid so-border-[#9ca3af] focus:so-ring-gray-500 so-h-6 so-w-6 so-text-gray-700 so-border so-border-gray-400 so-rounded checked:so-border-transparent"
+                                        data-addon-price="{{ addon_product.price }}"
+                                        data-addon-title="{{ shop_cf.slug }}"
+                                        data-addon-handle="{{ addon_product.handle }}"
+                                        data-variant-id="{{ addon_product.variants.first.id }}"
+                                        data-singular="true"
+                                        {% if addon_product.handle == shop.metafields.shineon.gift_wrap_handle %}
+                                        data-gift-kit="1"
+                                        data-parent-title="{{ product.title }}"
+                                        data-addon-label="{{ shop_cf.label }}"
+                                        data-addon-name="{{ shop_cf.name }}"
+                                        {% endif %}
+                                        autocomplete="off"
+                                    >
+                                    <span class="addon-product-title-wrap so-font-bold so-text-green-600">
+                                        <span>Gift Wrap My Item For</span> <span>{% if addon.display_price %}{{ addon_product.price | money }}{% endif %}</span>
+                                    </span>
+                                    {% if should_show_information_modal %}
+                                        <button class="btn-transparent" style="display: inline-block; cursor: help;" onclick="showAddonModal('{{ addon_product.handle }}')" role="button">
+                                            {% render 'shineon-app-icons' with 'info', add_wrap: true %}
+                                        </button>
+                                    {% endif %}
+                                </div>
+                                <span class="tw-block">
+                                    <span class="tw-block tw-text-sm tw-text-gray-400 so-italic so-text-sm">
+                                        {% if addon_product.description contains section.settings.addons_description_splitter %}
+                                            {% assign description_array = addon_product.description | split: section.settings.addons_description_splitter %}
+                                            {{ description_array | first }}
+                                        {% else %}
+                                            {% if addon_product.description contains '[maxlength]' %}
+                                                {% assign maxlength = ' up to ' | append: shop_cf.maxlength | append: ' characters' %}
+                                            {% endif %}
+                                            {{ addon_product.description | replace: '[maxlength]', maxlength }}
+                                        {% endif %}
+                                    </span>
+                                    {% if addon_product.handle == shop.metafields.shineon.gift_wrap_handle %}
+                                        {% for addon_cf_id in addon_cf_obj %}
+                                            {% assign shop_cf = shop.metafields.shineon[addon_cf_id.key].value | default: shop.metafields.shineon[addon_cf_id.key] %}
+                                            {% if shop_cf.slug == "gift-note" %}
+                                                <div class="so-addon-input-wrap shineon-theme shineon-theme--primary so-hidden">
+                                                    <div class="so-flex so-items-center so-p-4">
+                                                        <span class="so-block so-w-16 so-h-16 so-relative so-flex-shrink-0">
+                                                        {% if addon.singular != true %}
+                                                            <span class="so-invisible so-flex so-items-center so-justify-center so-h-6 so-w-6 so-absolute so-bg-gray-800/75 so--top-2.5 so--right-2.5 so-rounded-full">
+                                                                <span class="so-font-bold so-text-white so-text-sm addon__quantity">1</span>
+                                                            </span>
+                                                            <img class="tw-block tw-rounded-md tw-w-16 tw-h-16 tw-object-cover" src="{{ addon_product | img_url: '96x96' }}" alt="{{ addon_product.title | escape }}">
+                                                        {% endif %}
+                                                        </span>
+                                                        <div class="left-side so-ml-9">
+                                                            <div class="field so-mt-3">
+                                                                <textarea type="text"
+                                                                    name="properties[+ {{ shop_cf.label }}]"
+                                                                    id="{{ shop_cf.html_id }}"
+                                                                    data-variant-id="{{ addon_product.selected_or_first_available_variant.id }}"
+                                                                    data-label="{{ shop_cf.label }}"
+                                                                    class="field__input so-addon-input {{ shop_cf.slug }} focus:tw-ring-gray-500 tw-text-gray-700 tw-border tw-border-gray-400 tw-rounded so-px-3"
+                                                                    placeholder="{{ shop_cf.placeholder }} "
+                                                                    maxlength="{{ shop_cf.maxlength }}"
+                                                                    minlength="{{ shop_cf.minlength }}"
+                                                                    rows="3"
+                                                                    {% if shop_cf.required == 1 %}
+                                                                    required
+                                                                    {% endif %}
+                                                                    autocomplete="off"/></textarea>
+                                                                <label class="field__label tw-font-semibold so-text-sm" for="{{ shop_cf.html_id }}">
+                                                                    <span class="addon-textarea-label">{{ shop_cf.label }}</span>
+                                                                    <span class="addon-textarea-counter" data-maxlength="{{ shop_cf.maxlength }}"><span class="counter">0</span>/{{ shop_cf.maxlength }}</span>
+                                                                    <span class="so-error-message so-hidden">Emojies are not allowed</span>
+                                                                </label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+                                        {% endfor %}
+                                    {% endif %}
+                                </span>
+                            </label>
+                        {% endunless %}
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <script>
+            function showAddonModal(product_handle) {
+                var $modal = $('#modal-info-' + product_handle)
+                $modal.insertAfter($('div.page-container').length ? 'div.page-container' : 'body');
+                $modal.so_modal('show')
+            }
+
+            document.addEventListener('DOMContentLoaded', function () {
+                var $form = document.querySelectorAll('.so-product-form')[0];
+
+                var $quantity_selector = document.querySelectorAll('.so-cart-qty-input')[0];
+
+                setTimeout(function () {
+                    applyAddonQuantity()
+                }, 1)
+
+                $quantity_selector.addEventListener('change', function (e) {
+                    setTimeout(function () {
+                        applyAddonQuantity()
+                        syncProductPageAddons()
+
+                        var input_name_attr = '[name="' + document.querySelectorAll('.so-addon-input')[0].getAttribute('name') + '"]',
+                            addon_id = document.querySelectorAll('.so-addon-input')[0].getAttribute('data-variant-id'),
+                            base_name = 'items' + '[' + addon_id + ']',
+                            addon_input_label = '[name="' + base_name + '[properties[' + document.querySelectorAll('.so-addon-input')[0].getAttribute('data-label') + ']]"]';
+                    }, 1)
+                })
+
+                function applyAddonQuantity() {
+                    var quantity = parseInt($quantity_selector.value)
+                    var $addon_quantity = document.querySelector('.addon__quantity')
+                    var $addon_quantity_parent = $addon_quantity.parentNode
+
+                    $addon_quantity.textContent = quantity
+
+                    if (quantity > 1 && $addon_quantity_parent.classList.contains('tw-invisible')) {
+                        $addon_quantity_parent.classList.remove('tw-invisible')
+                    } else if (quantity <= 1) {
+                        $addon_quantity_parent.classList.add('tw-invisible')
+                    }
+
+                    if (quantity > 1 && $addon_quantity_parent.classList.contains('so-invisible')) {
+                        $addon_quantity_parent.classList.remove('so-invisible')
+                    } else if (quantity <= 1) {
+                        $addon_quantity_parent.classList.add('so-invisible')
+                    }
+                }
+
+                function syncProductPageAddons() {
+                    var addon__selection = document.querySelectorAll('.addon__selection');
+                    for (const el of addon__selection) {
+                        el.remove();
+                    }
+                    if (typeof this.hasAttribute === "function") {
+                        if (this.hasAttribute('data-gift-kit')) {
+                            for (const el of document.querySelectorAll('.so-addon-input-wrap')){
+                                el.classList.toggle('so-hidden');
+                            }
+                        }
+                    }
+                
+                    var addon__checkboxes = document.querySelectorAll(".checkbox__addon");
+                    for (const addon__checkbox of addon__checkboxes) {
+                        var is_gift_kit = addon__checkbox.hasAttribute('data-gift-kit');
+                        var el_input = addon__checkbox.closest('.addon_product-label').querySelector('.so-addon-input');
+                        var variant_id = addon__checkbox.getAttribute('data-variant-id');
+                        var singular = addon__checkbox.getAttribute('data-singular');
+
+                        var base_name = 'items' + '[' + variant_id + ']'
+                        var id_input_name = base_name + '[id]';
+                        var quantity_input_name = base_name + '[quantity]';
+                        var prop_parent_id_name = base_name + '[properties[_Addon | Assigned to]]';
+                        var prop_engraving_input_label = base_name + '[properties[' + addon__checkbox.getAttribute('data-addon-label') + ']]';
+
+                        var prop_gift_note_name = 'properties[_gift_note]';
+                        var prop_gift_note_variant_id_name = 'properties[_gift_note_variant_id]';
+
+                        if(addon__checkbox.checked) {
+                            var addon_selection_class = "addon__selection"
+                            if (is_gift_kit) {
+                                var is_checked_gift_kit = true
+                                    addon_title = addon__checkbox.getAttribute('data-addon-title')
+                                    addon_variant_id = addon__checkbox.getAttribute('data-variant-id')
+                                    addon_handle = addon__checkbox.getAttribute('data-addon-handle');
+                                addon_selection_class += " addon-gift-kit"
+                            }
+                            var quantity = singular === true ? 1 : (parseInt(document.querySelector('.so-cart-qty-input').value) || 1),
+                                $base_input = document.createElement('input');
+                            $base_input.setAttribute('class', addon_selection_class);
+                            $base_input.setAttribute('data-variant-id', variant_id);
+                            $base_input.setAttribute('type', 'hidden');
+
+                            var $id_input = $base_input.cloneNode();
+                            $id_input.value = variant_id;
+                            $id_input.setAttribute('name', id_input_name);
+
+                            var $quantity_input = $base_input.cloneNode();
+                            $quantity_input.value = variant_id;
+                            $quantity_input.setAttribute('name', quantity_input_name);
+                            $quantity_input.value = quantity;
+
+                            if (is_gift_kit) {
+                                var $addon_title_for_hero = $base_input.cloneNode();
+                                $addon_title_for_hero.setAttribute('name', 'properties[+ ' + addon__checkbox.getAttribute('data-addon-label') + ']');
+                                $addon_title_for_hero.value = el_input.value;
+
+                                var $addon_id_for_hero = $base_input.cloneNode();
+                                $addon_id_for_hero.setAttribute('name', 'properties[_Addon | Assigned with]');
+                                $addon_id_for_hero.value = addon_variant_id;
+
+                                var $addon_handle = $base_input.cloneNode();
+                                $addon_handle.setAttribute('name', 'properties[_Addon | handle]');
+                                $addon_handle.value = addon_handle;
+
+                                var $hero_prod_id_for_addon = $base_input.cloneNode();
+                                $hero_prod_id_for_addon.setAttribute('name', prop_parent_id_name);
+                                $hero_prod_id_for_addon.value = addon__checkbox.getAttribute('data-parent-title');
+
+                                var $prop_engraving_input_label = $base_input.cloneNode();
+                                $prop_engraving_input_label.setAttribute('name', prop_engraving_input_label);
+                                $prop_engraving_input_label.value = el_input.value;
+
+                                var $prop_gift_note = $base_input.cloneNode();
+                                $prop_gift_note.setAttribute('name', base_name + '[' + prop_gift_note_name + ']');
+                                $prop_gift_note.value = el_input.value;
+
+                                var $prop_gift_note_variant_id = $base_input.cloneNode();
+                                $prop_gift_note_variant_id.setAttribute('name', base_name + '[' + prop_gift_note_variant_id_name + ']');
+                                $prop_gift_note_variant_id.value = addon_variant_id;
+
+                                var $hero_gift_note = $base_input.cloneNode();
+                                $hero_gift_note.setAttribute('name', prop_gift_note_name);
+                                $hero_gift_note.value = el_input.value;
+
+                                var $hero_gift_note_variant_id = $base_input.cloneNode();
+                                $hero_gift_note_variant_id.setAttribute('name', prop_gift_note_variant_id_name);
+                                $hero_gift_note_variant_id.value = addon_variant_id;
+                            }
+
+                            $form.append($id_input)
+                            $form.append($quantity_input)
+                            if (is_gift_kit) {
+                                $form.append($addon_title_for_hero)
+                                $form.append($addon_id_for_hero)
+                                $form.append($addon_handle)
+                                $form.append($hero_prod_id_for_addon)
+                                $form.append($prop_engraving_input_label)
+                                $form.append($prop_gift_note)
+                                $form.append($prop_gift_note_variant_id)
+                                $form.append($hero_gift_note)
+                                $form.append($hero_gift_note_variant_id)
+                            }
+                        }
+                    }
+                }
+
+                setTimeout(function () {
+                    var addon_input = document.getElementById('{{ shop_cf.slug }}__addon');
+                    addon_input.addEventListener('change', syncProductPageAddons)
+                }, 1);
+
+                document.querySelector('.so-addon-input').addEventListener('change', function(){
+                    var input_name_attr = 'input[name="' + this.getAttribute('name') + '"]',
+                        addon_id = this.getAttribute('data-variant-id'),
+                        base_name = 'items' + '[' + addon_id + ']',
+                        hero_gift_note = '[name="properties[_gift_note]"]',
+                        prop_gift_note = '[name="' + base_name + '[properties[_gift_note]]"',
+                        addon_input_label = '[name="' + base_name + '[properties[' + this.getAttribute('data-label') + ']]"]';
+                    document.querySelector(hero_gift_note).value = this.value;
+                    document.querySelector(prop_gift_note).value = this.value;
+                    document.querySelector(input_name_attr).value = this.value;
+                    document.querySelector(addon_input_label).value = this.value;
+                });
+
+                document.querySelector('.so-addon-input').addEventListener('beforeinput', function(e){
+                    validateText(e, this);
+                });
+
+                function validateText(e, elem) {
+                    var checkForEmoji = /([\u2700-\u27BF]|[\uE000-\uF8FF]|\uD83C[\uDC00-\uDFFF]|\uD83D[\uDC00-\uDFFF]|[\u2011-\u26FF]|\uD83E[\uDD10-\uDDFF])/g;
+                    if(checkForEmoji.test(e.data)) {
+                        e.preventDefault();
+                        document.querySelector('.so-error-message').classList.remove('so-hidden');
+                        document.querySelector('.addon-textarea-counter').classList.add('so-hidden');
+                        document.querySelector('.addon-textarea-label').classList.add('so-hidden');
+                    }
+                    else {
+                        document.querySelector('.so-error-message').classList.add('so-hidden');
+                        document.querySelector('.addon-textarea-counter').classList.remove('so-hidden');
+                        document.querySelector('.addon-textarea-label').classList.remove('so-hidden');
+                    }
+                }
+
+                document.querySelector('.so-addon-input').addEventListener('keyup', function(){
+                    var label_text = this.parentNode.querySelector('.field__label'),
+                        addon_counter = label_text.querySelector('.counter');
+                    addon_counter.textContent = this.value.length;
+                });
+            })
+        </script>
+    {% endif %}
+{% endif %}

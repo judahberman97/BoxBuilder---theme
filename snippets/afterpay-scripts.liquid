@@ -1,0 +1,51 @@
+<!-- Begin Shopify-Afterpay JavaScript Snippet (v1.0.10) -->
+<script type="text/javascript">
+// Overrides:
+// var afterpay_min = 0.04;            // As per your Afterpay contract.
+// var afterpay_max = 2000.00;         // As per your Afterpay contract.
+// var afterpay_cbt_enabled = false;   // As per your Afterpay contract; change to true to display Cross-Border Trade artwork (for AU/NZ).
+// var afterpay_logo_theme = 'colour'; // Can be 'colour', 'black' or 'white'.
+// var afterpay_cart_integration_enabled = true;
+
+//Default selector where will be placed snippet (Product Page)
+var afterpay_product_selector = '.afterpay-info-w';
+var afterpay_product_selector_coupon = '.so-displayed-coupon-preview';
+
+//DOM selectors on Product Page (Both Shineon templates)
+var afterpay_product_selector_dom = document.querySelector(afterpay_product_selector);
+var afterpay_product_selector_coupon_dom = document.querySelector(afterpay_product_selector_coupon);
+
+//Default selector where will be placed snippet (Cart Page)
+var afterpay_cart_static_selector = '.wrap__cart_totals .wrap__cart_totals_inner';
+
+//Additional element to modify
+var afterpay_cart_static_selector_wrapper = '.wrap__cart_totals';
+var afterpay_cart_static_selector_inner = '.wrap__cart_totals .wrap__cart__subtotal';
+
+//DOM selectors on Cart Page (Shineon)
+var afterpay_cart_selector_dom = document.querySelector(afterpay_cart_static_selector);
+var afterpay_cart_selector_wrapper_dom = document.querySelector(afterpay_cart_static_selector_wrapper);
+var afterpay_cart_selector_price_dom = document.querySelector(afterpay_cart_static_selector_inner);
+
+if(afterpay_product_selector_coupon_dom != null)
+{
+    afterpay_product_selector_coupon_dom.setAttribute('style', 'margin-bottom: 0;');
+}
+if(afterpay_cart_selector_dom != null && afterpay_cart_selector_price_dom != null && afterpay_cart_selector_wrapper_dom != null)
+{
+    afterpay_cart_selector_wrapper_dom.style.textAlign = "center";
+    afterpay_cart_selector_price_dom.style.marginBottom = "15px";
+}
+// Non-editable fields:
+var afterpay_shop_currency = {{ shop.currency | json }};
+var afterpay_cart_currency = {{ cart.currency.iso_code | json }};
+var afterpay_shop_money_format = {{ shop.money_format | json }};
+var afterpay_shop_permanent_domain = {{ shop.permanent_domain | json }};
+var afterpay_theme_name = {{ theme.name | json }};
+var afterpay_product = {{ product | json }};
+var afterpay_current_variant = {{ product.selected_or_first_available_variant | json }};
+var afterpay_cart_total_price = {{ cart.total_price | json }};
+var afterpay_js_snippet_version = '1.0.10';
+</script>
+<script type="text/javascript" src="https://static.afterpay.com/shopify-afterpay-javascript.js"></script>
+<!-- End Shopify-Afterpay JavaScript Snippet (v1.0.10) -->

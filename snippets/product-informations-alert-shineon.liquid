@@ -1,0 +1,131 @@
+<!-- ./snippets/product-informations-alert-shineon.liquid -->
+
+{% case section_type %}
+
+  {% when 'hurry_up' %}
+
+    {% assign display_quantity_count_demo_data = display_quantity_count_demo_data | default: settings.display_quantity_count_demo_data %}
+    {% assign visitors_counter_enable_demo_data = visitors_counter_enable_demo_data | default: settings.visitors_counter_enable_demo_data %}
+    {% assign orders_counter_enable_demo_data = orders_counter_enable_demo_data | default: settings.orders_counter_enable_demo_data %}
+    {% assign informations_alert_text = 'customizer_almost_gone_text' | t %}
+    {% capture quantity_counter_html %}
+      {% assign inventory_quantity = 0 %}
+      {% for variant in product.variants %}
+        {% capture inventory_quantity %}{{ inventory_quantity | plus: variant.inventory_quantity }}{% endcapture %}
+      {% endfor %}
+      <span data-published_at="{{ product.published_at }}" data-js-product-informations-alert-quantity-denerate data-max-value="{{ inventory_quantity }}" data-product_left="{{ almost_gone_max_value }}" data-buying_interval="{{ almost_gone_interval }}">..</span>
+    {% endcapture %}
+    {% capture fire_icon_html %}
+      <span class="flash--total-sold"><span class="flash-fire"></span></span>
+    {% endcapture %}
+    {% capture visitors_counter_html %}
+      {% if visitors_counter_enable_demo_data %}
+        <b class="js-generate-visitors-counter">..</b>
+      {% else %}
+        <b class="js-statsapp-visitors-counter">..</b>
+      {% endif %}
+    {% endcapture %}
+    {% capture orders_counter_html %}
+      {% if orders_counter_enable_demo_data %}
+        <b class="js-generate-orders-counter">..</b>
+      {% else %}
+        <b class="js-statsapp-orders-counter">..</b>
+      {% endif %}
+    {% endcapture %}
+    <span class="product-informations-alert" data-js-product-informations-alert>{{ informations_alert_text | replace: '[quantity_counter]', quantity_counter_html }}</span>
+    {% assign display_quantity_count_demo_data = null %}
+    {% assign visitors_counter_enable_demo_data = null %}
+    {% assign orders_counter_enable_demo_data = null %}
+    {% assign informations_alert_text = null %}
+    
+  {% when 'discount-message' %}
+
+    <style type="text/css">
+      .show-discount {
+        text-align: center;
+        font-size: 13px;
+      }
+
+      .show-discount span {
+        color: {{ section.settings.informations_alert_highlighted_color }};
+      }
+    </style>
+
+    <div id="discount-message"></div>
+
+    <script type="text/javascript">
+      var codeCookieValue;
+      var getCookie = function(name) {
+        var value = "; " + document.cookie;
+        var parts = value.split('; '+name+'=');
+        if (parts.length == 2) return parts.pop().split(";").shift();
+      };
+      codeCookieValue = getCookie('discount_code');
+      if(codeCookieValue){
+        console.log("Discount Code - " + codeCookieValue);
+        document.getElementById("discount-message").innerHTML="<div class='show-discount'>Discount Code To Be Applied At Checkout: <span>" + codeCookieValue + "</span></div>";
+      }
+    </script>
+    
+  {% when 'deal_ends_counter' %}
+    <style type="text/css">
+      .desktop-timer {
+        display: flex;
+        justify-content: center;
+        font-family: Avenir;
+        font-style: normal;
+        font-weight: 600;
+        font-size: 14px;
+        line-height: 25px;
+      }
+      .desktop-timer-header {
+        margin-right: 8px;
+      }
+      .desktop-timer-minute,
+      .desktop-timer-second {
+        margin-left: 4px;
+      }
+      .desktop-timer-hours span,
+      .desktop-timer-minute span,
+      .desktop-timer-second span {
+        margin-right: 1px;
+      }
+    </style>
+    <script type="text/javascript">
+      document.addEventListener("DOMContentLoaded", function()
+      {
+        jQuery( document ).ready(function($)
+        {
+          var timerHtml = '<div class="desktop-timer"><div class="innerContainer"><div class="timer_wrapper"><span class="desktop-timer-header">Today\'s Deal Ends In:</span><span class="desktop-timer-hours"><span class="timer"></span>h</span><span class="desktop-timer-minute"><span class="timer"></span>m</span><span class="desktop-timer-second"><span class="timer"></span>s</span></div></div></div>';
+
+          function timerCode() {
+            var countdownTimer = setInterval(function () {
+              var days = new Date();
+              var hours = 24 - days.getHours();
+              var min = 60 - days.getMinutes();
+              if((min + '').length == 1){
+                min = '0' + min;
+              }
+              var sec = 60 - days.getSeconds();
+              if((sec + '').length == 1){
+                sec = '0' + sec;
+              }
+              //console.log('day' + days);
+              $('.desktop-timer-days>.timer').html(days);
+              $('.desktop-timer-hours>.timer').html(hours);
+              $('.desktop-timer-minute>.timer').html(min);
+              $('.desktop-timer-second>.timer').html(sec);
+
+              $('.desktop-timer-days>.timer').html(days);
+              $('.desktop-timer-hours>.timer').html(hours);
+              $('.desktop-timer-minute>.timer').html(min);
+              $('.desktop-timer-second>.timer').html(sec);
+            }, 1000);
+          }
+
+          $('.product-informations-alert').html(timerHtml);
+          timerCode();
+        });
+      });
+    </script>
+{% endcase %}

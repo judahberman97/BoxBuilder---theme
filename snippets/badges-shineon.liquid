@@ -1,0 +1,124 @@
+<!-- ./snippets/badges-shineon.liquid -->
+
+{% case badges-shineon %}
+
+  {% when 'callout-shop-badges' %}
+
+    <ul class="unstyled badges-list">
+      {% if show_delivery_details_alt != true %}
+
+        {% if section.settings.badge_img_1 != null and section.settings.badge_img_1 != '' %}
+        <li>
+          <img src="{{ section.settings.badge_img_1 | img_url: '102x102' }}" alt="{{ section.settings.badge_img_1.alt }}">
+        </li>
+        {% elsif badge_uploaded == false %}
+        <li class="theme-shineon-sprite fast-delivery_grande"></li>
+        {% endif %}
+
+      {% else %}
+
+        {% if section.settings.badge_img_1_alt != null and section.settings.badge_img_1_alt != '' %}
+          <li>
+            <img src="{{ section.settings.badge_img_1_alt | img_url: '102x102' }}" alt="{{ section.settings.badge_img_1_alt.alt }}">
+          </li>
+        {% endif %}
+
+      {% endif %}
+
+      {% if section.settings.badge_img_2 != null and section.settings.badge_img_2 != '' %}
+      <li>
+        <img src="{{ section.settings.badge_img_2 | img_url: '102x102' }}" alt="{{ section.settings.badge_img_2.alt }}">
+      </li>
+      {% elsif badge_uploaded == false %}
+        <li class="theme-shineon-sprite guarantee-100_grande"></li>
+      {% endif %}
+
+      {% if section.settings.badge_img_3 != null and section.settings.badge_img_3 != '' %}
+      <li>
+        <img src="{{ section.settings.badge_img_3 | img_url: '102x102' }}" alt="{{ section.settings.badge_img_3.alt }}">
+      </li>
+      {% elsif badge_uploaded == false %}
+      <li class="theme-shineon-sprite guarantee-60-day-returns_grande"></li>
+      {% endif %}
+
+      {% if section.settings.badge_img_4 != null and section.settings.badge_img_4 != '' %}
+      <li>
+        <img src="{{ section.settings.badge_img_4 | img_url: '102x102' }}" alt="{{ section.settings.badge_img_4.alt }}">
+      </li>
+      {% elsif badge_uploaded == false %}
+      <li class="theme-shineon-sprite ordering_grande"></li>
+      {% endif %}
+      
+      {% if section.settings.badge_img_5 != null and section.settings.badge_img_5 != '' %}
+      <li>
+        <img src="{{ section.settings.badge_img_5 | img_url: '102x102' }}" alt="{{ section.settings.badge_img_5.alt }}">
+      </li>
+      {% elsif badge_uploaded == false %}
+      <li class="theme-shineon-sprite easy-returns_grande"></li>
+      {% endif %}
+
+      {% if section.settings.badge_img_6 != null and section.settings.badge_img_6 != '' %}
+      <li>
+        <img src="{{ section.settings.badge_img_6 | img_url: '102x102' }}" alt="{{ section.settings.badge_img_5.alt }}">
+      </li>
+      {% endif %}
+
+    </ul>
+
+  {% when 'product-badges' %}
+
+    {% if section.settings.show_bestseller == true or section.settings.show_ship_from_usa == true or section.settings.show_made_in_usa == true or free_shipping == true %}
+    <ul class="unstyled product-tags">
+      {% if section.settings.show_bestseller == true %}
+      <li class="tag tag-bestseller{% if section.settings.show_bestseller_reverse == true %} color-reverse{% endif%}">
+        {% include 'shineon-app-icons' with 'badge' %}
+        <span>{{ section.settings.badge_bestseller_text }}</span>
+      </li>
+      {% endif %}
+      {% if section.settings.show_ship_from_usa == true %}
+      <li class="tag tag-usa-made hidden-forced{% if section.settings.show_ship_from_usa_reverse == true %} color-reverse{% endif%}">
+        {% include 'shineon-app-icons' with 'usa-blue' %}
+        <span>{{ section.settings.badge_ship_from_usa_text }}</span>
+      </li>
+      {% endif %}
+      {% if section.settings.show_made_in_usa == true %}
+      <li class="tag tag-usa-made hidden-forced{% if section.settings.show_made_in_usa_reverse == true %} color-reverse{% endif%}">
+        {% include 'shineon-app-icons' with 'usa-blue' %}
+        <span>{{ section.settings.badge_made_in_usa_text }}</span>
+      </li>
+      {% endif %}
+      {% if free_shipping == true and settings.free_shipping_position != 'above_payments' %}
+        <li class="tag tag-free-shipping{% if section.settings.show_bestseller_reverse == true %} color-reverse{% endif%}">
+          {% include 'product-info-shineon' with 'free-shipping' %}
+        </li>
+      {% endif %}
+    </ul>
+    {% endif %}
+
+  {% when 'trust-single-image' %}
+
+    <div class="so-product so-row so-center so-payment-option-security-seal-wrap">
+      <div class="so-payment-option-security-seal">
+        {% if section.settings.trust_section_single_image != null and section.settings.trust_section_single_image != '' %}
+          <img class="so-img-responsive so-lazy" data-src="{{ section.settings.trust_section_single_image | img_url: '400x' }}" />
+        {% else if section.settings.security_seal_shineon %}
+          <span class="theme-shineon-sprite security-seal"></span>
+        {% endif %}
+      </div>
+    </div>
+
+  {% when 'product-usps' %}
+  
+    {% assign usps_copies = 'customizer_product_usps_translated_html' | t %}
+
+    {% if is_metal_art_prod == true %}
+      {% assign usps_copies = 'customizer_product_usps_metal_art_html' | t %}
+    {% endif %}
+
+    <div class="product-usps">
+      <ul>
+        {{ usps_copies }}
+      </ul>
+    </div>
+
+{% endcase %}

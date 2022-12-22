@@ -1,0 +1,713 @@
+<!-- ./snippets/shineon-addons.liquid -->
+
+{% comment %}
+    @param type<string>
+    @param placement<string>
+    @param product<Product>
+    @param cart<Cart>
+{% endcomment %}
+
+<style type="text/css">
+    .so-icons.so-icon-info svg {
+        display: inline-block;
+        width: 15px;
+        height: 15px;
+    }
+</style>
+
+{% if type == 'product_addon' %}
+    {% assign addons = product.metafields.shineon.addons.value | default: product.metafields.shineon.addons %}
+    {% assign addon_items = addons.items | where: 'type', type | sort: 'order' %}
+
+    {% assign valid_addons = null | sort %}
+    {% for addon in addon_items %}
+        {% if addon.placement.size > 1 %}
+            {% if addon.placement == placement and addon.type == type %}
+                {% assign _product = all_products[addon.handle] | sort %}
+                {% assign valid_addons = valid_addons | concat: _product %}
+            {% endif %}
+        {% else %}
+            {% if addon.placement[0] == placement and addon.type == type %}
+                {% assign _product = all_products[addon.handle] | sort %}
+                {% assign valid_addons = valid_addons | concat: _product %}
+            {% endif %}
+        {% endif %}
+    {% endfor %}
+
+    {% if valid_addons.size > 0 %}
+        <div class="tailwind">
+            <div class="tw-font-sans tw-mt-6 tw-font-sans tw-bg-white tw-rounded-md tw-shadow-sm tw-border tw-border-solid tw-border-[#c0cbd3] tw-overflow-hidden">
+                <div class="tw-px-6 tw-py-3 tw-bg-[#bac2d2]">
+                    <p class="tw-text-gray-700 tw-font-bold tw-mb-0">{{ 'addons_section_title' | t }}</p>
+                </div>
+                <div class="so-product-page-addons tw-divide-y tw-divide-[#c0cbd3]">
+                    {% for addon in addon_items %}
+                        {% assign addon_product = all_products[addon.handle] %}
+                        {% assign hide_gift_wrap = false %}
+
+                        {% assign should_show_information_modal = false %}
+
+                        {% liquid
+                            assign information_modal_description = addon_product.metafields.shineon.modal_description
+
+                            if information_modal_description != blank
+                                assign should_show_information_modal = true
+                            endif
+                        %}
+
+                        {% if addon.handle == section.settings.gift_bag_kit_handle or addon.name == 'Gift Wrap Kit' or addon.handle == 'do-it-yourself-gift-wrap' %}
+                        {% if section.settings.show_gift_bag_kit == true %}
+                            {% assign hide_gift_wrap = true %}
+                        {% endif %}
+                        {% endif %}
+
+                        {% unless hide_gift_wrap %}
+                            {% assign shop_cf_slug = "" %}
+                            {% assign addon_schema_v2_obj = addon_product.metafields.shineon.schema_v2.value | default: addon_product.metafields.shineon.schema_v2 %}
+                            {% assign pt_id = 'pt_' | append: addon_schema_v2_obj.product_template_id %}
+                            {% assign shop_pt_id_obj = shop.metafields.shineon[pt_id].value | default: shop.metafields.shineon[pt_id] %}
+                            {% assign addon_cf_obj = shop_pt_id_obj.custom_fields %}
+                            {% for addon_cf_id in addon_cf_obj %}
+                                {% assign shop_cf = shop.metafields.shineon[addon_cf_id.key].value | default: shop.metafields.shineon[addon_cf_id.key] %}
+                                {% assign shop_cf_slug = "personalized-gift-kit" %}
+                            {% endfor %}
+                            <label for="{{ addon_product.handle }}__addon" class="addon_product-label tw-px-6 tw-py-4 tw-mb-0 tw-flex tw-items-center tw-space-x-8 hover:tw-bg-gray-50 hover:tw-cursor-pointer{% if show_quantity and addon.singular != true %} addon__quantity-label{% endif %}">
+                                <input id="{{ addon_product.handle }}__addon"
+                                       name="{{ addon_product.handle }}__addon"
+                                       type="checkbox"
+                                       class="form-checkbox focus:tw-ring-gray-500 tw-h-6 tw-w-6 tw-text-gray-700 tw-border tw-border-gray-400 tw-rounded checked:tw-border-transparent"
+                                       data-addon-price="{{ addon_product.price }}"
+                                       data-addon-title="{{ addon_product.title }}"
+                                       data-variant-id="{{ addon_product.variants.first.id }}"
+                                       data-singular="{{ addon.singular }}"
+                                       {% if shop_cf_slug == "personalized-gift-kit" %}
+                                       data-gift-kit="1"
+                                       data-parent-title="{{ product.title }}"
+                                       data-addon-label="{{ shop_cf.label }}"
+                                       data-addon-name="{{ shop_cf.name }}"
+                                       {% endif %}
+                                       autocomplete="off"
+                                >
+                                <span class="tw-block tw-w-16 tw-h-16 tw-relative tw-flex-shrink-0">
+                                {% if addon.singular != true %}
+                                    <span class="tw-invisible tw-flex tw-items-center tw-justify-center tw-h-6 tw-w-6 tw-absolute tw-bg-gray-800/75 tw--top-2.5 tw--right-2.5 tw-rounded-full">
+                                        <span class="tw-font-bold tw-text-white tw-text-sm addon__quantity">1</span>
+                                    </span>
+                                {% endif %}
+                                    <img class="tw-block tw-rounded-md tw-w-16 tw-h-16 tw-object-cover" src="{{ addon_product | img_url: '96x96' }}" alt="{{ addon_product.title | escape }}">
+                                </span>
+                                <span class="tw-block">
+                                    <span class="tw-block tw-text-gray-700 hover:tw-text-gray-900 tw-font-semibold">
+                                        {{ addon_product.title }}
+                                        {% if addon.display_price %}
+                                            - {{ addon_product.price | money }}
+                                        {% endif %}
+                                    </span>
+                                    <span class="tw-block tw-text-sm tw-text-gray-400">
+                                        {% if addon_product.description contains section.settings.addons_description_splitter %}
+                                            {% assign description_array = addon_product.description | split: section.settings.addons_description_splitter %}
+                                            {{ description_array | first }}
+                                        {% else %}
+                                            {{ addon_product.description }}
+                                        {% endif %}
+                                        {% if should_show_information_modal %}
+                                            <button style="display: inline-block; cursor: help;" onclick="showAddonModal('{{ addon_product.handle }}')" role="button">
+                                                {% include 'shineon-app-icons' with 'info', add_wrap: true %}
+                                            </button>
+                                        {% endif %}
+                                    </span>
+
+                                    {% if shop_cf_slug == "personalized-gift-kit" %}
+                                        {% for addon_cf_id in addon_cf_obj %}
+                                            {% assign shop_cf = shop.metafields.shineon[addon_cf_id.key].value | default: shop.metafields.shineon[addon_cf_id.key] %}
+                                            {% if shop_cf.slug == "personalized-gift-kit" %}
+                                                <div class="so-addon-input-wrap shineon-theme shineon-theme--primary so-hidden">
+                                                    <label class="tw-font-semibold tw-text-sm" for="{{ shop_cf.html_id }}">{{ shop_cf.label }}</label>
+                                                    <input type="text"
+                                                        name="properties[+ {{ addon_product.title }}({{ shop_cf.label }})]"
+                                                        id="{{ shop_cf.html_id }}"
+                                                        data-variant-id="{{ addon_product.selected_or_first_available_variant.id }}"
+                                                        data-label="{{ shop_cf.label }}"
+                                                        class="so-addon-input {{ shop_cf_slug }} focus:tw-ring-gray-500 tw-text-gray-700 tw-border tw-border-gray-400 tw-rounded so-px-3"
+                                                        placeholder="{{ shop_cf.placeholder }}"
+                                                        maxlength="{{ shop_cf.maxlength }}"
+                                                        minlength="{{ shop_cf.minlength }}"
+                                                        {% if shop_cf.required == 1 %}
+                                                        required
+                                                        {% endif %}
+                                                        autocomplete="off"/>
+                                                </div>
+                                            {% endif %}
+                                        {% endfor %}
+                                    {% endif %}
+                                </span>
+                            </label>
+                            {% include 'info-modal', product_handle: addon_product.handle %}
+                        {% endunless %}
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <div class="product-additions-subtotal" data-product-price="{{ product.selected_or_first_available_variant.price }}" style="display: none;">
+            <div>{{ 'addon_warranty_subtotal' | t }}:</div>
+            <div>
+                <strong class="price-with-additions">{{ product.selected_or_first_available_variant.price | money }}</strong>
+                <span class="product-price" style="display: none;">{{ product.selected_or_first_available_variant.price }}</span>
+            </div>
+        </div>
+
+        <script>
+            function showAddonModal(product_handle) {
+                var $modal = $('#modal-info-' + product_handle)
+                $modal.insertAfter($('div.page-container').length ? 'div.page-container' : 'body');
+                $modal.so_modal('show')
+            }
+
+            document.addEventListener('DOMContentLoaded', function () {
+                jQuery(document).ready(function() {
+                    var $ = jQuery
+                    var $form = $('form.so-product-form')
+
+                    var $quantity_change_selector = $('.so-quantity-change')
+                    var $quantity_selector = $('.so-cart-qty-input')
+
+                    setTimeout(function () {
+                        applyAddonQuantity()
+                    }, 1)
+
+                    $quantity_change_selector.on('click', function () {
+                        setTimeout(function () {
+                            applyAddonQuantity()
+                            syncProductPageAddons()
+                        }, 1)
+                    })
+
+                    $quantity_selector.change(function (e) {
+                        setTimeout(function () {
+                            applyAddonQuantity()
+                            syncProductPageAddons()
+                        }, 1)
+                    })
+
+                    function applyAddonQuantity() {
+                        var quantity = parseInt($quantity_selector.val())
+                        var $addon_quantity = $('.addon__quantity')
+                        var $addon_quantity_parent = $addon_quantity.parent()
+
+                        $addon_quantity.text(quantity)
+
+                        if (quantity > 1 && $addon_quantity_parent.hasClass('tw-invisible')) {
+                            $addon_quantity_parent.removeClass('tw-invisible')
+                        } else if (quantity <= 1) {
+                            $addon_quantity_parent.addClass('tw-invisible')
+                        }
+                    }
+
+                    function syncProductPageAddons() {
+                        $('.addon__selection').remove()
+                        if (typeof this.hasAttribute === "function") {
+                            if (this.hasAttribute('data-gift-kit')) {
+                                $('.so-addon-input-wrap').toggleClass('so-hidden');
+                            }
+                        }
+                        $('.so-product-page-addons input:checked').each(function (index, el) {
+                            var is_gift_kit = el.hasAttribute('data-gift-kit')
+                            var el_input = $(el).parent().find('.so-addon-input')
+                            var variant_id = $(el).data('variant-id')
+                            var is_checked = $(el).is(':checked')
+                            var singular = $(el).data('singular')
+
+                            var base_name = 'items' + '[' + variant_id + ']'
+                            var id_input_name = base_name + '[id]'
+                            var quantity_input_name = base_name + '[quantity]'
+                            var prop_parent_id_name = base_name + '[properties[_Addon | Assigned to]]'
+                            var prop_engraving_input_label = base_name + '[properties[' + el.getAttribute('data-addon-label') + ']]'
+
+                            if (is_checked) {
+                                var addon_selection_class = "addon__selection"
+                                if (is_gift_kit) {
+                                    var is_checked_gift_kit = true
+                                        addon_title = el.getAttribute('data-addon-title')
+                                        addon_variant_id = el.getAttribute('data-variant-id')
+                                    addon_selection_class += " addon-gift-kit"
+                                }
+                                var quantity = singular ? 1 : (parseInt($('.so-cart-qty-input').val()) || 1)
+
+                                var $base_input = $('<input class="' + addon_selection_class +'" type="hidden" />').data('variant-id', variant_id)
+
+                                var $id_input = $base_input.clone().attr('name', id_input_name).val(variant_id)
+                                var $quantity_input = $base_input.clone().attr('name', quantity_input_name).val(quantity)
+                                if (is_gift_kit) {
+                                    var $addon_title_for_hero = $base_input.clone().attr('name', 'properties[+ ' + addon_title + '(' + el.getAttribute('data-addon-label') + ')' + ']').val(el_input.val())
+                                    var $addon_id_for_hero = $base_input.clone().attr('name', 'properties[_Addon | Assigned with]').val(addon_variant_id)
+                                    var $hero_prod_id_for_addon = $base_input.clone().attr('name', prop_parent_id_name).val(el.getAttribute('data-parent-title'))
+                                    var $prop_engraving_input_label = $base_input.clone().attr('name', prop_engraving_input_label).val(el_input.val())
+                                }
+
+                                $form.append($id_input)
+                                $form.append($quantity_input)
+                                if (is_gift_kit) {
+                                    $form.append($hero_prod_id_for_addon)
+                                    $form.append($addon_title_for_hero)
+                                    $form.append($addon_id_for_hero)
+                                    $form.append($prop_engraving_input_label)
+                                }
+                            }
+                        })
+                    }
+
+                    setTimeout(function () {
+                        $('.so-product-page-addons input[type="checkbox"]').change(syncProductPageAddons)
+                    }, 1)
+
+                    $('.so-addon-input').off('change').on('change', function (e) {
+                        var input_name_attr = '[name="' + this.getAttribute('name') + '"]',
+                            addon_id = this.getAttribute('data-variant-id'),
+                            base_name = 'items' + '[' + addon_id + ']',
+                            addon_input_label = '[name="' + base_name + '[properties[' + this.getAttribute('data-label') + ']]"]';
+                        $(input_name_attr).val($(this).val());
+                        $(addon_input_label).val($(this).val());
+                    });
+                })
+            })
+        </script>
+    {% endif %}
+{% endif %}
+
+{% if type == 'cart_addon' %}
+    {% assign invalid_vendor_in_cart = false %}
+    {% assign addons = null | sort %}
+
+    {% for cart_item in cart.items %}
+        {% unless cart_item.vendor contains 'ShineOn' %}
+            {% assign invalid_vendor_in_cart = true %}
+        {% endunless %}
+
+        {% assign cart_item_addons = cart_item.product.metafields.shineon.addons.value | default: cart_item.product.metafields.shineon.addons %}
+        {% assign cart_item_addons = cart_item_addons.items | where: 'type', type | where: 'placement', placement %}
+
+        {% for addon in cart_item_addons %}
+            {% assign exists = addons | where: 'handle',  addon.handle %}
+            {% unless exists.first %}
+                {% assign _addon = addon | sort %}
+                {% assign addons = addons | concat: _addon %}
+            {% endunless %}
+        {% endfor %}
+    {% endfor %}
+
+    {% assign valid_addons = null | sort %}
+    {% for addon in addons %}
+        {% assign _product = all_products[addon.handle] | sort %}
+        {% assign valid_addons = valid_addons | concat: _product %}
+    {% endfor %}
+
+    {% assign addon_product_items = null | sort %}
+
+    {% if valid_addons.size > 0 and invalid_vendor_in_cart == false %}
+        <div class="tailwind shineon-theme shineon-theme--primary">
+            <ul class="so-cart-page-addons tw-divide-y tw-divide-gray-300">
+                {% for addon in addons %}
+                    {% assign addon_product = all_products[addon.handle] %}
+
+                    {% if addon_product != blank %}
+
+                        {% assign _addon_product = addon_product | sort %}
+                        {% assign addon_product_items = addon_product_items | concat: _addon_product %}
+
+                        {% assign addon_in_cart = false %}
+                        {% for item in cart.items %}
+                            {% if item.product.id == addon_product.id %}
+                                {% assign addon_in_cart = true %}
+                            {% endif %}
+                        {% endfor %}
+
+                        {% assign addon_cart_item = cart.items | where: 'product_id', addon_product.id %}
+                        {% assign addon_cart_item = addon_cart_item.first %}
+
+                        {% assign should_show_information_modal = false %}
+
+                        {% liquid
+                            assign information_modal_description = addon_product.metafields.shineon.modal_description.value
+
+                            if information_modal_description != blank
+                                assign should_show_information_modal = true
+                            endif
+                        %}
+
+                        <li class="so-cart-addon tw-flex tw-justify-between tw-py-3" data-variant-id="{{ addon_cart_item.variant_id | default: addon_product.variants.first.id }}">
+                            <div class="tw-flex">
+                                <img class="tw-block tw-flex-shrink-0 tw-rounded-md tw-w-12 tw-h-12 tw-object-cover" src="{{ addon_product | img_url: '96x96' }}" alt="{{ addon_product.title | escape }}">
+                                <div class="tw-ml-3 so-mr-3">
+                                    <label class="tw-text-sm tw-text-gray-700 tw-font-semibold {% if should_show_information_modal %}hover:tw-cursor-pointer hover:tw-text-gray-900{% endif %}" data-handle="{{ addon_product.handle }}">
+                                        {{ addon_product.title }}
+                                        {% if addon.display_price %}
+                                            - <span class="so-cart-addon__price" data-handle="{{ addon.handle }}">
+                                                {% assign price = addon_cart_item.price | default: addon_product.price %}
+                                                {{ price | money }}
+                                            </span>
+                                        {% endif %}
+                                    </label>
+
+                                    {% liquid
+                                        if should_show_information_modal
+                                            assign description_classes = 'hover:tw-underline hover:tw-cursor-pointer'
+                                        endif
+                                    %}
+
+                                    <p {% if should_show_information_modal %}onclick="showAddonModal('{{ addon_product.handle }}')"{% endif %} class="tw-text-xs tw-mt-1 !tw-text-gray-500 {{ description_classes }}">
+                                        {% assign addon_description = addon_product.description | strip_html | strip_newlines %}
+                                        {% assign addons_description_splitter = section.settings.addons_description_splitter | strip_html | escape %}
+                                        {% if addon_description contains addons_description_splitter %}
+                                            {% assign description_array = addon_description | split: addons_description_splitter %}
+                                            {{ description_array | first }}
+                                        {% else %}
+                                            {{  addon_product.description | strip_html }}
+                                        {% endif %}
+                                        {% if should_show_information_modal %}
+                                            {% include 'shineon-app-icons' with 'info', add_wrap: true %}
+                                        {% endif %}
+                                    </p>
+                                </div>
+                            </div>
+
+                            {% if addon_in_cart %}
+                                {% assign toggle_classes = 'tw-bg-[#84c793]' %}
+                                {% assign toggle_indicator_classes = 'tw-translate-x-5' %}
+                                {% assign toggle_indicator_disabled_classes = 'tw-opacity-0 tw-ease-out tw-duration-100' %}
+                                {% assign toggle_indicator_enabled_classes = 'tw-opacity-100 tw-ease-in tw-duration-200' %}
+                            {% endif %}
+
+                            <button type="button" class="so-cart-addon__toggle {{ toggle_classes | default: 'tw-bg-gray-200' }} tw-relative tw-inline-flex tw-flex-shrink-0 tw-h-6 tw-w-11 tw-border-2 tw-border-transparent tw-rounded-full tw-cursor-pointer tw-transition-colors tw-ease-in-out tw-duration-200 focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-offset-2 focus:tw-ring-[#84c793]"
+                                    role="switch"
+                                    aria-checked="{{ addon_in_cart }}"
+                                    data-addon-name="{{ addon.name }}"
+                                    data-cart-line-item-hidden="{{ addon.cart_line_item_hidden }}"
+                                    data-disposition="{{ addon.disposition }}"
+                                    data-handle="{{ addon.handle }}"
+                                    data-singular="{{ addon.singular }}"
+                                    data-sticky="{{ addon.sticky }}"
+                                    data-variant-id="{{ addon_cart_item.variant_id | default: addon_product.variants.first.id }}"
+                                    data-variants="{{ addon_product.variants | map: 'id' | json }}"
+                            >
+                                <span class="tw-sr-only">Toggle {{ addon_product.handle }} addon</span>
+                                <!-- Enabled: "translate-x-5", Not Enabled: "translate-x-0" -->
+                                <span class="so-cart-addon__toggle-indicator {{ toggle_indicator_classes | default: 'tw-translate-x-0' }} tw-pointer-events-none tw-relative tw-inline-block tw-h-5 tw-w-5 tw-rounded-full tw-bg-white tw-shadow tw-transform tw-ring-0 tw-transition tw-ease-in-out tw-duration-200">
+
+                                    <!-- Enabled: "opacity-0 ease-out duration-100", Not Enabled: "opacity-100 ease-in duration-200" -->
+                                    <span class="so-cart-addon__toggle-indicator--unchecked {{ toggle_indicator_disabled_classes | disabled: 'tw-opacity-100 tw-ease-in tw-duration-200' }} tw-absolute tw-inset-0 tw-h-full tw-w-full tw-flex tw-items-center tw-justify-center tw-transition-opacity" aria-hidden="true">
+                                      <svg class="tw-h-3 tw-w-3 tw-text-gray-400" fill="none" viewBox="0 0 12 12">
+                                        <path d="M4 8l2-2m0 0l2-2M6 6L4 4m2 2l2 2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                      </svg>
+                                    </span>
+                                    <!-- Enabled: "opacity-100 ease-in duration-200", Not Enabled: "opacity-0 ease-out duration-100" -->
+                                    <span class="so-cart-addon__toggle-indicator--checked {{ toggle_indicator_enabled_classes | default: 'tw-opacity-0 tw-ease-out tw-duration-100' }} tw-absolute tw-inset-0 tw-h-full tw-w-full tw-flex tw-items-center tw-justify-center tw-transition-opacity" aria-hidden="true">
+                                      <svg class="tw-h-3 tw-w-3 tw-text-[#84c793]" fill="currentColor" viewBox="0 0 12 12">
+                                        <path d="M3.707 5.293a1 1 0 00-1.414 1.414l1.414-1.414zM5 8l-.707.707a1 1 0 001.414 0L5 8zm4.707-3.293a1 1 0 00-1.414-1.414l1.414 1.414zm-7.414 2l2 2 1.414-1.414-2-2-1.414 1.414zm3.414 2l4-4-1.414-1.414-4 4 1.414 1.414z" />
+                                      </svg>
+                                    </span>
+                                </span>
+                            </button>
+                        </li>
+                        {% if should_show_information_modal %}
+                            {% render 'info-modal', product: addon_cart_item, product_handle: addon_product.handle, ignore_addons: true  %}
+                        {% endif %}
+                    {% endif %}
+                {% endfor %}
+            </ul>
+        </div>
+
+        <script>
+            function showAddonModal(product_handle) {
+                var $modal = $('#modal-info-' + product_handle)
+                $modal.insertAfter($('div.page-container').length ? 'div.page-container' : 'body');
+                $modal.so_modal('show')
+            }
+
+            document.addEventListener('DOMContentLoaded', function () {
+                jQuery(document).ready(function() {
+                    // [on, off]
+                    var toggle_classes = ['tw-bg-[#84c793]', 'tw-bg-gray-200']
+                    var toggle_indicator_classes = ['tw-translate-x-5', 'tw-translate-x-0']
+                    var toggle_indicator_icon = ['tw-opacity-100 tw-ease-in tw-duration-200', 'tw-opacity-0 tw-ease-out tw-duration-100']
+
+                    var ShineOnCartAddons = {
+                        cart: {{ cart | json }},
+                        addon_items: {{ addons | json }},
+                        addon_product_items: {{ addon_product_items | json }},
+                        available_addons: {},
+                        queued_addons: {},
+                        bindEvents: function () {
+                            var self = this
+
+                            $('.so-cart-addon__toggle, .so-cart-addon label').off('click').on('click', function () {
+                                var handle = $(this).data('handle')
+                                var cart_addon = self.available_addons[handle]
+
+                                var items = self.getSelectedAddonsInCartAndQueue()
+
+                                if (handle in self.queued_addons) {
+                                    delete self.queued_addons[handle]
+                                } else {
+                                    self.queued_addons[handle] = cart_addon
+                                }
+
+                                if (items.addons_in_cart.indexOf(handle) > -1) {
+                                    return $.ajax({
+                                        url: '/cart/change.js',
+                                        type: 'POST',
+                                        dataType: 'json',
+                                        data: {
+                                            id: self.cart.items.filter(function (item) {
+                                                return item.handle === handle
+                                            })[0].id,
+                                            quantity: 0
+                                        },
+                                    }).done(function () {
+                                        delete self.queued_addons[handle]
+                                        $('.so-cart-item[data-handle="' + handle + '"]').hide()
+                                        window.ShineOnCart.getCartUpdatedData()
+                                    })
+                                }
+
+                                self.sync()
+                            })
+
+                            window.addEventListener('shineon.events.cart_updated', function (e) {
+                                var previous_cart = self.cart
+                                self.cart = e.detail.cart
+
+                                if (previous_cart.total_price !== self.cart.total_price) {
+                                    self.sync()
+                                }
+                            })
+                        },
+                        sync: function () {
+                            var self = this
+                            // sync toggle states based on selected addons / addons in cart
+                            // sync dom prices for variant-based pricing
+
+                            var selected_addons = this.getSelectedAddonsInCartAndQueue()
+
+                            Object.keys(this.available_addons).forEach(function (cart_addon_handle) {
+                                var addon_item = this.available_addons[cart_addon_handle]
+                                var current_addon_state = selected_addons.all.indexOf(cart_addon_handle) > -1
+
+                                var $toggle_element = $('.so-cart-addon__toggle[data-handle="' + addon_item.handle + '"]')
+                                var $toggle_indicator = $toggle_element.find('.so-cart-addon__toggle-indicator')
+                                var $toggle_indicator_unchecked = $toggle_indicator.find('.so-cart-addon__toggle-indicator--unchecked')
+                                var $toggle_indicator_checked = $toggle_indicator.find('.so-cart-addon__toggle-indicator--checked')
+
+                                $toggle_element.toggleClass(toggle_classes[0], current_addon_state)
+                                $toggle_element.toggleClass(toggle_classes[1], !current_addon_state)
+
+                                $toggle_indicator.toggleClass(toggle_indicator_classes[0], current_addon_state)
+                                $toggle_indicator.toggleClass(toggle_indicator_classes[1], !current_addon_state)
+
+                                $toggle_indicator_checked.toggleClass(toggle_indicator_icon[0], current_addon_state)
+                                $toggle_indicator_checked.toggleClass(toggle_indicator_icon[1], !current_addon_state)
+
+                                $toggle_indicator_unchecked.toggleClass(toggle_indicator_icon[1], current_addon_state)
+                                $toggle_indicator_unchecked.toggleClass(toggle_indicator_icon[0], !current_addon_state)
+
+                                // calculate variant-based pricing and change dom price
+                                var variant = this.getAddonVariantBasedOnCartTotal(addon_item.product.variants)
+
+                                if (variant) {
+                                    var $price_el = $('.so-cart-addon__price[data-handle="' + addon_item.handle + '"]')
+                                    if(window.ShineOnCart)
+                                    {
+                                        $price_el.html(window.ShineOnCart.formatMoney(variant.price))
+                                    }
+                                }
+                            }, this)
+
+                            setTimeout(function () {
+                                window.ShineOnCart.updateCart()
+                            }, 50)
+                        },
+                        getAddonVariantBasedOnCartTotal: function (variants, lower_limit) {
+                            var cart_total = this.getCartTotal();
+                            {% if shop.currency != 'USD' %}
+                                cart_total *= Currency.rates[{{ shop.currency | json }}]
+                            {% endif %}
+                            var first_digit_total = parseInt((cart_total + '').charAt(0))
+                            if (cart_total > (lower_limit || 10000)) {
+                                if (cart_total >= 100000) {
+                                    return variants[variants.length - 1]
+                                }
+
+                                return first_digit_total > (variants.length - 1)
+                                    ? variants[variants.length - 1]
+                                    : variants[first_digit_total]
+                            }
+
+                            return variants[0]
+                        },
+                        getSelectedAddonsInCartAndQueue: function () {
+                            var self = this
+
+                            var addons_in_cart = this.cart.items
+                                .filter(function (product) { return product.handle in self.available_addons })
+                                .map(function (product) { return product.handle })
+                            var addons_in_queue = Object.keys(this.queued_addons)
+
+                            var combined = Array.prototype.concat(addons_in_queue, addons_in_cart)
+                            var all_addons = combined.filter(function (handle, index) { return combined.indexOf(handle) === index })
+
+                            return {
+                                addons_in_cart: addons_in_cart,
+                                addons_in_queue: addons_in_queue,
+                                all: all_addons,
+                            }
+                        },
+                        getCartTotal: function () {
+                            var ignored_handles = ['warranty', 'package-protection']
+
+                            var total_cart = 0
+
+                            var applicable_so_cart_items = this.cart.items.filter(function (item) {
+                                return ignored_handles.indexOf(item.handle) === -1
+                                    && item.vendor.indexOf('ShineOn') > -1
+                            }, this)
+
+                            applicable_so_cart_items.forEach(function (item) {
+                                var currency_rate = 1;
+                                if(Shopify.currency.active != 'USD') {
+                                    currency_rate = Shopify.currency.rate;
+                                }
+                                total_cart += (item.price * item.quantity / currency_rate)
+                            })
+                            return total_cart
+                        },
+                        getQueuedAddonsSubtotal: function () {
+                            var subtotal = 0
+
+                            for (var handle in this.queued_addons) {
+                                var addon = this.queued_addons[handle]
+                                var variant = this.getAddonVariantBasedOnCartTotal(addon.product.variants)
+
+                                if (variant) {
+                                    subtotal += variant.price
+                                }
+                            }
+
+                            return subtotal
+                        },
+                        getCartItemsByHandle: function (handle) {
+                            return this.cart.items.filter(function (item) { return item.handle === handle })
+                        },
+                        deferredSubmitAddonsToCart: function () {
+                            var self = this
+                            var deferred = $.Deferred()
+
+                            setTimeout(function () {
+                                try {
+                                    var updates = []
+                                    // if any addons are already in cart, just nuke them and re-calculate... easier this way
+                                    self.cart.items.forEach(function (item) {
+                                        var cart_addon = self.available_addons[item.handle]
+                                        var quantity = item.handle in self.available_addons ? 0 : item.quantity
+                                        if (cart_addon) {
+                                            self.queued_addons[cart_addon.handle] = cart_addon
+                                        }
+                                        updates.push(quantity)
+                                    })
+
+                                    if (updates.length) {
+                                        $.ajax({
+                                            url: '/cart/update.js',
+                                            type: 'POST',
+                                            data: {
+                                                updates: updates,
+                                            },
+                                            dataType: 'json',
+                                        }).done(function () {
+                                            self.addAddonsToCart().always(function () {
+                                                deferred.resolve()
+                                            })
+                                        })
+                                    } else {
+                                        self.addAddonsToCart().done(function () {
+                                            deferred.resolve()
+                                        })
+                                    }
+                                } catch (e) {
+                                    deferred.fail(e)
+                                }
+                            }, 1)
+
+                            return deferred.promise()
+                        },
+                        addAddonsToCart: function () {
+                            var self = this
+                            var deferred = $.Deferred()
+
+                            var data = []
+                            Object.keys(self.queued_addons).forEach(function (addon_item_handle) {
+                                var addon_item = this.queued_addons[addon_item_handle]
+                                var variant = this.getAddonVariantBasedOnCartTotal(addon_item.product.variants)
+
+                                data.push({
+                                    id: variant.id,
+                                    quantity: addon_item.quantity || 1,
+                                })
+                            }, self)
+
+                            if (data.length > 0) {
+                                $.ajax({
+                                    url: '/cart/add.js',
+                                    type: 'POST',
+                                    dataType: 'json',
+                                    data: { items: data },
+                                    success: deferred.resolve,
+                                    error: deferred.reject,
+                                })
+                            } else {
+                                deferred.resolve()
+                            }
+
+                            return deferred.promise()
+                        },
+                        init: function () {
+                            var self = this
+
+                            this.available_addons = this.addon_items.reduce(function (acc, addon) {
+                                var product = (self.addon_product_items || []).filter(function (product) {
+                                    return product.handle === addon.handle
+                                })[0]
+
+                                if (product) {
+                                    addon.product = product
+                                    addon.available_variants = addon.product.variants.map(function (variant) { return variant.id })
+                                    acc[addon.handle] = addon
+                                }
+
+                                return acc
+                            }, {})
+
+                            var selected_addons = this.getSelectedAddonsInCartAndQueue()
+
+                            for (var addon_handle in this.available_addons) {
+                                var addon = this.available_addons[addon_handle]
+
+                                if (addon.disposition && selected_addons.addons_in_cart.indexOf(addon.handle) === -1) {
+                                    this.queued_addons[addon_handle] = addon
+                                }
+                            }
+
+                            this.bindEvents();
+                            this.sync()
+                        },
+                    }
+
+                    setTimeout(function () {
+                        ShineOnCartAddons.init()
+                    }, 1)
+
+                    window.ShineOnCartAddons = ShineOnCartAddons
+                })
+            })
+        </script>
+    {% endif %}
+{% endif %}

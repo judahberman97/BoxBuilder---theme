@@ -1,0 +1,2317 @@
+<!-- ./snippets/product-info-shineon.liquid {% render 'shineon-version' %} -->
+{% capture fake_reviews %}
+  <div class="custom-reviews-inner">
+
+    {% if section.blocks.size > 0 %}
+
+      {% for review in section.blocks %}
+        <div class="custom-reviews-tile">
+          <div class="stars-rating">
+            {% for i in (1..review.settings.stars_quantity) %}
+            {% include 'shineon-app-icons' with 'star-rating' %}
+            {% endfor %}
+          </div>
+          <h4>{{ review.settings.author }}</h4>
+          <div>{{ review.settings.text }}</div>
+        </div>
+      {% endfor %}
+
+    {% else %}
+      {% for locale in input.locales %}
+        {% if shop.locale contains locale[0] %}
+          {% assign input_label = locale[1].label %}
+          {% assign input_placeholder = locale[1].placeholder %}
+        {% endif %}
+      {% endfor %}
+      {% assign lang_fake_reviews_1 = 'product_shineon_fake_reviews_part_1_html' | t %}
+      {% assign lang_fake_reviews_2 = 'product_shineon_fake_reviews_part_2_html' | t %}
+      {% assign lang_fake_reviews_3 = 'product_shineon_fake_reviews_part_3_html' | t %}
+      {% assign lang_fake_reviews = lang_fake_reviews_1 | append: lang_fake_reviews_2 | append: lang_fake_reviews_3 %}
+      {% assign lang_fake_reviews = lang_fake_reviews | split: '&' %}
+      {% for review in lang_fake_reviews %}
+        {% assign review_item = review | split: '@' %}
+        <div class="custom-reviews-tile">
+          <div class="stars-rating">
+            {% for i in (1..review_item[0]) %}
+            {% include 'shineon-app-icons' with 'star-rating' %}
+            {% endfor %}
+          </div>
+          <h4>{{ review_item[1] }}</h4>
+          <div>{{ review_item[2] }}</div>
+        </div>
+        {% if forloop.index == 4 %}
+          {% unless template contains 'cart' %}
+            <div class="custom-review-toggle"> 
+              <span class="custom-read-more">        
+              <svg width="35" height="35" viewBox="0 0 35 35" fill="none" xmlns="http://www.w3.org/2000/svg">         
+                <circle cx="17.5" cy="17.5" r="16.5" stroke="#1A2A47" stroke-width="2"></circle>          
+                <path d="M17.712 17.008H23.112V18.448H17.712V23.848H16.272V18.448H10.872V17.008H16.272V11.608H17.712V17.008Z" fill="black"></path>        
+              </svg>        
+              <i>{{ 'product_shineon_fake_reviews_read_more' | t }}</i>
+              </span> 
+              <span class="custom-read-less">       
+                <svg width="35" height="35" viewBox="0 0 35 35" fill="none" xmlns="http://www.w3.org/2000/svg">         
+                <circle cx="17.5" cy="17.5" r="16.5" stroke="#1A2A47" stroke-width="2"></circle>          
+                <path d="M17.712 17.008H23.112V18.448H17.712V23.848H16.272V18.448H10.872V17.008H16.272V11.608H17.712V17.008Z" fill="black"></path>        
+                </svg>        
+              <i>{{ 'product_shineon_fake_reviews_read_less' | t }}</i>      
+              </span> 
+            </div>
+          {% endunless %}
+        {% endif %}
+      {% endfor %}
+    {% endif %}
+  </div>
+{% endcapture %}
+{% case product-info-shineon %}
+
+  {% when 'reviews-counter' %}
+
+    {% assign reviews_type = false %}
+
+    {% assign loox_reviews_counter = 0 %}
+    {% assign lx_tag = product.tags | where : 'lx-' | join: ',' %}
+    {% assign loox_average = 5 %}
+
+    {% assign reviews_title = 'customizer_reviews_title' | t %}
+    {% assign show_review_title = false %}
+
+    {% comment %}
+    Mobile limit for Loox reviews
+    {% endcomment %}
+    {% assign mobile_reviews_qty = 2 %}
+    {% if section.settings.mobile_reviews_qty != null and section.settings.mobile_reviews_qty != '' %}
+      {% assign mobile_reviews_qty = section.settings.mobile_reviews_qty %}
+    {% endif %}
+
+    {% comment %}
+    Reviews type check
+    {% endcomment %}
+    {% assign reviews_see_below_anchor = '#custom-reviews-anchor' %}
+    {% if section.settings.so_reviews_on_product_page == 'so-reviews-show' and lx_tag != blank and lx_tag %}
+      {% assign show_review_title = true %}
+      {% assign reviews_type = ' loox_reviews_shineon' %}
+    {% elsif product.metafields.loox.num_reviews != null %}
+      {% assign reviews_see_below_anchor = '#looxReviews' %}
+      {% assign reviews_type = ' loox_reviews_original' %}
+      {% assign loox_average = product.metafields.loox['avg_rating'] | plus: 0 | round %}
+      {% assign loox_num = product.metafields.loox['num_reviews'] | plus: 0 | round %}
+      {% if loox_num %}
+        {% assign show_review_title = true %}
+      {% endif %}
+    {% endif %}
+
+    {% if shop.metafields.shineon.is_shineon_brand == true and shop.metafields.shineon.is_shineon_brand != blank %}
+      {% assign loox_tags_stats = shop.metafields.loox["tags_stats"].value | default: shop.metafields.loox["tags_stats"] %}
+      {% assign loox_tag = product.tags | where : 'lx-' | join: ',' %}
+      {% assign loox_num = loox_tags_stats[loox_tag]['num'] %}
+      {% if section.settings.show_loox_stars or product.metafields.shineon.uploadable == 1 %}
+        {% assign loox_average = 5 %}
+      {% else %}
+        {% assign loox_average = loox_tags_stats[loox_tag]['avg'] | plus: 0 | round %}
+      {% endif %}
+    {% endif %}
+
+    {% if product.metafields.shineon.uploadable == 1 %}
+      {% unless loox_num %}
+        {% assign loox_tag = product.tags | where : 'lx-' | first %}
+        {% assign loox_num = loox_tags_stats[loox_tag]['num'] %}
+      {% endunless %}
+    {% endif %}
+
+    {% unless section.settings.so_reviews_on_product_page == 'so-reviews-hide' and product.metafields.loox.num_reviews == null %}
+      <div class="shop-rating hide">
+        <a href="{{ reviews_see_below_anchor }}">
+          {% if shop.metafields.loox["global_stats"] and product.metafields.loox.num_reviews != null %}
+            {% for loox_star in (1..loox_average) %}
+            <i class="loox-icon loox-star"></i>
+            {% endfor %}
+          {% else %}
+            {% for loox_star in (1..loox_average) %}
+            {% include 'shineon-app-icons' with 'star-rating' %}
+            {% endfor %}
+          {% endif %}
+          {% unless shop.metafields.shineon.is_shineon_brand == true and shop.metafields.shineon.is_shineon_brand %}
+            {% if reviews_type == ' loox_reviews_shineon' %}
+            <script type="text/javascript">
+              document.addEventListener("DOMContentLoaded", function(event) {
+                jQuery( document ).ready(function($) {
+                  $.ajax("https://shineon.com/pages/reviews-loox-all", {
+                    success: function(response) {
+                      var loox_tag = "{{ product.tags | where : 'lx-' | join: ',' }}";
+                      var loox_product_tags_lx = JSON.parse(response.split('@@@loox_tags_stats_start')[1].split('@@@loox_tags_stats_end')[0]);
+                      {% if shop.metafields.loox["global_stats"] %}
+                      var product_loox_num_reviews = {{ product.metafields.loox.num_reviews | json }};
+                      {% endif %}
+                      $('.custom-reviews-wrp h3').addClass('hide');
+                      if (loox_tag && loox_product_tags_lx[loox_tag])
+                      {
+                        $('.shop-rating-count_for_app_inner').text(loox_product_tags_lx[loox_tag].num);
+                        $('.shop-rating-count_for_app').removeClass('hide');
+                        $('.shop-rating').removeClass('hide');
+                        $('.custom-reviews-wrp h3').removeClass('hide');
+                        setTimeout(function ()
+                        {
+                          var checkExist = setInterval(function() {
+                            if ($('#looxReviewsFrame').length) {
+                              var isLooxTags = $('#looxReviewsFrame').attr('src').split('&tags=')[1],
+                                  looxReviewsFrameSrc = $('#looxReviewsFrame').attr('src'),
+                                  looxReviewsFrameKey = looxReviewsFrameSrc.split('/reviews')[0].split('widget/')[1],
+                                  looxReviewsFrameShineonKey = 'Vkb_kCtm5u';
+                              looxReviewsFrameSrc = looxReviewsFrameSrc.replace(looxReviewsFrameKey, looxReviewsFrameShineonKey) + '&tags=' + $('#looxReviews').data('so-default-tags')
+                              $('#looxReviewsFrame')[0].contentWindow.location.replace(looxReviewsFrameSrc);
+                              clearInterval(checkExist);
+                            }
+                          }, 100);
+                        }, 3500);
+                      }
+                      else if(loox_tag) {
+                        $('.fake_reviews_if_no_reviews').removeClass('hide');
+                        {% if shop.metafields.loox["global_stats"] %}
+                          if (product_loox_num_reviews) {
+                            $('.shop-rating').removeClass('hide');
+                            $('.custom-reviews-wrp h3').removeClass('hide');
+                            $('.shop-rating-count_for_app').removeClass('hide');
+                          }
+                        {% else %}
+                          $('#looxReviews').addClass('hide');
+                        {% endif %}
+                      }
+                    }
+                  });
+                });
+              });
+            </script>
+            {% if product.metafields.loox.num_reviews %}
+            {% assign loox_num_reviews = product.metafields.loox.num_reviews | plus: 0 %}
+            {% assign loox_num = loox_num_reviews %}
+            {% endif %}
+            <span class="shop-rating-count_for_app hide">(<span class="shop-rating-count_for_app_inner" style="padding-left:0">{{ loox_num }}</span>)</span>
+            {% elsif loox_num and reviews_type == ' loox_reviews_original' %}
+              <span class="shop-rating-count">({{ loox_num }})</span>
+            {% endif %}
+          {% else %}
+            {% if loox_num %}
+            <span class="shop-rating-count">({{ loox_num }})</span>
+            {% endif %}
+          {% endunless %}
+          <span class="shop-rating-text" style="padding-left:5px">{{ 'customizer_reviews_see_below' | t }}</span>
+        </a>
+      </div>
+      <script type="text/javascript">
+        document.addEventListener("DOMContentLoaded", function(event) {
+          jQuery( document ).ready(function($) {
+            // Select all links with hashes except(.not) links that don't actually link to anything
+            //$('a[href="#looxReviews"]').not('[href="#"]').not('[href="#0"]').click(function(event)
+            $('a[href="{{ reviews_see_below_anchor }}"]').click(function(event)
+            {
+              // On-page links
+              if (
+                location.pathname.replace(/^\//, '') == this.pathname.replace(/^\//, '')
+                &&
+                location.hostname == this.hostname
+              ) {
+                // Figure out element to scroll to
+                var target = $(this.hash);
+                target = target.length ? target : $('[name=' + this.hash.slice(1) + ']');
+                // Does a scroll target exist?
+                if (target.length) {
+                  // Only prevent default if animation is actually gonna happen
+                  event.preventDefault();
+                  $('html, body').animate({
+                    scrollTop: target.offset().top
+                  }, 1000, function() {
+                    // Callback after animation
+                    // Must change focus!
+                    var $target = $(target);
+                    $target.focus();
+                    if ($target.is(":focus")) { // Checking if the target was focused
+                      return false;
+                    } else {
+                      $target.attr('tabindex','-1'); // Adding tabindex for elements not focusable
+                      $target.focus(); // Set focus again
+                    };
+                  });
+                }
+              }
+            });
+          });
+        });
+      </script>
+    {% endunless %}
+  {% when 'gift-bag-kit' %}
+    {% assign gift_bag_item_handle = section.settings.gift_bag_kit_handle %}
+    {% assign addons = product.metafields.shineon.addons.value | default: product.metafields.shineon.addons %}
+    {% assign addon_items = addons.items %}
+
+    {% assign addons = addon_items | where: 'type', type | where: 'placement', placement | sort: 'order' %}
+
+    {% assign valid_addons = null | sort %}
+    {% assign gift_bag_kit_available = false %}
+    {% for addon in addons %}
+        {% assign _product = all_products[addon.handle] | sort %}
+        {% assign valid_addons = valid_addons | concat: _product %}
+        {% if addon.handle == section.settings.gift_bag_kit_handle or addon.name == 'Gift Wrap Kit' or addon.handle == 'do-it-yourself-gift-wrap' %}
+          {% assign gift_bag_kit_available = true %}
+          {% assign gift_bag_item_handle = addon.handle %}
+        {% endif %}
+    {% endfor %}
+
+    {% if valid_addons.size > 0 and gift_bag_kit_available == true %}
+      {% assign gift_bag_kit_price = all_products[gift_bag_item_handle].price | money %}
+      <style type="text/css">
+        .custom-add-bag-wrap {
+          width: 100%;
+          display: block;
+          margin-top: 20px;
+          cursor: pointer;
+        }
+
+        .custom-add-bag-wrap label {
+          display: flex;
+          flex-wrap: wrap;
+          align-items: center;
+          font-size: inherit;
+        }
+
+        .custom-add-bag-wrap input.add-bag-kit-checkbox {
+          width: 21px;
+          height: 20px;
+          border-radius: 2px;
+          -webkit-appearance: none;
+          -moz-appearance: none;
+          appearance: none;
+          padding: 0;
+          -webkit-print-color-adjust: exact;
+          color-adjust: exact;
+          display: inline-block;
+          vertical-align: middle;
+          background-origin: border-box;
+          -webkit-user-select: none;
+          -moz-user-select: none;
+          -ms-user-select: none;
+          user-select: none;
+          flex-shrink: 0;
+          color: #2563eb;
+          background-color: #fff;
+          border-style: solid;
+          border-color: #6b7280;
+          border-width: 1px;
+          --tw-shadow: 0 0 #0000;
+          outline: none !important;
+          box-shadow: none;
+        }
+
+        .custom-add-bag-wrap input.add-bag-kit-checkbox:checked {
+          background-color: rgb(55, 65, 81);
+        }
+
+        .custom-add-bag-wrap  span.cm-text {
+          margin-left: 10px;
+          font-family: 'Nunito Sans';
+          font-style: normal;
+          font-weight: normal;
+          font-size: 14px;
+          line-height: 22px;
+          color: #000000;
+        }
+        .tailwind [for="{{ gift_bag_item_handle }}__addon"] {
+          display: none;
+        }
+      </style>
+      <div class="custom-add-bag-wrap so-product-page-addons">
+        <label>
+          <input type="checkbox" class="form-checkbox add-bag-kit-checkbox" data-variant-id="{{ all_products[gift_bag_item_handle].variants.first.id }}" autocomplete="off">
+          <span class="cm-text">{{ 'gift_bag_kit_html' | t }} <strong>{{ gift_bag_kit_price }}</strong>
+          </span>
+        </label>
+      </div>
+      <script defer>
+        document.addEventListener("DOMContentLoaded", function(){
+          $(document).on('change', '.add-bag-kit-checkbox', function() {
+            if($(this).is(":checked")) {
+              $('.tailwind [for="{{ gift_bag_item_handle }}__addon"] input#{{ gift_bag_item_handle }}__addon').click();
+            }
+            else if($(this).not(":checked")) {
+              $('.tailwind [for="{{ gift_bag_item_handle }}__addon"] input#{{ gift_bag_item_handle }}__addon').click();
+            }
+          });
+        });
+      </script>
+    {% endif %}
+  {% when 'review-sub-text' %}
+    <div class="review-sub-text">
+      <p>{{ 'review_sub_text' | t }}</p>
+    </div> 
+
+  {% when 'reviews' %}
+
+    {% if template contains 'cart' %}
+      {% for item in cart.items %}
+        {% assign loox_reviews_counter = loox_reviews_counter | plus: item.product.metafields.loox.num_reviews %}
+      {% endfor %}
+
+      {% assign reviews_see_below_anchor = '#custom-reviews-anchor' %}
+      {% if section.settings.reviews_on_cart_page == 'so-loox' and product.metafields.loox.num_reviews != null %}
+        {% assign reviews_see_below_anchor = '#looxReviews' %}
+        {% assign reviews_type = ' loox_reviews_original' %}
+        {% assign loox_average = product.metafields.loox['avg_rating'] | plus: 0 | round %}
+        {% assign loox_num = product.metafields.loox['num_reviews'] | plus: 0 | round %}
+        {% if loox_num %}
+          {% assign show_review_title = true %}
+        {% endif %}
+      {% elsif section.settings.reviews_on_cart_page == 'so-default' %}
+        {% assign show_review_title = true %}
+        {% assign reviews_type = ' fake_reviews' %}
+      {% endif %}
+    {% else %}
+      {% assign loox_reviews_counter = loox_reviews_counter | plus: product.metafields.loox.num_reviews %}
+    {% endif %}
+
+    <div class="custom-reviews-wrp {% if reviews_type %}{{ reviews_type }}{% endif %}{% if loox_reviews_counter > 0 %} loox-reviews{% endif %}" id="custom-reviews-anchor">
+      {% if section.settings.so_reviews_on_product_page == 'so-reviews-hide' %}
+        {% if section.settings.show_about_us_review_list == true %}
+          {% if section.settings.trust_section_type == 'badges' and badge_counter > 0 %}
+
+          <div class="badges">
+            <section class="section-badges">
+              <div class="section-header">
+                <h3 class="header text-center">{{ 'customizer_badges_title' | t | replace: '[reason_counter]', badge_counter }}</h3>
+              </div>
+
+              <div class="content">
+                {% include 'badges-shineon' with 'callout-shop-badges' %}
+              </div>
+            </section>
+          </div>
+
+          {% else %}
+
+            {% include 'badges-shineon' with 'trust-single-image' %}
+
+          {% endif %}
+
+          {{ section.settings.snippet_below_trust_section }}
+        {% endif %}
+      {% else %}
+        {% if sections.settings.reviews_title != '' and sections.settings.reviews_title != null %}
+          {% if show_review_title == true %}
+          <h3 class="hide">{{ reviews_title }}</h3>
+          {% endif %}
+        {% else %}
+          {% assign review_about = 'customizer_reviews_title_us' | t %}
+        {% endif %}
+
+        {% if shop.metafields.shineon.is_shineon_brand == true and shop.metafields.shineon.is_shineon_brand != blank %}
+          {% assign review_about = company_name %}
+        {% endif %}
+        {% if show_review_title == true %}
+          {{ 'customizer_reviews_title_html' | t | replace: '[review_about]', review_about }}
+        {% endif %}
+
+        {% if shop.metafields.shineon.is_shineon_brand == true and shop.metafields.shineon.is_shineon_brand != blank %}
+          <div id="looxReviews" data-product-id="{{product.id}}" data-tags="{{ lx_tag }}" data-limit-mobile="{{ mobile_reviews_qty }}"></div>
+        {% else %}
+          {% case reviews_type %}
+            {% when ' loox_reviews_shineon' %}
+              {% unless shop.metafields.loox["global_stats"] %}
+              <script async src="https://loox.io/widget/Vkb_kCtm5u/loox.1600965334703.js"></script>
+              {% endunless %}
+              <div id="looxReviews" data-so-default-tags="{{ lx_tag }}" class="loox-reviews-default" data-product-id="{{product.id}}" data-limit-mobile="{{ mobile_reviews_qty }}">{{ product.metafields.loox.reviews }}</div>
+            {% when ' loox_reviews_original' %}
+              <div id="looxReviews" data-product-id="{{product.id}}" class="loox-reviews-default" data-limit-mobile="{{ mobile_reviews_qty }}">{{ product.metafields.loox.reviews }}</div>
+          {% endcase %}
+        {% endif %}
+      {% endif %}
+      {% if template contains 'product' or section.settings.reviews_on_cart_page == 'so-loox' %}
+        {% if shop.metafields.loox["global_stats"] %}
+          <div id="looxReviews" data-product-id="{{product.id}}" class="loox-reviews-default" data-limit-mobile="{{ mobile_reviews_qty }}">{{ product.metafields.loox.reviews }}</div>
+        {% endif %}
+      {% endif %}
+    </div>
+
+  {% when 'description' %}
+
+    <div class="so-product-description-wrap">
+
+      {% if show_tabs_if_right_side == false %}
+        <div class="so-hidden-sm">
+          {{ copy_delivery_details }}
+        </div>
+      {% endif %}
+
+      {% include 'product-info-shineon' with 'description-delivery-tabs' %}
+
+    </div>
+
+    {{ section.settings.snippet_below_delivery }}
+  {% when 'description-delivery-accordion' %}
+    <div class="so-pdp-accordion" id="so-pdp-description">
+      <div class="accordionHeader open">
+        <div class="accordionTitle">Description</div>
+        <img class="dropdownIcon open" src="https://cdn-3.convertexperiments.com/uf/1002628/10025149/1629121173image+25.png">
+      </div>
+      <div class="accordionContent" style="display: block">
+        <div itemprop="description">
+          {% assign show_bu_sup_description = false %}
+          {% if product.metafields.shineon.uploadable == 1 and section.settings.show_about_us_review_list == true %}
+            <div class="so-bu-supplemental-content">
+                {{ 'customizer_content_below_upload_step_html' | t }}
+            </div>
+            {% assign show_bu_sup_description = true %}
+          {% endif %}
+          <div{% if show_bu_sup_description == true %} class="product-content-from-admin"{% endif %} itemprop="description">{{ product.content }}</div>
+        </div>
+      </div>
+    </div>
+    {% if cro_design_product != false %}
+      <div class="so-pdp-accordion" id="so-pdp-specification">
+        <div class="accordionHeader">
+            <div class="accordionTitle">Specifications</div>
+            <img class="dropdownIcon" src="https://cdn-3.convertexperiments.com/uf/1002628/10025149/1629121173image+25.png">
+        </div>
+        <div class="accordionContent">          
+          {% assign product_specs_photo = 'https://cdn.shopify.com/s/files/1/0077/2420/4096/files/product-specs-photo-' | append: cro_design_product | append: '.png' %}
+          <img style="max-width: 100%;" src="{{ product_specs_photo }}" alt="Specification for {{ cro_design_product }}">
+        </div>
+      </div>
+    {% endif %}
+    <div class="so-pdp-accordion" id="so-pdp-shippingDetails">
+      <div class="accordionHeader">
+          <div class="accordionTitle">Shipping Details</div>
+          <img class="dropdownIcon" src="https://cdn-3.convertexperiments.com/uf/1002628/10025149/1629121173image+25.png">
+      </div>
+      <div class="accordionContent">
+        {{ copy_delivery_details }}
+
+        {% if section.settings.show_badges_as_section != false and section.settings.show_about_us_review_list != false %}
+          <div>
+              <p style="text-align: center; color: #FF5F01; font-weight: bold;">
+
+            {% if section.settings.trust_section_type == 'badges' and badge_counter > 0 %}
+
+            <div class="badges">
+              <section class="section-badges">
+                <div class="section-header">
+                  <h3 class="header text-center">{{ 'customizer_badges_title' | t | replace: '[reason_counter]', badge_counter }}</h3>
+                </div>
+
+                <div class="content">
+                  {% include 'badges-shineon' with 'callout-shop-badges' %}
+                </div>
+              </section>
+            </div>
+
+            {% else %}
+
+              {% include 'badges-shineon' with 'trust-single-image' %}
+
+            {% endif %}
+
+            {{ section.settings.snippet_below_trust_section }}
+
+              </p>
+          </div>
+        {% endif %}
+    </div>
+    <script defer>
+      document.addEventListener('DOMContentLoaded', function(){
+        $('.accordionHeader').click(function() {
+          $(this).toggleClass('active');
+            $(this).parent().children().eq(1).toggle();
+            $(this).children().eq(1).toggleClass('open');
+        });
+      });
+    </script>
+  {% when 'description-delivery-tabs' %}
+
+    <div class="so-tabs-wrapper{% if hide_tabs_if_left_side_or_hidden %} so-visible-sm{% endif %}{% if show_tabs_if_right_side == true %} so-tabs-right-side{% endif %}">
+      <ul class="so-tabs so-tabs-product"{% if shop.metafields.shineon.is_shineon_brand == true and shop.metafields.shineon.is_shineon_brand != blank %} id="announcement-shipping-anchor"{% endif %}>
+        <li{% if section.settings.show_about_us_review_list == true %} class="so-active"{% endif %}{% unless section.settings.content_disposition == 'right_side_collapsed' %} class="so-active"{% endunless %}>
+          <a href="#" data-panel="product-tab-{{ product.id }}-1">{% include 'shineon-app-icons' with 'info' %}{{ 'purchase_form_description_tab_title' | t }}<span class="so-toggle"></span></a>
+        </li><li{% if section.settings.content_disposition == 'right_side_collapsed' and section.settings.show_about_us_review_list != true %} class="so-active"{% endif %}>
+            <a href="#" data-panel="product-tab-{{ product.id }}-2">{% include 'shineon-app-icons' with 'delivery' %}{{ 'purchase_form_delivery_tab_title' | t }}<span class="so-toggle"></span></a>
+        </li>
+        </li>
+        {% if section.settings.show_badges_as_section != false and section.settings.show_about_us_review_list != false and section.settings.so_reviews_on_product_page != 'so-reviews-hide' %}
+        <li>
+            <a href="#" data-panel="product-tab-{{ product.id }}-3">{% include 'shineon-app-icons' with 'guarantees' %}{{ 'purchase_form_guarantee_tab_title' | t }}<span class="so-toggle"></span></a>
+        </li>
+        {% endif %}
+      </ul>
+      <ul class="so-tabs-content so-tabs-content-product">
+        <li id="product-tab-{{ product.id }}-1"{% if section.settings.content_disposition == 'right_side_collapsed' and section.settings.show_about_us_review_list != true %} class="so-hidden"{% endif %}>
+            {% assign show_bu_sup_description = false %}
+            {% if product.metafields.shineon.uploadable == 1 and section.settings.show_about_us_review_list == true %}
+              <div class="so-bu-supplemental-content">
+                  {{ 'customizer_content_below_upload_step_html' | t }}
+              </div>
+              {% assign show_bu_sup_description = true %}
+            {% endif %}
+
+            <div{% if show_bu_sup_description == true %} class="product-content-from-admin"{% endif %} itemprop="description">{{ product.content }}</div>
+        </li>
+        <li id="product-tab-{{ product.id }}-2" class="{% if section.settings.content_disposition == 'right_side_collapsed' and section.settings.show_about_us_review_list != true %} so-active{% else %} so-hidden{% endif %}">
+
+          {{ copy_delivery_details }}
+
+        </li>
+        {% if section.settings.show_badges_as_section != false and section.settings.show_about_us_review_list != false and section.settings.so_reviews_on_product_page != 'none' %}
+        <li id="product-tab-{{ product.id }}-3" style="display:none;">
+          {% if section.settings.trust_section_type == 'badges' and badge_counter > 0 %}
+
+          <div class="badges">
+            <section class="section-badges">
+              <div class="section-header">
+                <h3 class="header text-center">{{ 'customizer_badges_title' | t | replace: '[reason_counter]', badge_counter }}</h3>
+              </div>
+
+              <div class="content">
+                {% include 'badges-shineon' with 'callout-shop-badges' %}
+              </div>
+            </section>
+          </div>
+
+          {% else %}
+
+            {% include 'badges-shineon' with 'trust-single-image' %}
+
+          {% endif %}
+
+          {{ section.settings.snippet_below_trust_section }}
+        </li>
+        {% endif %}
+      </ul>
+    </div>
+
+  {% when 'description-delivery-combined' %}
+
+    <div class="so-tabs-wrapper{% if hide_tabs_if_left_side_or_hidden %} so-visible-sm{% endif %}{% if show_tabs_if_right_side == true %} so-tabs-right-side{% endif %}">
+
+      {% assign show_bu_sup_description = false %}
+      {% if product.metafields.shineon.uploadable == 1 and section.settings.show_about_us_review_list == true %}
+        <div class="so-bu-supplemental-content">
+            {{ 'customizer_content_below_upload_step_html' | t }}
+        </div>
+        {% assign show_bu_sup_description = true %}
+      {% endif %}
+
+      {% if cro_design_product != false %}
+      <div class="collapsed-text-w collapsed-text-active">
+        <a href="#" class="toggler-collapsed">{{ 'collapsed_toggler_description' | t }}</a>
+        <div class="collapsed-text">
+      {% endif %}
+
+      <div{% if show_bu_sup_description == true %} class="product-content-from-admin"{% endif %} itemprop="description">{{ product.content }}</div>
+      
+      {% if cro_design_product != false %}
+        </div>
+      </div>
+      {% endif %}
+
+      {% if cro_design_product != false %}
+      <div style="margin-top: 20px;">
+        <div class="collapsed-text-w">
+          <a href="#" class="toggler-collapsed">{{ 'collapsed_toggler_specifications' | t }}</a>
+          <div class="collapsed-text">
+            {% include 'product-info-shineon' with 'product-specification-photo' %}
+          </div>
+        </div>
+      </div>
+      {% endif %}
+
+      <div style="margin-top: 20px;">
+        {% if cro_design_product != false %}
+        <div class="collapsed-text-w">
+          <a href="#" class="toggler-collapsed">{{ 'collapsed_toggler_shipping' | t }}</a>
+          <div class="collapsed-text">
+        {% endif %}
+
+        {{ copy_delivery_details }}
+
+        {% if cro_design_product != false %}
+          </div>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+
+  {% when 'price' %}
+
+    <div class="so-product-pricing" style="font-size: {{ section.settings.variant_price_size }}px;" itemprop="offers" itemtype="https://schema.org/Offer" itemscope>
+      <meta itemprop="price" content="{{ so_current_variant.price | money_without_currency }}">
+      <meta itemprop="priceCurrency" content="{{ cart.currency.iso_code }}">
+      <meta itemprop="availability" content="https://schema.org/InStock" />
+      <meta itemprop="url" content="{{ shop_domain }}{{ product.url }}" />
+      <meta itemprop="itemCondition" content="https://schema.org/NewCondition" />
+      <meta itemprop="priceValidUntil" content="{{ 'now' | date: '%Y-%m-%d' }}" />
+      <p class="so-price-container unstyled">
+        {% if section.settings.variant_price_show_compare_at and saved_value > 0 and allow_show != true %}
+          <span class="so-compare-at-label-wrap">
+            <span class="so-compare-at-label">{{ so_current_variant.compare_at_price | money }}</span>
+          </span>
+        {% endif %}
+        <span class="so-price-label money">{{ product.selected_or_first_available_variant.price | money }}</span>
+      </p>
+    </div><!-- END so-product-pricing -->
+
+  {% when 'in-stock-blob' %}
+    {% if product.available %}
+      <div class="blob-container">
+        <div class="blob green"></div>
+        <div class="content">{{ 'purchase_form_in_stock' | t }}</div>
+      </div>
+    {% endif %}
+  {% when 'shop-pay-product-divided-price' %}
+    {% when 'shop-pay-product-divided-price' %}
+    {% if is_warranty_added %}
+      {% assign shoppay_price = product.selected_or_first_available_variant.price | plus: warranty_prod.price | divided_by: 4 | money %}
+    {% else %}
+      {% assign shoppay_price = product.selected_or_first_available_variant.price | divided_by: 4 | money %}
+    {% endif %}
+  {% when 'shop-pay-cart-divided-price' %}
+    {% assign shoppay_price = cart.total_price | divided_by: 4 | money %}
+  {% when 'shop-pay-block' %}
+    <div class="so-shoppay">
+      <p class="so-shoppay-text">
+        {{ 'products.product.shoppay_block_text' | t }} <span class="money">{{ shoppay_price }}</span> {{ 'products.product.shoppay_block_text_with' | t }}
+        <img class="so-shoppay-img" src="https://cdn-3.convertexperiments.com/uf/1002628/10025084/1634046780image+3+%287%29.png">
+        <button class="so-learn-btn">{{ 'products.product.shoppay_block_learn_more' | t }}</button>
+      </p> 
+    </div>
+  {% when 'shop-pay-popup' %}
+    <div class="so-popup-back hidden">
+        <div class="so-popup-container">
+            <button class="close-btn"><img src="https://cdn-3.convertexperiments.com/uf/1002628/10025084/1634108409image+8.png"></img></button>
+            <h2 class="popup-header">{{ 'products.product.shoppay_popup_title' | t }}</h2>
+            <p class="popup-desc" >{{ 'products.product.shoppay_popup_desc' | t }} <span class="popup-price">{{ shoppay_price }}*</span> </p>
+            <div class="so-popup-list">
+                <div class="popup-list-item">
+                    <img src="https://cdn-3.convertexperiments.com/uf/1002628/10025084/1634104755image+4+%283%29.png"></img>
+                    <div class="popup-list-text">
+                        <h4>{{ 'products.product.shoppay_popup_list_1_title' | t }}</h4>
+                        <p>{{ 'products.product.shoppay_popup_list_1_text' | t }}</p>
+                    </div>
+                </div>
+                <div class="popup-list-item">
+                    <img src="https://cdn-3.convertexperiments.com/uf/1002628/10025084/1634105014image+5+%282%29.png"></img>
+                    <div class="popup-list-text">
+                        <h4>{{ 'products.product.shoppay_popup_list_2_title' | t }}</h4>
+                        <p>{{ 'products.product.shoppay_popup_list_2_text' | t }}</p>
+                    </div>
+                </div>
+            </div>
+            <button class="popup-close-btn">{{ 'products.product.shoppay_popup_close_btn' | t }}</button>
+            <p class="tax-text">{{ 'products.product.shoppay_popup_tax_text' | t }}</p>
+            <p class="notice-text">{{ 'products.product.shoppay_popup_tax_notice' | t }}</p>
+            <img src="https://cdn-3.convertexperiments.com/uf/1002628/10025084/1634046780image+3+%287%29.png" class="popup-shoppay-logo"></img>
+            <p class="affirm-text">{{ 'products.product.shoppay_popup_tax_affirm' | t }} <img src="https://cdn-3.convertexperiments.com/uf/1002628/10025084/1634104797image+7.png"></img></p>
+        </div>
+    </div>
+    <style>
+      .so-shoppay-img {
+      height: 18px;
+      vertical-align: middle;
+      margin-right: 5px;
+      }
+      .so-learn-btn {
+          border: none;
+          outline: none;
+          font-size: 13px;
+          text-decoration: underline;
+      }
+      .so-shoppay-text {
+          margin-top: 15px;
+          font-size: 13px;
+          line-height: 23px !important;
+      }
+      .so-popup-back {          
+          position: fixed;
+          top: 0;
+          left: 0;
+          z-index: 9999999999;
+          width: 100vw;
+          height: 100vh;
+          font-family: 'Avenir', sans-serif;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+      }
+      .so-popup-back:after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.75);
+      }
+      .so-learn-btn {
+        padding: 0;
+      }
+      @media screen and (max-width: 719px)
+      {
+        .so-popup-back {         
+          top:0 !important;
+        }
+      }
+      .so-popup-container {
+          background-color: #fff;
+          border-radius: 4px;
+          width: calc(100vw - 26px);
+          max-width: 768px;
+          padding: 20px;
+          margin: 30px auto;
+          overflow: auto;
+          position: relative;
+          z-index: 1;
+      }
+      .popup-header {
+          font-family: 'Avenir', sans-serif;
+          font-weight: 800;
+          font-size: 25px;
+          text-transform: none;
+          margin-bottom: 0;
+      }
+      .popup-desc {
+          font-weight: 500;
+          font-size: 15px;
+          margin-bottom: 30px;
+      }
+      .popup-list-item {
+          display: flex;
+          align-items: flex-start;
+      }
+      .popup-list-item:nth-child(1) img {
+          height: 30px;
+          margin-top: -5px;
+      }
+      .popup-list-text h4 {
+          margin: 0;
+          font-family: 'Avenir', sans-serif;
+          font-weight: 600;
+          color: #444444;
+      }
+      .popup-list-item:nth-child(2) img{
+        height: 23px;
+      }
+      .popup-list-text {
+          margin-left: 4px;
+          margin-bottom: 10px;
+      }
+      .popup-list-item p {
+          font-size: 15px;
+          font-weight: 500;
+      }
+      .popup-close-btn {
+          width: 100%;
+          background-color: #EDE4FE;
+          border: none;
+          border-radius: 4px;
+          padding: 10px;
+          font-size: 14px;
+          outline: none;
+      }
+      .tax-text {
+          text-align: center;
+          font-weight: 500;
+          padding: 10px 3px;
+          font-size: 12px;
+          margin: 0;
+      }
+      .notice-text {
+          text-align: center;
+          font-size: 13px;
+      }
+      .popup-shoppay-logo {
+          width: 85px;
+          margin: 0 auto;
+          display: block;
+      }
+      .affirm-text img {
+          height: 22px;
+          vertical-align: bottom;
+      }
+      span.popup-price {
+          color: #5A31F5;
+      }
+      .affirm-text {
+          margin-top: 5px;
+          text-align: center;
+          color: black;
+          font-weight: 500;
+      }
+      .close-btn {
+          border: none;
+          position: absolute;
+          right: 15px;
+      }
+      .hidden{
+        display: none;
+      }
+      .modal-open {
+        overflow: hidden;
+      }
+      .modal-open .site-header__mobile-nav
+      {
+        z-index:1!important;
+        position: initial !important;
+      }
+      .modal-open #PageContainer
+      {
+        position: initial;
+        overflow: initial;
+      }
+    </style>
+    <script defer>
+      document.addEventListener('DOMContentLoaded', function(){
+        $(document).on('click', '.so-learn-btn', function(e){
+          e.preventDefault();
+          $('body').addClass('modal-open');
+          //$('.so-popup-back').css('top', document.documentElement.scrollTop - $('#shopify-section-header').height()).removeClass('hidden');
+          $('.so-popup-back').removeClass('hidden');
+        });
+        $(document).on('click', '.popup-close-btn, .close-btn', function(){
+          $('.so-popup-back').addClass('hidden');
+          $('body').removeClass('modal-open');
+        });
+      });
+    </script>
+  {% when 'so-product-price' %}
+    {% if product.available == true %}
+
+      {% comment %} Check section settings variable {% endcomment %}
+      {% if quantity_selector == "hide" %}
+        {% assign show_quantity = false %}
+
+      {% elsif quantity_selector == "show" %}
+        {% assign show_quantity = true %}
+
+      {% elsif quantity_selector == "tag" %}
+        {% assign show_quantity = true %}
+
+        {% for tag in product.tags %}
+          {% if tag contains tag_text %}
+            {% assign show_quantity = false %}
+          {% endif %}
+        {% endfor %}
+
+      {% endif %}
+
+      {% comment %} Check domains and after check metafields flag {% endcomment %}
+      {% assign pr_theme_options = product.metafields.shineon.theme_options.value | default: product.metafields.shineon.theme_options %}
+      {% if shop.metafields.shineon.is_shineon_brand == true and shop.metafields.shineon.is_shineon_brand != blank %}
+        {% if pr_theme_options.show_quantity_input == true %}
+          {% assign show_quantity = true %}
+        {% elsif pr_theme_options.show_quantity_input == false %}
+          {% assign show_quantity = false %}
+        {% endif %}
+      {% endif %}
+
+    {% endif %}
+    <div class="so-product-price{{ classes_to_wrap }}{% if show_quantity == true and classes_to_wrap != ' so-product-price-bu-step-1' %} so-price-show-quantity{% if cro_design_product != false %} with-cro-design{% endif %}{% endif %}">
+      {% assign compare_at_price = product.selected_or_first_available_variant.compare_at_price %}
+      {% assign price = product.selected_or_first_available_variant.price %}
+
+      {% assign saved_value = compare_at_price | minus: price %}
+      {% if saved_value > 0 %}
+        {% assign save_value_percent = compare_at_price | minus: price | times: 100 | divided_by: compare_at_price %}
+        {% assign save_value_money = compare_at_price | minus: price | money_without_trailing_zeros %}
+      {% endif %}
+
+      {% assign money_price = price | money_without_trailing_zeros %}
+
+      <div class="product__price {% if show_quantity == true and classes_to_wrap != ' so-product-price-bu-step-1' %}with-quantity-selector{% endif %}">
+        {% assign variant_item = base_variant %}
+        {% include 'product-info-shineon' with 'price' %}
+
+        {% assign pr_displayed_coupon = product.metafields.shineon.displayed_coupon.value | default: product.metafields.shineon.displayed_coupon %}
+        {% if saved_value > 0 and section.settings.variant_price_show_savings == true and pr_displayed_coupon.code == null %}
+          <p class="price-save unstyled">{{ 'save_html' | t: saved_amount_money: save_value_money, saved_amount_percent: save_value_percent }}</p>
+          {% if cro_design_product != false %}
+          <p class="save-percent">{{save_value_percent}}% {{ 'save_percent_off_1169' | t }}</p>
+          {% endif %}
+        {% endif %}
+
+        {% if cro_design_product != false %}
+        {% include 'product-info-shineon' with 'in-stock-blob' %}
+        {% endif %}
+      </div><!-- END so-product-pricing -->
+      {% if cro_design_product == false %}
+        {% if show_quantity == true %}
+          {% include 'product-info-shineon' with 'quantity' %}
+        {% elsif product.available == true %}
+          <input type="hidden" name="quantity" value="1" required />
+        {% endif %}
+      {% endif %}
+
+
+      {{ section.settings.snippet_below_pricing }}
+    </div>
+
+    {% assign addons = product.metafields.shineon.addons.value | default: product.metafields.shineon.addons %}
+    
+    {% unless addons.items.size > 0 %}
+      {% if warranty_tag != false %}
+        <div class="product-additions-subtotal" style="display: none;">{{ 'addon_warranty_subtotal' | t }}: <strong class="price-with-additions">{{ product.selected_or_first_available_variant.price | plus: warranty_prod.price | money }}</strong></div>
+      {% endif %}
+    {% endunless %}
+
+  {% when 'quantity' %}
+
+    <div class="product-quantity-w" style="margin : 0 !important;">
+      <div class="so-field-wrap so-quantity-selector-wrap">
+        {% assign purchase_form_quantity_copy = 'purchase_form_quantity_copy' | t %}
+        {% if purchase_form_quantity_copy != '' and cro_design_product == false %}
+          <label class="so-option-label" for="quantity">
+            {{ purchase_form_quantity_copy }}
+          </label>
+        {% endif %}
+        <div class="so-quantity-selector">
+          <span class="so-quantity-change so-quantity-minus" data-quantity="minus"></span><!--
+          --><span><input class="so-cart-qty-input" type="text" name="quantity" step="1" min="1" value="1" required /></span><!--
+          --><span class="so-quantity-change so-quantity-plus" data-quantity="plus"></span>
+        </div>
+      </div><!-- END so-field-wrap so-quantity-selector-wrap -->
+    </div>
+
+  {% when 'payment-icons' %}
+
+    {% assign payment_options = "payment_option_visa,payment_option_master,payment_option_american_express,payment_option_discover,payment_option_apple_pay,payment_option_amazon,payment_option_paypal" | split: ',' %}
+    <div class="so-payment-options">
+      {% for payoption in payment_options %}
+        {% if section.settings[payoption] %}
+          {% assign payoption_method = payoption | replace: 'payment_option_', '' %}
+          <img src="{{ payoption_method | payment_type_img_url }}" alt="{{ payoption_method | capitalize }}" />
+        {% endif %}
+      {% endfor %}
+      {%- if section.settings.payment_option_ideal == true -%}
+        <img src="{{ 'ideal' | payment_type_img_url }}" alt="{{ 'ideal' | capitalize }}" />
+      {%- endif -%}
+      {%- if section.settings.payment_option_bancontact == true -%}
+        {% render 'shineon-app-icons' with 'bancontact' %}
+      {%- endif -%}
+    </div>
+
+  {% when 'free-shipping' %}
+
+    <div class="text-center free-shipping">
+      {% include 'shineon-icons' with 'delivery' %}
+      <span>{{ settings.free_shipping_copy }}</span>
+    </div>
+
+  {% when 'button-atc' %}
+    {% if shop.metafields.shineon.is_shineon_brand == true and shop.metafields.shineon.is_shineon_brand != blank %}
+    {% include 'product-info-shineon' with 'shop-pay-product-divided-price' %}
+    {% include 'product-info-shineon' with 'shop-pay-block' %}
+    {% endif %}
+    <div class="so-btn-add-to-cart-wrap" id="so-btn-add-to-cart-w">
+      {% if shop.permanent_domain == 'shineon-platform.myshopify.com' and settings.show_after_pay_snippet == true %}
+      <div class="afterpay-info-w"></div>
+      {% endif %}
+      {% if is_ring %}
+      <div style="position:relative;">
+      <div class="so-atc-overlay"></div>
+      {% endif %}
+
+      {% if cro_design_product != false %}
+        {% if show_quantity == true %}
+        <div class="so-btn-add-to-cart-with-quantity">
+           {% include 'product-info-shineon' with 'quantity' %}
+        {% endif %}
+
+        {% if show_quantity != true and product.available == true %}
+          <input type="hidden" name="quantity" value="1" required />
+        {% endif %}
+        <button id="so-btn-add-to-cart-{{ product.id }}"
+          class="so-form-btn-cta-main so-btn-add-to-cart{% if is_ring or product.available == false %} disabled{% endif %}"
+          {% assign bg_color = section.settings.add_to_cart_bg_color %}
+          {% if cro_design_product != false %}
+          {% assign bg_color = '#EE7A78' %}
+          {% endif %}
+          style="background-color: {{ bg_color }};
+            border: 1px solid {{ bg_color }};
+            color: {{ section.settings.add_to_cart_fg_color }};
+            font-size: {{ section.settings.add_to_cart_font_size_range }}px"
+          {% if is_ring or product.available == false %}
+          disabled="disabled"
+          {% endif %}{% if add_upsell_modal == false %}
+          type="submit"{% endif %} data-add-to-cart>
+
+          {% if product.available == true %}
+            {% if section.settings.add_to_cart_append_line_item_subtotal %}
+              <span id="so-btn-add-to-cart-prefix">{{ so_current_variant.price | money }} -</span>
+            {% endif %}
+
+            {% if section.settings.add_to_cart_icon == true %}
+            <span id="so-btn-add-to-cart-suffix-wrap" class="so-btn-add-to-cart-suffix-wrap so_nobreak">
+              {% include 'shineon-app-icons' with 'shopping-cart' %}
+              {% assign pr_theme_options = product.metafields.shineon.theme_options.value | default: product.metafields.shineon.theme_options %}
+              {% if pr_theme_options.show_quantity_input == false and section.settings.add_to_cart_append_line_item_subtotal %}
+                <span id="so-btn-add-to-cart-suffix"  class="so-btn-add-to-cart-vanity-suffix"
+                  data-singular="{{ 'purchase_form_add_to_cart_button_text_item_label_singular' | t }}"
+                  data-plural="{{ 'purchase_form_add_to_cart_button_text_item_label_plural' | t }}">
+                (1 {{ 'purchase_form_add_to_cart_button_text_item_label_singular' | t }})
+                </span>
+              {% endif %}
+            </span>
+            {% endif %}
+
+            <span class="so-btn-add-to-cart-vanity-copy" id="so-btn-add-to-cart-copy">
+              {% if cro_design_product != false %}
+                <span>{{ 'purchase_form_add_to_cart_text_cro' | t }}</span>
+              {% else %}
+                <span>{{ 'purchase_form_add_to_cart_text' | t }}</span>
+              {% endif %}
+            </span>
+            {% if cro_design_product != false %}
+            <span class="cta-text">
+              <span>{{ 'purchase_form_add_to_cart_text_cro' | t }}</span>
+            </span>
+            {% endif %}
+            {% if cro_design_product != false %}
+            <span class="add-to-cart-icon">
+              <img src="https://cdn-3.convertexperiments.com/uf/1002628/10025189/1629106919image+17.png">
+            </span>
+            {% endif %}
+          {% else %}
+            {{ 'purchase_form_btn_add_to_cart_sold' | t }}
+          {% endif %}
+        </button>
+
+        {% if show_quantity == true %}
+        </div>
+        {% endif %}
+      {% else %}
+        <button id="so-btn-add-to-cart-{{ product.id }}"
+            class="so-form-btn-cta-main so-btn-add-to-cart{% if is_ring or product.available == false %} disabled{% endif %}"
+            {% assign bg_color = section.settings.add_to_cart_bg_color %}
+            {% if cro_design_product != false %}
+            {% assign bg_color = '#EE7A78' %}
+            {% endif %}
+            style="background-color: {{ bg_color }};
+              border: 1px solid {{ bg_color }};
+              color: {{ section.settings.add_to_cart_fg_color }};
+              font-size: {{ section.settings.add_to_cart_font_size_range }}px"
+            {% if is_ring or product.available == false %}
+            disabled="disabled"
+            {% endif %}{% if add_upsell_modal == false %}
+            type="submit"{% endif %} data-add-to-cart>
+
+          {% if product.available == true %}
+            {% if section.settings.add_to_cart_append_line_item_subtotal %}
+              <span id="so-btn-add-to-cart-prefix">{{ so_current_variant.price | money }} -</span>
+            {% endif %}
+
+            {% if section.settings.add_to_cart_icon == true %}
+            <span id="so-btn-add-to-cart-suffix-wrap" class="so-btn-add-to-cart-suffix-wrap so_nobreak">
+              {% include 'shineon-app-icons' with 'shopping-cart' %}
+              {% assign pr_theme_options = product.metafields.shineon.theme_options.value | default: product.metafields.shineon.theme_options %}
+              {% if pr_theme_options.show_quantity_input == false and section.settings.add_to_cart_append_line_item_subtotal %}
+                <span id="so-btn-add-to-cart-suffix"  class="so-btn-add-to-cart-vanity-suffix"
+                  data-singular="{{ 'purchase_form_add_to_cart_button_text_item_label_singular' | t }}"
+                  data-plural="{{ 'purchase_form_add_to_cart_button_text_item_label_plural' | t }}">
+                (1 {{ 'purchase_form_add_to_cart_button_text_item_label_singular' | t }})
+                </span>
+              {% endif %}
+            </span>
+            {% endif %}
+
+            <span class="so-btn-add-to-cart-vanity-copy" id="so-btn-add-to-cart-copy">
+              {% if cro_design_product != false %}
+                <span>{{ 'purchase_form_add_to_cart_text_cro' | t }}</span>
+              {% else %}
+                <span>{{ 'purchase_form_add_to_cart_text' | t }}</span>
+              {% endif %}
+            </span>
+            {% if cro_design_product != false %}
+            <span class="cta-text">
+              <span>{{ 'purchase_form_add_to_cart_text_cro' | t }}</span>
+            </span>
+            {% endif %}
+            {% if cro_design_product != false %}
+            <span class="add-to-cart-icon">
+              <img src="https://cdn-3.convertexperiments.com/uf/1002628/10025189/1629106919image+17.png">
+            </span>
+            {% endif %}
+          {% else %}
+            {{ 'purchase_form_btn_add_to_cart_sold' | t }}
+          {% endif %}
+
+        </button>
+      {% endif %}
+      {% if is_ring %}
+      </div>
+      {% endif %}
+
+      <div class="shopmessage-checkbox"></div>
+    </div><!-- END so-btn-add-to-cart-wrap -->
+    <div class="custom-blank-ele"></div>
+    <span class="so-btn-action-fixed" data-id="so-btn-add-to-cart-w"></span>
+
+  {% when 'product-title-with-rating' %}
+    {% if shop.metafields.shineon.is_shineon_brand == true and shop.metafields.shineon.is_shineon_brand != blank %}
+      {% include 'request-host' %}
+    {% endif %}
+
+    <div itemscope itemtype="http://schema.org/Brand" class="so-hidden">
+      {% if company_name contains 'Jewelry' %}
+        <meta itemprop="name" content="{{ company_name }}">
+      {% else %}
+        <meta itemprop="name" content="{{ company_name }} Jewelry">
+      {% endif %}  
+      {% if logo_src %}<meta itemprop="logo" content="{{ logo_src }}" />{% endif %}
+      <meta itemprop="description" content="{{ shop.description }}" />
+      <meta itemprop="url" content="{{ shop_domain }}{{ product.url }}" />
+    </div>
+
+    <div class="with-rating">
+
+    {% unless cro_design_product != false %}
+      {% include 'product-info-shineon' with 'reviews-counter' %}
+    {% endunless %}
+
+      {% assign so_prod_title = product.title | json %}
+      {% assign so_prod_title_mobile = product.title | truncate: 48 | json %}
+
+      <div class="so-product-title{% if cro_design_product != false %} with-cro-design{% endif %}">
+        <h1 itemprop="name" class="so">{{ product.title }}</h1>
+      </div><!-- END so-product-title -->
+
+    {% if cro_design_product != false %}
+
+      {% include 'product-info-shineon'
+          with 'so-product-price'
+          and quantity_selector
+          and tag_text
+      %}
+
+    {% endif %}
+
+    {% if cro_design_product != false %}
+      {% include 'product-info-shineon' with 'reviews-counter' %}
+    {% endif %}
+
+      <div class="so-hidden-sm">
+      {% if shop.metafields.shineon.is_shineon_brand == true and shop.metafields.shineon.is_shineon_brand != blank %}
+        <span class="prod-id">{{ prod_id }}</span>
+      {% endif %}
+      </div>
+
+      {% capture snippet_content %}{% include 'shineon-below-title' %}{% endcapture %}
+      {% unless snippet_content contains "Liquid error" %}
+        {{ snippet_content }}
+      {% endunless %}
+
+      {{ section.settings.snippet_below_title }}
+
+      <div class="so-product-reviews-summary">
+        <!-- PRODUCT REVIEWS SUMMARY CODE -->
+      </div>
+    </div>
+
+  {% when 'info-modal' %}
+
+    {% comment %} BEGIN: INFO MODAL {% endcomment %}
+    {% include 'info-modal', product_handle: product_handle %}
+
+  {% when 'upsell-modal' %}
+
+    {% comment %} BEGIN: SOPP MODAL {% endcomment %}
+    <div class="so-modal so-modal-e-and-g-upsell fade engraving-only"
+       id="modal-{{ product_form_id }}"
+       tabindex="-1"
+       role="dialog">
+      <div class="so-modal-dialog so-modal-lg so-modal-box" role="document">
+      <form class="so-product-form"
+          action="/cart/add"
+          method="post"
+          enctype="multipart/form-data"
+          id="{{ product_form_id }}"
+          data-section="{{ section.id }}"
+          data-uploadable="{{ product.metafields.shineon.uploadable }}"
+          data-use_shineon_cart_page_eng="{{ section.settings.use_shineon_cart_page_eng }}"
+          data-use_shineon_cart_page_bu="{{ section.settings.use_shineon_cart_page_bu }}"
+          data-express_checkout="{{ section.settings.express_checkout }}"
+          data-google_analytics_id="{{ shop.metafields.shineon.google_analytics_id }}"
+          data-upsell-type="{{ upsell_option }}">
+        <div class="so-modal-content">
+
+          <div class="so-modal-header">
+            <button type="button"
+                class="close"
+                data-dismiss="so-modal"
+                aria-label="Close">
+            <span aria-hidden="true"></span>
+            </button>
+          </div><!-- END so-modal-header -->
+
+          <div class="so-upsell-body">
+            <div class="so-modal-image-w">
+              <div class="so-modal-image">
+                <div class="so-modal-engraving-featured-img-wrap">
+                  <img class="so-modal-product-featured-img"
+                       src="{{ so_modal_product_featured_img }}" />
+                </div><!-- END so-modal-engraving-featured-img-wrap -->
+              </div><!-- so-modal-image -->
+            </div><!-- END so-col-6 so-modal-image-w" -->
+            <div class="so-modal-upsell-text-w">
+              <div class="so-modal-upsell-text">
+                <div class="ribbon-offer"></div>
+                <div class="so-modal-upsell-heading-with-arrow">
+                  <span class="theme-shineon-sprite upsell-arrow"></span>
+                  <div class="so-modal-upsell-text-heading">
+                    {{ so_modal_upsell_text_heading }}
+                  </div>
+                </div>
+
+                {% if has_engraving == true %}
+                  {% if section.settings.modal_engraving_savings_percentage > 0 %}
+                  <div class="so-modal-upsell-pricing-with-arrow">
+                      {% assign purchase_form_modal_callout_engraving_secondary = 'purchase_form_modal_callout_engraving_secondary' | t %}
+                      {% assign purchase_form_modal_callout_engraving_secondary = purchase_form_modal_callout_engraving_secondary | replace: '##', section.settings.modal_engraving_savings_percentage %}
+                    <div class="so-modal-upsell-pricing-w">
+                      <div class="so-modal-upsell-pricing">
+                        <span class="compare_at_price">{{ upsell_engraving_original_price | money }}</span>
+                        <span class="regular_price">{{ upsell_engraving_price | money }}</span>
+                      </div><!-- END so-modal-upsell-pricing -->
+                      <p class="price-off unstyled">({{ section.settings.modal_engraving_savings_percentage }}% {{ 'save_percent_off_1169' | t }})</p>
+                    </div>
+                  </div>
+                  {% endif %}
+                {% else %}
+                  <div class="so-modal-upsell-pricing-with-arrow">
+                    {% unless price_box %}
+                      {% assign price_box = product.variants[1].price %}
+                    {% endunless %}
+                    {% assign price_regular = so_current_variant.price %}
+                    {% if product.options.size == 1 %}
+                      {% assign price_regular = product.variants[0].price %}
+                    {% endif %}
+                    {% assign saving_percentage = section.settings.modal_engraving_savings_percentage | divided_by: 100.0 %}
+                    {% assign price = price_box | minus: price_regular %}
+                    {% assign compare_at_price = price | divided_by: saving_percentage %}
+
+                    <div class="so-modal-upsell-pricing-w">
+                      <div class="so-modal-upsell-pricing">
+                        <span class="compare_at_price">{{ compare_at_price | money }}</span>
+                        <span class="regular_price">{{ price | money }}</span>
+                      </div><!-- END so-modal-upsell-pricing -->
+                      <p class="price-off unstyled">({{ section.settings.modal_engraving_savings_percentage | round }}% {{ 'save_percent_off_1169' | t }})</p>
+                    </div>
+                  </div>
+                {% endif %}
+
+                {% if has_engraving == true %}
+                  {% comment %}
+                  Metafields 2.0
+                  {% endcomment %}
+                  {% assign product_schema_v2_obj = product.metafields.shineon.schema_v2.value | default: product.metafields.shineon.schema_v2 %}
+                  {% assign pt_id = 'pt_' | append: product_schema_v2_obj.product_template_id %}
+                  {% assign shop_pt_id_obj = shop.metafields.shineon[pt_id].value | default: shop.metafields.shineon[pt_id] %}
+                  {% assign product_cf_obj = shop_pt_id_obj.custom_fields %}
+                  {% comment %}
+                  ./ Metafields 2.0
+                  {% endcomment %}
+                  {% assign so_current_variant_generated_properties = so_current_variant.metafields.shineon.generated_properties.value | default: so_current_variant.metafields.shineon.generated_properties %}
+                  {% if so_current_variant_generated_properties.size > 0 or product_cf_obj.size > 0 %}
+                    <!-- If has generated properties in metafields -->
+                    {% assign inputs = so_current_variant_generated_properties.inputs %}
+                    {% if product_cf_obj.size > 0 %}
+                      {% assign inputs = product_cf_obj %}
+                    {% endif %}
+                    {% assign engraved = false %}
+                    {% assign is_any_field_required = false %}
+                    {% for input_item in inputs %}
+                      {% if product_cf_obj.size > 0 %}
+                        {% assign input = shop.metafields.shineon[input_item.key].value | default: shop.metafields.shineon[input_item.key] %}
+                      {% else %}
+                        {% assign input = input_item %}
+                      {% endif %}
+                      {% if input.field_type == "engraving" and input.required == 1 %}
+                        {% assign engraved = true %}
+                      {% endif %}
+                      {% if input.required == 1 %}
+                        {% assign is_any_field_required = true %}
+                      {% endif %}
+                    {% endfor %}
+                    {% if is_any_field_required == false %}
+                      <div class="so-custom-fields-wrap-without-grid-display">
+                        {% for input_item in inputs %}
+                          {% if product_cf_obj.size > 0 %}
+                            {% assign input = shop.metafields.shineon[input_item.key].value | default: shop.metafields.shineon[input_item.key] %}
+                          {% else %}
+                            {% assign input = input_item %}
+                          {% endif %}
+                          {% capture loop_index %}{% increment loop %}{% endcapture %}
+                          {% assign required = "" %}
+                          {% if input.required == 1 %}
+                            {% assign required = "required" %}
+                          {% endif %}
+                          {% assign input_label = input.label %}
+                          {% assign input_placeholder = input.placeholder %}
+                          {% assign input_class = input.class %}
+                          {% for locale in input.locales %}
+                            {% if shop.locale contains locale[0] %}
+                              {% if locale[1].label %}
+                                {% assign input_label = locale[1].label %}
+                              {% endif %}
+                              {% if locale[1].placeholder %}
+                                {% assign input_placeholder = locale[1].placeholder %}
+                              {% endif %}
+                            {% endif %}
+                          {% endfor %}
+                          {% if input.field_type == "ring_size" %}
+                            <div class="so-custom-field-wrap {{ input.grid }}">
+                              <label for="{{ input.id }}">{{ input_label }}</label>
+                              <select name="properties[{{ input.name }}]" id="{{ input.id }}" class="{{ input.class }}" {{ required }}>
+                                <option selected disabled>{{ input_placeholder }}</option>
+                                {% for option in input.options %}
+                                  <option value="{{ option }}">{{ option }}</option>
+                                {% endfor %}
+                              </select>
+                            </div>
+                          {% elsif input.field_type == "birthstone" %}
+                            <div class="so-custom-field-wrap">
+                              <label class="so-option-label">{{ input.label }}</label>
+                              <div class="so-custom-field-birthstone-wrap">
+                                {% for option in input.options %}
+                                  <label for="so-custom-field-radio-{{ option }}" class="so-custom-field-birthstone-label">
+                                    <input
+                                        id="so-custom-field-radio-{{ option }}"
+                                        class="{{ input.class }}"
+                                        type="radio"
+                                        name="properties[{{ input.name }}]"
+                                        value="{{ option }}"
+                                        data-src-bigimg="https://cdn.shopify.com/s/files/1/0077/2420/4096/files/bs-{{ option }}_x100.png"
+                                        {{ required }}
+                                         />
+                                    {% if section.settings.birthstone_style_selector != "no-stones" %}
+                                      <div class="so-custom-field-birthstone-circle {{ option }}"></div>
+                                    {% endif %}
+                                    {% if section.settings.birthstone_style_selector != "no-months" %}
+                                      {{ option | truncate: 3, "" }}
+                                    {% endif %}
+                                  </label>
+                                {% endfor %}
+                                <div id="big-img-w" style="display: none; min-height: 100px;">
+                                  <img src="" id="big-img">
+                                </div>
+                              </div>
+                            </div>
+                          {% elsif input.field_type == 'engraving' %}
+                            {% if is_cross != false and input_placeholder == 'JC' %}
+                              {% assign input_class = input_class | append: ' so-input-cross-front' %}
+                            {% endif %}
+                            {% assign appended_label = '_label' %}
+                            {% if is_cross != false %}
+                              {% assign appended_label = '_label_cross' %}
+                            {% endif %}
+                            <div class="so-custom-field-wrap ">
+                              <input type="{{ input.type }}"
+                                 name="properties[{{ input.name }}]"
+                                 id="{{ input.id }}"
+                                 class="{{ input_class }}"
+                                 placeholder="{{ input_placeholder }}"
+                                 maxlength="{{ input.maxlength }}"
+                                 minlength="{{ input.minlength }}"
+                                 {{ required }} />
+                            </div>
+                            {% assign so_custom_field_info = 'purchase_form_engraving_max_length_info_placeholder' | t %}
+                            {% if input.maxlength > 0 %}
+                              {% if input.maxlength > 0 %}
+                                {% if input.maxlength > 1 %}
+                                  {% assign so_custom_field_info = 'purchase_form_engraving_max_length_info_2' | t | replace: '[engraving_max_length]', input.maxlength %}
+                                {% else %}
+                                  {% assign so_custom_field_info = 'purchase_form_engraving_max_length_info' | t | replace: '[engraving_max_length]', input.maxlength %}
+                                {% endif %}
+                              {% endif %}
+                              {% if product_birthstone_multiple == true %}
+                                {% assign so_custom_field_info = input.maxlength | append: ' max' %}
+                              {% elsif is_metal_art_prod == true %}
+                                {% assign so_custom_field_info = so_custom_field_info | replace: '[variant_accessory_type]', 'max' %}
+                              {% else %}
+                                {% assign so_custom_field_info = so_custom_field_info | replace: '[variant_accessory_type]', variant_accessory_type %}
+                              {% endif %}
+                              <p class="so-custom-field-info" style="text-align:left;font-size: 12px; font-style: italic; margin-bottom: 10px;">{{ so_custom_field_info }}</p>
+                            {% endif %}
+                          {% else %}
+                            <div class="so-custom-field-wrap">
+                              {% if input.type != 'none' %}
+                              <label class="so-text-normal-i" for="{{ input.id }}">{{ input_label }}</label>
+                              {% endif %}
+                              {% if input.type == 'radio' %}
+                                {% for option in input.options %}
+                                {% if option == input.value %}
+                                  <label>
+                                  <input type="radio" name="properties[{{ input.name }}]" value="{{ option }}" checked />
+                                  {{ option }}
+                                  </label>
+                                {% endif %}
+                                <label>
+                                  <input type="radio" name="properties[{{ input.name }}]" value="{{ option }}" />
+                                  {{ option }}
+                                </label>
+                                {% endfor %}
+                              {% elsif input.type == 'select' %}
+                                <select name="properties[{{ input.name }}]" id="{{ input.id }}">
+                                {% for option in input.options %}
+                                  {% if option == input.value %}
+                                  <option value="{{ option }}" selected>{{ option }}</option>
+                                  {% endif %}
+                                  <option value="{{ option }}">{{ option }}</option>
+                                {% endfor %}
+                                </select>
+                              {% elsif input.type == 'text' %}
+                                <input type="{{ input.type }}"
+                                   name="properties[{{ input.name }}]"
+                                   id="{{ input.id }}"
+                                   class="{{ input.class }}"
+                                   placeholder="{{ input_placeholder }}"
+                                   maxlength="{{ input.maxlength }}"
+                                   minlength="{{ input.minlength }}"
+                                   {{ required }} />
+                              {% endif %}
+                            </div>
+                          {% endif %}
+                          {{ input.html_chunk }}
+                          {% capture loop_index %}{% increment loop %}{% endcapture %}
+                        {% endfor %}
+                      </div>
+                    {% endif %}
+                  {% else %}
+                    {% if engraving_lines > 0 %}
+                      {% assign input_placeholder_translation = 'purchase_form_engraving_copy_line' | append: forloop.index | append: '_label' %}
+                      {% assign input_placeholder = input_placeholder_translation | t %}
+                      <div class="so-custom-fields-wrap-without-grid-display">
+                      {% for item in (1..engraving_lines) %}
+                        <div class="so-custom-field-wrap ">
+                          <input type="text"
+                             name="properties[{{ input_placeholder | append: ' ' | append: forloop.index }}]"
+                             id="{{ input.id }}"
+                             class="so-engraving-input so-engraving-line{{forloop.index}}"
+                             placeholder="{{ input_placeholder | append: ' ' | append: forloop.index }}"
+                             maxlength="{{ input.maxlength }}"
+                             minlength="{{ input.minlength }}"
+                             autocomplete="off"
+                             {{ required }} />
+                        </div>
+                      {% endfor %}
+                      </div>
+                    {% endif %}
+                  {% endif %}
+                {% endif %}
+
+                <div class="so-modal-btn-add-to-cart-wrap">
+                  <input type="hidden" name="id" value="{{ so_current_variant.id }}" />
+                  <input type="hidden" name="quantity" value="1" required />
+                  {% if is_roman_numeral_date == true %}
+                  <input type="hidden" id="roman-numbers" value="" name="properties[Roman-numbers]" />
+                  {% endif %}
+                  {% if is_roman_numeral_map == true %}
+                  <input type="hidden" id="map-coordinates" value="" name="properties[Lat/Long]" />
+                  {% endif %}
+                  <button id="so-modal-btn-add-to-cart-{{ product.id }}"
+                      class="so-modal-btn-add-to-cart so-btn-add-to-cart-vanity so-modal-btn-add-to-cart-{{ product.id }} active"
+                      type="submit"
+                      style="background-color: {{ section.settings.add_to_cart_bg_color }};">
+                    <span class="so-modal-btn-add-to-cart-copy">
+                    {{ 'purchase_form_modal_proceed_with_upsell' | t }}
+                    </span>
+                  </button>
+                  <div class="so-modal-btn-add-base-to-cart-wrap">
+                    <a href="#" class="so-modal-btn-add-base-to-cart">
+                    {% if is_wooden_box == true %}
+                    {{ 'purchase_form_modal_continue_without_upsell' | t }}
+                    {% elsif featured_engraved_img != false %}
+                    {{ 'purchase_form_modal_continue_without_upsell' | t }}
+                    {% else %}
+                    {{ 'purchase_form_modal_continue_without' | t }}
+                    {% endif %}
+                    </a>
+                  </div><!-- END so-modal-btn-add-base-to-cart-wrap -->
+                </div><!-- END so-modal-btn-add-to-cart-wrap -->
+              </div><!-- END so-modal-upsell-text -->
+            </div><!-- END so-col-6 so-modal-upsell-text-w -->
+          </div><!-- END so-upsell-body -->
+
+        </div><!-- END modal-content -->
+
+      </form><!-- END so-product-form -->
+
+      </div><!-- END modal-dialog -->
+
+    </div><!-- END modal -->
+    {% comment %} END: SOPP MODAL {% endcomment %}
+
+  {% when 'meta-itemprop' %}
+    {% if shop.metafields.shineon.is_shineon_brand == true and shop.metafields.shineon.is_shineon_brand != blank %}
+      {% include 'request-host' %}
+    {% endif %}
+    {% if product.selected_or_first_available_variant.barcode != null %}
+      {% assign current_barcode = product.selected_or_first_available_variant.barcode %}
+    {% else %}
+      {% assign current_barcode = product.selected_or_first_available_variant.id %}
+    {% endif %}
+    <meta itemprop="mpn" content="{{ current_barcode }}" />
+    {% if product.metafields.loox.num_reviews %}
+      <div itemprop="aggregateRating" itemscope itemtype="http://schema.org/AggregateRating">
+        <meta itemprop="ratingValue" content="{{ product.metafields.loox.avg_rating }}"/>
+        <meta itemprop="ratingCount" content="{{ product.metafields.loox.num_reviews }}"/>
+      </div>
+
+      {% assign reviews_loox = product.metafields.loox.reviews | replace: '<div class="review">', '<div class="review">&' | replace: '<div class="review_text">', '<div class="review_text">&' %}
+      {% assign reviews_loox =  reviews_loox | strip_html %}
+      {% assign reviews_string_length = reviews_loox | size | minus: 1 %}
+      {% assign reviews_loox =  reviews_loox | slice: 1, reviews_string_length | split: '&' %}
+
+      <div itemprop="review" itemscope itemtype="https://schema.org/Review">
+        <meta itemprop="author" content="{{ reviews_loox[0] }}">
+        <meta itemprop="datePublished" content="2021-07-21">
+        <div itemprop="reviewRating" itemscope itemtype="https://schema.org/Rating">
+          <meta itemprop="worstRating" content = "{{ product.metafields.loox.avg_rating }}">
+          <meta itemprop="ratingValue" content = "{{ product.metafields.loox.avg_rating }}">
+          <meta itemprop="bestRating" content="{{ product.metafields.loox.avg_rating }}">
+        </div>
+        <meta itemprop="reviewBody" content="{{ reviews_loox[1] }}">
+      </div>
+    {% else %}
+      <div itemprop="aggregateRating" itemtype="https://schema.org/AggregateRating" itemscope>
+        {% assign looxstats = shop.metafields.loox["global_stats"] | split: ',' %}
+        <meta itemprop="reviewCount" content="{{ looxstats | last }}" />
+        <meta itemprop="ratingValue" content="{{ looxstats | first }}" />
+      </div>
+      <div itemprop="review" itemscope itemtype="https://schema.org/Review">
+        <meta itemprop="author" content="Serena Woosley">
+        <meta itemprop="datePublished" content="2021-07-21">
+        <div itemprop="reviewRating" itemscope itemtype="https://schema.org/Rating">
+          <meta itemprop="worstRating" content = "4.8">
+          <meta itemprop="ratingValue" content = "4.8">
+          <meta itemprop="bestRating" content="5">
+        </div>
+        <meta itemprop="reviewBody" content="Beautiful looks exactly like the picture!">
+      </div>
+    {% endif %}
+    <meta itemprop="image" content="{{ product.featured_image.src | img_url: 'grande' }}">
+    <meta itemprop="sku" content="{{ product.selected_or_first_available_variant.sku }}" />
+    {% if company_name contains 'Jewelry' %}
+      <meta itemprop="brand" content="{{ company_name }}">
+    {% else %}
+      <meta itemprop="brand" content="{{ company_name }} Jewelry">
+    {% endif %}
+    {% if product.metafields.loox.num_reviews %}
+      <script id="looxSchemaJson" type="application/ld+json">
+      {
+        "@context": "http://schema.org",
+        "@type": "Product",
+        "@id": {{ canonical_url | json }},
+        "aggregateRating": {
+          "@type": "AggregateRating",
+          "ratingValue": "{{ product.metafields.loox.avg_rating }}",
+          "reviewCount": "{{ product.metafields.loox.num_reviews }}"
+      },
+      "name": {{ product.title | json }}
+      }
+      </script>
+    {% endif %}
+  {% when 'warranty' %}
+    {% assign warranty_product = all_products['warranty'] %}
+    {% assign warranty_product_price = warranty_product.price | money %}
+    {% assign warranty_product_image = warranty_product.featured_image | img_url: '34x33' %}
+    {% comment %}
+      warranty_tag is a theme section settings. Can be found in section file
+    {% endcomment %}
+    <style type="text/css" media="screen">
+      .t73-custom-sec ul li span {
+          margin-right: 10px;
+          margin-left: 5px;
+      }
+      @media (max-width: 767px) {
+        #shopify-section-product-template-shineon .warranty .description p.text {
+          font-family: Avenir;
+            font-style: normal;
+            font-weight: 800;
+            font-size: 14px;
+            line-height: 19px;
+            color: #FF7000;
+        }
+        .so-modal-body-info {
+          padding: 20px 30px 20px 20px;
+        }
+        #modal-info > div {
+          max-width: 100%;
+        }
+        #modal-info > div > div > div.so-modal-body.so-modal-body-info > h2 > p {
+          text-transform: none ;
+          font-family: Avenir;
+          font-style: normal;
+          font-weight: 800;
+          font-size: 24px;
+          line-height: 33px;
+          color: #000000;
+        }
+        #modal-info > div > div > div.so-modal-body.so-modal-body-info > h2 > span > img:nth-child(2) {
+          display: none;
+        }
+        .so-modal-body.so-modal-body-info ul {
+            margin-bottom: 25px;
+        }
+        .so-modal-body-info .content-header-icon {
+            width: 100px;
+            background-color: #ffffff;
+            margin-right: 12px;
+        }
+        .so-modal-body-info .content-header {
+          margin-left: -10px;
+        }
+        .c-mrkdwn__pre {
+          font-style: normal;
+          font-weight: bold;
+          font-size: 16px;
+          line-height: 21px;
+          color: #3D4246;
+          margin-bottom: 13px;
+        }
+        #modal-info > div > div > div.so-modal-body.so-modal-body-info > ul:nth-child(4) li {
+          line-height: 15px;
+            margin-bottom: 15px;
+        }
+        #modal-info > div > div > div.so-modal-body.so-modal-body-info > ul:nth-child(4) li span {
+            margin-right: 8px;
+        }
+        #modal-info > div > div > div.so-modal-body.so-modal-body-info > p:nth-child(7), #modal-info > div > div > div.so-modal-body.so-modal-body-info > p:nth-child(8) {
+          display: none;
+        }
+      }
+
+      .so-warranty-div label {
+        border: 1px solid #3D4246;
+        border-radius: 4px;
+      }
+      .warranty .description-icon .icon svg {
+        width:26px!important;
+        height:26px!important;
+      }
+
+      .description .header-with-info .header {
+        font-size: 14px;
+        font-style: italic;
+      }
+
+      body #shopify-section-product-template-shineon-e-and-g-upsell .warranty,
+      body #shopify-section-product-template-shineon .warranty {
+        border: none;
+      }
+
+      .t73-custom-sec {
+          display: -webkit-box;
+          display: -ms-flexbox;
+          display: flex;
+          -webkit-box-pack: justify;
+              -ms-flex-pack: justify;
+                  justify-content: space-between;
+          background: #ffffff;
+          padding: 0 15px 5px 10px;
+      }
+
+      .t73-custom-sec ul {
+        font-family: Avenir;
+          font-weight: 400;
+          font-size: 15px;
+          line-height: 20px;
+          color: #000000;
+          width: 80%;
+      }
+      .t73-custom-sec ul li
+      {
+        display:flex;
+        align-items:center;
+      }
+      .t73-custom-sec p {
+        font-family: Avenir;
+          font-style: Heavy;
+          font-size: 15px;
+          color: #263B79;
+          font-weight: 800;
+          width: 20%;
+          text-align: right;
+      }
+      .t73-custom-sec p span.money {
+        color: #898989;
+          text-decoration: line-through;
+      }
+
+      .info-icon svg {
+        display: none;
+      }
+
+      .info-icon {
+        text-decoration: underline;
+        margin-left: 4px;
+          font-size: 12px;
+          color: #263879;
+      }
+      #shopify-section-product-template-shineon .warranty {
+        padding: 12px 10px !important;
+      }
+
+      /*cart page*/
+      #shopify-section-cart-shineon .so-cart-item.so-cart-flex.so-cart-item-warranty .so-cart-image img {
+        width: 25px;
+        margin: 0;
+      }
+      #shopify-section-cart-shineon .so-cart-item.so-cart-flex.so-cart-item-warranty .so-product-title {
+          font-family: Raleway, "Avenir Next Rounded", "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif !important;
+          font-weight: 800 !important;
+          font-size: 12px !important;
+          text-transform: capitalize !important;
+      }
+      span#validFor {
+          font-size: 12px;
+          text-transform: lowercase;
+          color: #1c2855;
+          font-weight: 400;
+      }
+      span#subText {
+          font-size: 12px;
+          font-weight: 400;
+          color: #1c2855;
+          text-transform: initial;
+      }
+      #shopify-section-cart-shineon .so-cart-item.so-cart-flex.so-cart-item-warranty .so-cart-item-info {
+        -webkit-box-orient: horizontal;
+        -webkit-box-direction: normal;
+            -ms-flex-direction: row;
+                flex-direction: row;
+      }
+      #so-cart-items > div.so-cart-item.so-cart-flex.so-cart-item-warranty > div.so-cart-image {
+          -webkit-box-flex: 0 !important;
+              -ms-flex: 0 0 30px !important;
+                  flex: 0 0 30px !important;
+      }
+      #so-cart-items > div.so-cart-item.so-cart-flex.so-cart-item-warranty > div.so-cart-item-info > div.price-quantity {
+        width: auto;
+      }
+      .price-quantity {
+          width: auto;
+      }
+      .so-warranty-div-header {
+          display: none;
+      }
+      @media (max-width:336px) {
+        .t73-custom-sec ul {
+          font-size: 12px;
+        }
+        #shopify-section-product-template-shineon .warranty .description .header {
+          font-size: 13px !important;
+        }
+        .t73-custom-sec ul li span {
+          margin-right: 2px;
+          margin-left: 2px;
+        }
+        .t73-custom-sec p {
+          text-align: center;
+          font-size:13px;
+        }
+      }
+    </style>
+
+    {% assign addons = product.metafields.shineon.addons.value | default: product.metafields.shineon.addons %}
+    {% unless addons.items.size > 0 %}
+    {% if warranty_tag != false %}
+    <div class="so-warranty-div">
+      <div class="so-warranty-div-header">
+        {{ 'addons_section_title' | t }}
+      </div>
+      <label>
+        <div class="warranty">
+          <input type="checkbox" name="so-warranty-app" data-prod-id="{{ warranty_prod.id }}" data-key="{{ warranty_prod_cart_line.key }}" data-variant-id="{{ warranty_prod.variants[0].id }}" class="so-warranty-add-remove"{% if is_warranty_added == true %} checked="checked"{% endif %} autocomplete="off">
+
+          {% if section.settings.warranty_show_checkbox_as_toggler == true %}
+            <span class="toggler-checkbox"></span>
+          {% else %}
+            <span class="input-checkbox-styled">{% include 'shineon-app-icons' with 'checked-checkbox' %}</span>
+          {% endif %}
+
+          <div class="description-icon">
+            <div class="icon">
+              {% include 'shineon-app-icons' with 'warranty-image-new' %}
+            </div>
+            <div class="description">
+              <div class="header-with-info">
+                <p class="header">{{ warranty_prod.title }}</p>
+              </div>
+              {% assign warranty_per_month = 45 | money %}
+              <p class="warranty-per-month">{{ 'addons_warranty_cost_less_html' | t | replace: '[price]',  warranty_per_month }}</p>
+            </div>
+          </div>
+        </div>
+        <div class="t73-custom-sec">
+          <ul>
+            <li>
+              <span>{% include 'shineon-app-icons' with 'checked-checkbox' %}</span> {{ 'addons_warranty_usp_1' | t }}
+            </li>
+            <li>
+              <span>{% include 'shineon-app-icons' with 'checked-checkbox' %}</span> {{ 'addons_warranty_usp_2' | t }}<a href="#" class="info-icon">{{ 'addons_warranty_info_popup' | t }}</a>
+            </li>
+          </ul>
+          {% assign warranty_product_price_old = warranty_product.compare_at_price | money %}
+          <p style="display:flex;flex-direction:column;">
+            <span class="money">{{ warranty_product_price_old }}</span>
+            <span class="money_current">{{ warranty_product_price }}</span>
+          </p>
+        </div>
+      </label>
+    </div>
+    {% endif %}
+    {% endunless %}
+
+  {% when 'input_field_type_cuntom_not_none-select' %}
+    <div class="so-custom-field-wrap {{ input.grid }}">
+      <label for="{{ input.id }}">{{ input_label }}</label>
+      {% if input.class contains 'select-centered' %}
+        <div class="select-centered-wrap">
+          <span class="select-centered-placeholder">{{ input_placeholder }}</span>
+      {% endif %}
+      <select name="properties[{{ input.name }}]" id="{{ input.id }}" class="{{ input.class }}" {{ required }}>
+      {% if input.class contains 'select-centered' %}
+        {% assign input_placeholder = '' %}
+      {% endif %}
+        <option selected disabled>{{ input_placeholder }}</option>
+        {% for option in input.options %}
+          <option value="{{ option }}">{{ option }}</option>
+        {% endfor %}
+      </select>
+      {% if input.class contains 'select-centered' %}
+        </div>
+      {% endif %}
+    </div>
+
+  {% when 'swatches' %}
+
+    {% assign so_translation = metal_label | t %}
+    {% if metal_label == null or metal_label == '' %}
+      {% assign so_translation = variant.option1 %}
+      {% if is_wooden_box_icons == true and wooden_box_variant_id == variant.id and section.settings.use_custom_variant_title == true %}
+        {% assign so_translation = 'lux_box_title' | t %}
+      {% endif %}
+    {% endif %}
+
+    {% if is_ready_for_3344 == true and product.options.size < 2 %}
+      {% if variant.option1 == product.options_with_values[0].values[0] %}
+        {% assign so_translation = 'cro_text_for_standard_box_variant' | t %}
+      {% endif %}
+      {% if variant.option1 == product.options_with_values[0].values[1] %}
+        {% assign so_translation = 'cro_text_for_luxury_box_variant' | t %}
+      {% endif %}
+    {% endif %}
+    <div class="{% if is_product_birthstone %}so-col-12 {% else %}so-col-6-sm {% endif %}so-label-cell-pad{% if display_option1_metal == true and product.options_with_values.size > 1 %} so-variant-change-metal so-variant-change-metal-{{ data_metal }} {{ variant_active }} {{ variant_metal_visibility }}{% else %} so-variant-change so-option-index-0{% endif %} {{ variant_visibility }}{% if out_of_stock == true %} out-of-stock{% endif %}" data-variant_id="{{ variant.id }}" data-metal="{{ data_metal }}" data-gold="{{ data_metal_gold }}" data-option="option1" data-option1="{{ variant.option1 | escape }}" data-option2="{{ variant.option2 | escape }}" data-option3="{{ variant.option3 | escape }}" data-accessory-quantity="{{ data_accessory_quantity }}">
+      <label class="so-swatch{% if is_wooden_box_icons == true %} so-swatch-with-box{% endif %}{% if metal_swatch_view == false and metal_swatch_svg != true %} hide-metal-swatch{% elsif metal_swatch_view == true and has_gold_swatch == false and metal_swatch_svg != true %} hide-metal-swatch{% endif %}{% if metal_swatch_svg == true %} metal-swatch-svg{% endif %}{% if cro_design_product != false %} cro-design-product-true{% endif %}">
+        <div class="so-label-symbol-wrap">
+          {% if cro_design_product == false %}
+          <span class="so-swatch-metal so-swatch-metal-{{ data_metal }}">
+          </span>
+          <div class="so-swatch-metal-icon so-swatch-metal-icon-{{ data_metal }}">
+            {% if data_metal_gold == 1 %}
+              <svg width="45" height="45" viewBox="0 0 45 45" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="22.5" cy="22.5" r="22.5" fill="url(#paint0_linear_5780_367)"></circle>
+                <defs>
+                  <linearGradient id="paint0_linear_5780_367" x1="0" y1="22.5" x2="45" y2="22.5" gradientUnits="userSpaceOnUse">
+                    <stop stop-color="#C89749"></stop>
+                    <stop offset="0.15" stop-color="#EFC56C"></stop>
+                    <stop offset="0.28" stop-color="#FFEE9D"></stop>
+                    <stop offset="0.38" stop-color="#DEAC55"></stop>
+                    <stop offset="0.51" stop-color="#E8C576"></stop>
+                    <stop offset="0.73" stop-color="#FCF6B2"></stop>
+                    <stop offset="1" stop-color="#CA983E"></stop>
+                  </linearGradient>
+                </defs>
+              </svg>
+            {% else %}
+              <svg width="45" height="45" viewBox="0 0 45 45" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="22.5" cy="22.5" r="22.5" fill="url(#paint0_linear_5780_366)"></circle>
+                <defs>
+                  <linearGradient id="paint0_linear_5780_366" x1="-3.93577e-09" y1="22.5" x2="50.8405" y2="22.7225" gradientUnits="userSpaceOnUse">
+                    <stop stop-color="#939393"></stop>
+                    <stop offset="0.15" stop-color="#9E9E9E"></stop>
+                    <stop offset="0.28" stop-color="#E5E5E5"></stop>
+                    <stop offset="0.423477" stop-color="#939393"></stop>
+                    <stop offset="0.51" stop-color="#BFBFBF"></stop>
+                    <stop offset="0.73" stop-color="#F5F5F5"></stop>
+                    <stop offset="1" stop-color="#A5A5A5"></stop>
+                  </linearGradient>
+                </defs>
+              </svg>
+            {% endif %}
+          </div>
+          {% endif %}
+          <span class="so-translation">
+            {% if cro_design_product != false and is_wooden_box_icons != true %}
+              {% if data_metal_gold == 1 %}
+                {% assign cro_metal_icon = 'gold-button' %}
+              {% else %}
+                {% assign cro_metal_icon = 'white-gold-button' %}
+              {% endif %}
+              <span class="so-swatch-metal-cro">{% include 'shineon-app-icons' with cro_metal_icon %}</span>
+            {% endif %}
+            {% if is_wooden_box_icons == true and wooden_box_variant_id == variant.id %}
+            <span class="box-icon wooden-box">{% include 'shineon-app-icons' with 'box-icon-wooden' %}</span>
+            {% endif %}
+            {% if is_wooden_box_icons == true and regular_variant_id == variant.id %}
+            <span class="box-icon oreo-box">{% include 'shineon-app-icons' with 'box-icon-oreo' %}</span>
+            {% endif %}
+            {% if cro_design_product == false %}
+              {% if so_translation.size > 0 %}
+                {{ so_translation }}
+              {% else %}
+                {{ variant.title }}
+              {% endif %}
+            {% else %}
+              {% if so_translation contains 'Gold' or so_translation contains 'gold' %}
+                {% if so_translation contains '14K' or so_translation contains '14k' %}
+                  {% assign so_translation = 'cro_text_for_14_gold_variant' | t %}
+                {% elsif so_translation contains '18K' or so_translation contains '18k' %}
+                  {% if so_translation == '18k Yellow Gold Finish' and has_multiple_metals != true %}
+                    {% assign so_translation = 'cro_text_for_18_gold_variant' | t %}
+                  {% elsif so_translation contains 'Gold Finish' %}
+                    {% assign so_translation = 'cro_text_for_18_gold_silver_variant' | t %}
+                  {% endif %}
+                {% endif %}
+              {% elsif so_translation == 'Stainless' %}
+                {% assign so_translation = 'cro_text_for_silver_variant' | t %}
+              {% endif %}
+              <div>
+                {% if has_gold_variants %}
+                  {% assign upsell_price = gold_variant_price | minus: not_gold_variant_price %}
+                {% else %}
+                  {% assign upsell_price = wooden_box_variant_price | minus: standard_box_variant_price %}
+                {% endif %}
+
+                {% assign show_gold_price_on_swatch = false %}
+                {% if data_metal_gold == 1 and section.settings.show_upsell_price_on_swatch_431 == true %}
+                  {% assign show_gold_price_on_swatch = true %}
+                {% endif %}
+                <span>{{ so_translation }}{% if show_gold_price_on_swatch or is_wooden_box_icons == true and wooden_box_variant_id == variant.id %}{% unless section.settings.show_upsell_price_on_swatch_431 == false %} - {{ upsell_price | money }}{% endunless %}{% endif %}</span>
+
+                {% capture upsell_swtch_intro_text %}{% if is_wooden_box_icons == true and wooden_box_variant_id == variant.id %}{{ 'lux_box_intro_text' | t }}{% elsif data_metal_gold == 1 %}{{ 'gold_variant_intro_text' | t }}{% endif %}{% endcapture %}
+
+                {% unless upsell_swtch_intro_text contains 'translation missing' or upsell_swtch_intro_text.size < 1 %}
+                <p class="upsell_swtch_intro_text">
+                  {{ upsell_swtch_intro_text }}
+                </p>
+                {% endunless %}
+              </div>
+            {% endif %}
+            {% if out_of_stock == true %}<i class="notification">{{ 'purchase_form_out_of_stock' | t }}</i>{% endif %}
+          </span>
+        </div>
+
+      </label>
+    </div><!-- END so-label-cell-pad so-variant-change so-option-index-0-->
+
+  {% when 'roman-date' %}
+    <section class="romann-datepicker">
+      {% assign roman_date_label = 'roman_date_label' | t %}
+      {% if sided_necklace == true %}
+        {% assign roman_date_label = 'roman_date_label_stick' | t %}
+      {% endif %}
+      <div class="so-custom-field-wrap">
+        <label>{{ roman_date_label }}</label>
+      </div>
+      <div class="romann-datepicker__position">
+        <div class="romann-datepicker__input-position">
+          <div class="so-custom-field-wrap">
+            <input type='text' class="romann-datepicker__input datepicker-here" placeholder="{{ 'roman_date_input_placeholder' | t }}" required data-language='en' data-auto-close="true" readonly="readonly" data-view="years" />
+          </div>
+        </div>
+        <div class="romann-datepicker__text-position">
+         <p class="romann-datepicker__text"></p>
+        </div>
+      </div>
+    </section>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/air-datepicker/2.2.3/js/i18n/datepicker.en.js"></script>
+    <script type="text/javascript">
+      if($('.romann-datepicker__input').length){
+
+        {% assign months_arr = 'months_arr' | t | split: ', ' %}
+        {% assign months_arr_short = 'months_arr_short' | t | split: ', ' %}
+        {% assign days_arr = 'days_arr' | t | split: ', ' %}
+        {% assign days_short = 'days_short' | t | split: ', ' %}
+        {% assign days_min = 'days_min' | t | split: ', ' %}
+
+        var months_arr = {{ months_arr | json }},
+            months_arr_short = {{ months_arr_short | json }},
+            days_arr = {{ days_arr | json }},
+            days_short = {{ days_short | json }},
+            days_min = {{ days_min | json }};
+
+        $.fn.datepicker.language['en'] = {
+            days: days_arr,
+            daysShort: days_short,
+            daysMin: days_min,
+            months: months_arr,
+            monthsShort: months_arr_short,
+            today: '{{ 'datepicker_today' | t }}',
+            clear: '{{ 'datepicker_clear' | t }}',
+            dateFormat: '{{ 'datepicker_dateformat' | t }}',
+            timeFormat: '{{ 'datepicker_timeformat' | t }}',
+            firstDay: 0
+        }
+
+        $('.romann-datepicker__input').datepicker().data('datepicker').selectDate();
+        $('.so-roman-numeral-date').parent().hide();
+
+        window.onload = function() {
+
+            // First yaer
+            $('.romann-datepicker__input').click(function () {
+                $('.datepicker--nav-title').click();
+                $('.datepicker--nav-title').click();
+            });
+
+            var inputVal = $('.romann-datepicker__input').val();
+
+            if(inputVal.length >= 1){
+                const { romanice }  = Romanice;
+                const standardConverter = romanice();
+                var array = inputVal.split('/'),
+                    date = array[0], month = array[1], year = array[2];
+                const romanDate = standardConverter.toRoman(date);
+                const romanMonth = standardConverter.toRoman(month);
+                const romanYear = standardConverter.toRoman(year);
+
+                $('.romann-datepicker__text').empty()
+                $('.romann-datepicker__text').append(romanDate + '.' + romanMonth + '.' + romanYear);
+                $('.so-roman-numeral-date').val(romanDate + '.' + romanMonth + '.' + romanYear);
+            }
+        };
+
+        $('.romann-datepicker__input').blur(function(){
+            var inputVal = $('.romann-datepicker__input').val();
+
+            if(inputVal.length >= 1){
+                const { romanice }  = Romanice;
+                const standardConverter = romanice();
+                var array = inputVal.split('/'),
+                    date = array[0], month = array[1], year = array[2];
+                const romanDate = standardConverter.toRoman(date);
+                const romanMonth = standardConverter.toRoman(month);
+                const romanYear = standardConverter.toRoman(year);
+
+                $('.romann-datepicker__text').empty()
+                $('.romann-datepicker__text').append(romanDate + '.' + romanMonth + '.' + romanYear);
+                $('.so-roman-numeral-date').val(romanDate + '.' + romanMonth + '.' + romanYear);
+
+                $('.so-custom-field-wrap').removeClass('input-error');
+                $('.required-input-tooltip').hide();
+            }
+        });
+      }
+    </script>
+
+  {% when 'map-coordinates' %}
+    <section class="map-coordinates">
+     <div class="pac-card" id="pac-card">
+      <div id="pac-container">
+      {% assign roman_coordinates_label = 'roman_coordinates_label' | t %}
+      {% if sided_necklace == true %}
+        {% assign roman_coordinates_label = 'roman_coordinates_label_stick' | t %}
+      {% endif %}
+      <div class="so-custom-fields-wrap">
+        <div class="so-custom-field-wrap">
+          <label>{{ roman_coordinates_label }}</label>
+          <input id="pac-input" type="text" placeholder="Enter a location" onkeypress="return event.keyCode != 13;" required />
+        </div>
+      </div>
+       <div id="btn-location">
+         {% include 'shineon-app-icons' with 'location' %}
+       </div>
+      </div>
+      <div class="romann-datepicker__text-position">
+       <p id="pac-text" class="romann-datepicker__text">{{ 'roman_coordinates_lat_deafult' | t }}{{ 'roman_coordinates_lat' | t }} {{ 'roman_coordinates_long_deafult' | t }}{{ 'roman_coordinates_long' | t }}</p>
+      </div>
+     </div>
+     <div id="map"></div>
+     <div id="infowindow-content">
+      <span id="place-name" class="title"></span><br />
+      <span id="place-address"></span>
+     </div>
+    </section>
+
+
+    <script>
+     // This example requires the Places library. Include the libraries=places
+     // parameter when you first load the API. For example:
+     // <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places">
+     var myLocation = {};
+     function initMap() {
+      var btnLocation = document.getElementById("btn-location");
+      myLocation = {lat: {{ 'roman_coordinates_lat_deafult' | t }}*1, lng: {{ 'roman_coordinates_long_deafult' | t }}*1};
+      const map = new google.maps.Map(document.getElementById("map"), {
+       center: { lat: {{ 'roman_coordinates_lat_deafult' | t }}*1, lng: {{ 'roman_coordinates_long_deafult' | t }}*1 },
+       zoom: 11,
+       mapTypeControl: false,
+       streetViewControl: false,
+      });
+      const card = document.getElementById("pac-card");
+      const input = document.getElementById("pac-input");
+      const biasInputElement = document.getElementById("use-location-bias");
+      const strictBoundsInputElement = document.getElementById("use-strict-bounds");
+
+
+      const autocomplete = new google.maps.places.Autocomplete(input);
+      // Bind the map's bounds (viewport) property to the autocomplete object,
+      // so that the autocomplete requests use the current map bounds for the
+      // bounds option in the request.
+      autocomplete.bindTo("bounds", map);
+      const infowindow = new google.maps.InfoWindow();
+      const infowindowContent = document.getElementById("infowindow-content");
+      infowindow.setContent(infowindowContent);
+      const marker = new google.maps.Marker({
+       map,
+       anchorPoint: new google.maps.Point(0, -29),
+      });
+      autocomplete.addListener("place_changed", () => {
+       infowindow.close();
+       marker.setVisible(false);
+       const place = autocomplete.getPlace();
+
+       if (!place.geometry || !place.geometry.location) {
+
+        return;
+       }
+
+       // If the place has a geometry, then present it on a map.
+       if (place.geometry.viewport) {
+        map.fitBounds(place.geometry.viewport);
+       } else {
+        map.setCenter(place.geometry.location);
+        map.setZoom(17);
+       }
+       marker.setPosition(place.geometry.location);
+       marker.setVisible(true);
+       infowindowContent.children["place-name"].textContent = place.name;
+       infowindowContent.children["place-address"].textContent =
+               place.formatted_address;
+       infowindow.open(map, marker);
+      });
+
+      if (navigator.geolocation) {
+       navigator.geolocation.getCurrentPosition(function(position) {
+        myLocation.lat = position.coords.latitude;
+        myLocation.lng = position.coords.longitude;
+        var markermy = new google.maps.Marker({
+         position: myLocation,
+         map: map
+        });
+        map.setCenter(myLocation);
+       }, function() {
+        handleLocationError(true, map.getCenter());
+       });
+      } else {
+       // Browser doesn't support Geolocation
+       handleLocationError(false, map.getCenter());
+      }
+      function handleLocationError(browserHasGeolocation, infoWindow, pos) {
+       console.log(browserHasGeolocation ?
+               'Error: The Geolocation service failed.' :
+               'Error: Your browser doesn\'t support geolocation.');
+      }
+
+      google.maps.event.addListener(map, 'center_changed', function(){
+       var mylat = map.getCenter().lat();
+       var mylng = map.getCenter().lng();
+       var mylatR = Math.round(mylat * 1000) / 1000;
+       var mylngR = Math.round(mylng * 1000) / 1000;
+       var wrap = document.getElementById('pac-text');
+       while(wrap.firstChild) wrap.removeChild(wrap.firstChild);
+       document.getElementById("pac-text").innerHTML =  mylatR + "{{ 'roman_coordinates_lat' | t }}&nbsp;" + mylngR + "{{ 'roman_coordinates_long' | t }}";
+       var mapCordPropInput = document.getElementById("so-coordinates");
+        if (mapCordPropInput)
+        {
+          mapCordPropInput.value = mylatR + "{{ 'roman_coordinates_lat' | t }} " + mylngR + "{{ 'roman_coordinates_long' | t }}";
+        }
+      });
+
+      btnLocation.addEventListener('click', function() {
+        goToMyLocation();
+        setTimeout(function(){
+          var loc = document.getElementById("pac-text").textContent;
+          document.getElementById("pac-input").value =  loc;
+        }, 500);
+      });
+      function goToMyLocation() {
+        map.setCenter(myLocation);
+      }
+     }
+
+    document.addEventListener("DOMContentLoaded", function(event) {
+      jQuery( document ).ready(function($) {
+        $("#so-coordinates").parents('.so-custom-field-wrap').hide();
+      });
+    });
+
+    </script>
+
+    <!-- Async script executes immediately and must be after any DOM elements used in callback. -->
+    <script
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBGZm5dMNJrPeqjdzeho3VTyYvP9S-1xGg&callback=initMap&libraries=places&v=weekly"
+            async
+    ></script>
+
+  {% when 'trustpilot-reviews' %}
+    <div class="trustpilot-reviews-w">
+      <div class="trustpilot-reviews-logo">
+        <img src="//cdn.trustpilot.net/brand-assets/1.6.0/logo-black.svg" alt="5 stars: Excellent">
+      </div>
+      <div class="trustpilot-reviews-star-rating">
+        <img style="max-width: 100%;" src="//cdn.trustpilot.net/brand-assets/4.1.0/stars/stars-5.svg" alt="5 stars: Excellent">
+      </div>
+      <div class="trustpilot-reviews-quantity">
+        <p>{{ 'cro_design_excellent_reviews_trsustpilot_count' | t }}</p>
+      </div>
+
+      <div class="trustpilot-reviews-items">
+        {% for locale in input.locales %}
+          {% if shop.locale contains locale[0] %}
+            {% assign input_label = locale[1].label %}
+            {% assign input_placeholder = locale[1].placeholder %}
+          {% endif %}
+        {% endfor %}
+        {% assign lang_fake_reviews_cro_design = 'product_shineon_reviews_cro_design_1169_2' | t %}
+        {% assign lang_fake_reviews_cro_design = lang_fake_reviews_cro_design | split: '&' %}
+        {% for review in lang_fake_reviews_cro_design %}
+          {% assign review_item = review | split: '@' %}
+          <div class="tp-review-item">
+            <div class="title">{{ review_item[1] }}</div>
+            <div class="text">{{ review_item[3] }}</div>
+            <h4 class="author">{{ review_item[2] }}</h4>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+
+  {% when 'product-reviews-photo' %}
+    {% if shop.metafields.shineon.is_shineon_brand == true and shop.metafields.shineon.is_shineon_brand != blank %}
+      {% if cro_design_product != false %}
+        {% assign product_reviews_photo_type = '.jpg' %}
+        {% assign product_reviews_photo = 'product-reviews-photo-' | append: cro_design_product | append: product_reviews_photo_type | img_url %}
+
+        {% if product_reviews_photo contains 'no-image-' %}
+          {% assign product_reviews_photo_type = '.png' %}
+        {% endif %}
+        {% assign product_reviews_photo = 'product-reviews-photo-' | append: cro_design_product | append: product_reviews_photo_type | file_img_url: 'master' %}
+        <img id="product-reviews-photo" src="{{ product_reviews_photo }}" alt="Happy customers of {{ cro_design_product }}">
+      {% endif %}
+    {% else %}
+      {% if cro_design_product != false %}
+        {% assign product_reviews_photo = 'https://cdn.shopify.com/s/files/1/0077/2420/4096/files/product-reviews-photo-' | append: cro_design_product | append: '.png' %}
+        <img id="product-reviews-photo" style="max-width: 100%;" src="{{ product_reviews_photo }}" alt="Happy customers of {{ product_reviews_photo }}">
+      {% endif %}
+    {% endif %}
+  {% when 'product-specification-photo' %}
+    {% if cro_design_product != false %}
+      {% assign product_specs_photo = 'https://cdn.shopify.com/s/files/1/0077/2420/4096/files/product-specs-photo-' | append: cro_design_product | append: '.png' %}
+      <img id="product-specification-photo" src="{{ product_specs_photo }}" alt="Specification for {{ cro_design_product }}">
+    {% endif %}
+{% endcase %}

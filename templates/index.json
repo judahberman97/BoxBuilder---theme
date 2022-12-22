@@ -1,0 +1,1037 @@
+{
+  "sections": {
+    "10c1a504-9c8b-4feb-88f4-b34e80dd0a8b": {
+      "type": "image-banner",
+      "blocks": {
+        "template--15133426352172__10c1a504-9c8b-4feb-88f4-b34e80dd0a8b-16656672537c3dd6a9-0": {
+          "type": "heading",
+          "settings": {
+            "heading": "A Heartfelt Gift",
+            "heading_size": "h1"
+          }
+        },
+        "template--15133426352172__10c1a504-9c8b-4feb-88f4-b34e80dd0a8b-16656672537c3dd6a9-1": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Women Love<\/p>",
+            "text_size": "typeset2",
+            "secondary_color": false
+          }
+        },
+        "template--15133426352172__10c1a504-9c8b-4feb-88f4-b34e80dd0a8b-16656672537c3dd6a9-2": {
+          "type": "button",
+          "settings": {
+            "button_label": "Build Her Gift",
+            "button_link": "https:\/\/mycustomheart.com\/apps\/builder?b=JZocbIym0TSaD21n2rZrFSHL",
+            "button_style_secondary": false
+          }
+        }
+      },
+      "block_order": [
+        "template--15133426352172__10c1a504-9c8b-4feb-88f4-b34e80dd0a8b-16656672537c3dd6a9-0",
+        "template--15133426352172__10c1a504-9c8b-4feb-88f4-b34e80dd0a8b-16656672537c3dd6a9-1",
+        "template--15133426352172__10c1a504-9c8b-4feb-88f4-b34e80dd0a8b-16656672537c3dd6a9-2"
+      ],
+      "settings": {
+        "image": "shopify:\/\/shop_images\/rosebear_30b673c0-db4b-4f7f-92b4-94627212e4a7.jpg",
+        "image_position": "center center",
+        "text_box_position": "middle-center",
+        "text_alignment": "center",
+        "image_ratio": "650px",
+        "show_text_box": false,
+        "full_width": true,
+        "show_divider": false,
+        "mobile_text_alignment": "center",
+        "mobile_image_ratio": "100vh",
+        "stack_images_on_mobile": true,
+        "show_text_below": false,
+        "colors_text": "#ffffff",
+        "colors_overlay": "#000000",
+        "colors_overlay_opacity": 40,
+        "padding_top": 0,
+        "padding_bottom": 0
+      }
+    },
+    "scrolling-promotion": {
+      "type": "scrolling-promotion",
+      "blocks": {
+        "image-0": {
+          "type": "image",
+          "disabled": true,
+          "settings": {
+            "image": "shopify:\/\/shop_images\/accesswire_21983_logo_1637230378_yzlog.webp",
+            "height": 40,
+            "link": ""
+          }
+        },
+        "image-1": {
+          "type": "image",
+          "disabled": true,
+          "settings": {
+            "image": "shopify:\/\/shop_images\/ecorp-logo-yahoo-gray-1_160x160_2x_47f9ccc6-a310-4af7-8d3b-af0c779cc915.png",
+            "height": 40,
+            "link": ""
+          }
+        },
+        "eb653943-80a8-46c9-afa2-690cbea9e5db": {
+          "type": "image",
+          "settings": {
+            "image": "shopify:\/\/shop_images\/a_copy.png",
+            "height": 32,
+            "link": ""
+          }
+        },
+        "b09d1af8-6226-43f7-abe7-1cdf8653f2bb": {
+          "type": "image",
+          "settings": {
+            "image": "shopify:\/\/shop_images\/heartfelt.png",
+            "height": 32,
+            "link": ""
+          }
+        },
+        "34f82cc6-f84c-45f2-a4a2-6e786cbef1ad": {
+          "type": "image",
+          "settings": {
+            "image": "shopify:\/\/shop_images\/gift.png",
+            "height": 32,
+            "link": ""
+          }
+        },
+        "bb013081-f221-4d89-ae78-edd504c872ec": {
+          "type": "image",
+          "settings": {
+            "image": "shopify:\/\/shop_images\/women.png",
+            "height": 32,
+            "link": ""
+          }
+        },
+        "b3ca4733-44bc-4be5-bc88-b3f46d73dd0e": {
+          "type": "image",
+          "settings": {
+            "image": "shopify:\/\/shop_images\/love.png",
+            "height": 32,
+            "link": ""
+          }
+        }
+      },
+      "block_order": [
+        "image-0",
+        "image-1",
+        "eb653943-80a8-46c9-afa2-690cbea9e5db",
+        "b09d1af8-6226-43f7-abe7-1cdf8653f2bb",
+        "34f82cc6-f84c-45f2-a4a2-6e786cbef1ad",
+        "bb013081-f221-4d89-ae78-edd504c872ec",
+        "b3ca4733-44bc-4be5-bc88-b3f46d73dd0e"
+      ],
+      "settings": {
+        "direction": "left",
+        "speed": 2.5,
+        "show_divider": false,
+        "colors_text": "#1a1b18",
+        "colors_background": "#ffffff",
+        "padding_top": 40,
+        "padding_bottom": 0
+      }
+    },
+    "reveal-banner": {
+      "type": "reveal-banner",
+      "blocks": {
+        "heading": {
+          "type": "heading",
+          "settings": {
+            "heading": "The Perfect Gift",
+            "heading_size": "h2"
+          }
+        },
+        "text": {
+          "type": "text",
+          "settings": {
+            "text": "<p>With a blend of heartfelt <strong>luxury, romance,<\/strong> and <em>glamour <\/em>in each of our products, My Custom Heart allows you to personalize the best gift for your special someone.<\/p><p><\/p><p>A one-of-a-kind romantic gift for your one-of-a-kind relationship.<\/p>",
+            "text_size": "typeset",
+            "secondary_color": false
+          }
+        }
+      },
+      "block_order": [
+        "heading",
+        "text"
+      ],
+      "settings": {
+        "image": "shopify:\/\/shop_images\/bund.jpg",
+        "image_position": "center center",
+        "text_alignment": "left",
+        "image_ratio": "adapt",
+        "full_width": false,
+        "show_divider": false,
+        "mobile_text_alignment": "left",
+        "mobile_image_ratio": "250px",
+        "show_text_below": true,
+        "colors_text": "#ffffff",
+        "colors_overlay": "#000000",
+        "colors_overlay_opacity": 0,
+        "padding_top": 0,
+        "padding_bottom": 0
+      }
+    },
+    "tab-collage-0": {
+      "type": "tab-collage",
+      "blocks": {
+        "image-0": {
+          "type": "image",
+          "settings": {
+            "image": "shopify:\/\/shop_images\/heartgif.gif",
+            "heading": "Step 1",
+            "description": "<p>Fully design a heart container that she will love. Just select the exterior heart color and the interior rose color. This is our famous heart container that can't be found anywhere else!<\/p>",
+            "button_label": "Build Her Gift",
+            "button_link": "https:\/\/mycustomheart.com\/apps\/builder?b=JZocbIym0TSaD21n2rZrFSHL",
+            "button_style_secondary": true
+          }
+        },
+        "image-1": {
+          "type": "image",
+          "settings": {
+            "image": "shopify:\/\/shop_images\/interior.gif",
+            "heading": "Step 2",
+            "description": "<p>Now fill the heart with her favorite items. Our vast selection of luxury items allows for billions of variations ensuring that your gift for her will truly be one-of-a-kind!<\/p>",
+            "button_label": "Build Her Gift",
+            "button_link": "https:\/\/mycustomheart.com\/apps\/builder?b=JZocbIym0TSaD21n2rZrFSHL",
+            "button_style_secondary": true
+          }
+        },
+        "image-2": {
+          "type": "image",
+          "settings": {
+            "image": "shopify:\/\/shop_images\/bundle1.gif",
+            "heading": "Step 3",
+            "description": "<p>Now add the items that will compliment the heart on the outside. Add a love note or upload an image if you would like a framed picture with her.<\/p>",
+            "button_label": "Build Her Gift",
+            "button_link": "https:\/\/mycustomheart.com\/apps\/builder?b=JZocbIym0TSaD21n2rZrFSHL",
+            "button_style_secondary": true
+          }
+        },
+        "image-3": {
+          "type": "image",
+          "settings": {
+            "image": "shopify:\/\/shop_images\/shipping1.gif",
+            "heading": "Step 4",
+            "description": "<p>You're all done! Now sit back, relax, and let us do the rest of the work for you. Your finished gift will be shipped within 24 hours and delivered within 1-5 business days!<\/p>",
+            "button_label": "Build Her Gift",
+            "button_link": "https:\/\/mycustomheart.com\/apps\/builder?b=JZocbIym0TSaD21n2rZrFSHL",
+            "button_style_secondary": true
+          }
+        }
+      },
+      "block_order": [
+        "image-0",
+        "image-1",
+        "image-2",
+        "image-3"
+      ],
+      "settings": {
+        "heading": "How To Build Her Gift",
+        "heading_size": "h1",
+        "image_position": "center center",
+        "layout": "text_first",
+        "text_box_position": "top",
+        "text_alignment": "left",
+        "image_ratio": "550px",
+        "full_width": false,
+        "show_divider": false,
+        "mobile_layout": "image_first",
+        "mobile_text_alignment": "left",
+        "mobile_image_ratio": "300px",
+        "colors_text": "#ffffff",
+        "colors_background": "#151515",
+        "padding_top": 36,
+        "padding_bottom": 36
+      }
+    },
+    "guarantees": {
+      "type": "guarantees",
+      "blocks": {
+        "guarantee-0": {
+          "type": "guarantee",
+          "settings": {
+            "icon": "heart",
+            "title": "",
+            "title_size": "h2",
+            "text": "<p>Handmade With Love<\/p>"
+          }
+        },
+        "guarantee-1": {
+          "type": "guarantee",
+          "settings": {
+            "icon": "plane",
+            "title": "",
+            "title_size": "h4",
+            "text": "<p>Ships Within 24 Hours<\/p>"
+          }
+        },
+        "guarantee-2": {
+          "type": "guarantee",
+          "settings": {
+            "icon": "carrot",
+            "title": "",
+            "title_size": "h4",
+            "text": "<p>Cruelty Free Forever<\/p>"
+          }
+        },
+        "guarantee-3": {
+          "type": "guarantee",
+          "settings": {
+            "icon": "shield",
+            "title": "",
+            "title_size": "h4",
+            "text": "<p>Money Back Guarantee<\/p>"
+          }
+        }
+      },
+      "block_order": [
+        "guarantee-0",
+        "guarantee-1",
+        "guarantee-2",
+        "guarantee-3"
+      ],
+      "settings": {
+        "heading": "",
+        "heading_size": "h2",
+        "layout": "default",
+        "column_alignment": "center",
+        "secondary_background": false,
+        "full_width": false,
+        "show_divider": false,
+        "columns_mobile": "2",
+        "padding_top": 36,
+        "padding_bottom": 36
+      }
+    },
+    "video-hero": {
+      "type": "video-hero",
+      "settings": {
+        "video_url": "https:\/\/cdn.shopify.com\/videos\/c\/o\/v\/35c3bcc0d0084fc0923d285082ec6a2c.mp4",
+        "text_box_position": "middle-center",
+        "text_alignment": "center",
+        "image_ratio": "650px",
+        "show_text_box": false,
+        "full_width": false,
+        "show_divider": false,
+        "mobile_text_alignment": "center",
+        "mobile_image_ratio": "250px",
+        "show_text_below": false,
+        "colors_text": "#ffffff",
+        "colors_overlay": "#000000",
+        "colors_overlay_opacity": 0,
+        "padding_top": 36,
+        "padding_bottom": 36
+      }
+    },
+    "countdown-timer": {
+      "type": "countdown-timer",
+      "disabled": true,
+      "blocks": {
+        "subheading": {
+          "type": "text",
+          "settings": {
+            "text": "<p><em>SUBHEADING<\/em><\/p>",
+            "text_size": "typeset",
+            "secondary_color": true
+          }
+        },
+        "heading": {
+          "type": "heading",
+          "settings": {
+            "heading": "Countdown timer",
+            "heading_size": "h1"
+          }
+        },
+        "text": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Pair text with an image to focus on your chosen product, collection, or blog post. Add details on availability, style, or even provide a review.<\/p>",
+            "text_size": "typeset",
+            "secondary_color": false
+          }
+        },
+        "countdown": {
+          "type": "countdown",
+          "settings": {
+            "date": "01-01-2023",
+            "number_size": "small",
+            "message": "<p>New sales and discounts are added all the time.<\/p>",
+            "message_size": "typeset2"
+          }
+        },
+        "button": {
+          "type": "button",
+          "settings": {
+            "button_label": "Button label",
+            "button_link": "",
+            "button_style_secondary": false
+          }
+        }
+      },
+      "block_order": [
+        "subheading",
+        "heading",
+        "text",
+        "countdown",
+        "button"
+      ],
+      "settings": {
+        "image_position": "center center",
+        "layout": "text_first",
+        "text_box_position": "middle",
+        "text_alignment": "left",
+        "image_ratio": "650px",
+        "full_width": false,
+        "show_divider": false,
+        "mobile_layout": "image_first",
+        "mobile_text_alignment": "left",
+        "mobile_image_ratio": "auto",
+        "colors_text": "#1a1b18",
+        "colors_background": "#f9f9f9",
+        "padding_top": 36,
+        "padding_bottom": 36
+      }
+    },
+    "shop-the-look": {
+      "type": "shop-the-look",
+      "disabled": true,
+      "blocks": {
+        "product-0": {
+          "type": "product",
+          "settings": {
+            "product": "",
+            "color": "#000000",
+            "horizontal": 30,
+            "vertical": 40
+          }
+        },
+        "product-1": {
+          "type": "product",
+          "settings": {
+            "product": "",
+            "color": "#000000",
+            "horizontal": 70,
+            "vertical": 45
+          }
+        },
+        "product-2": {
+          "type": "product",
+          "settings": {
+            "product": "",
+            "color": "#000000",
+            "horizontal": 45,
+            "vertical": 65
+          }
+        },
+        "f0e0037e-550a-47d7-a9d2-0a53907afd08": {
+          "type": "product",
+          "settings": {
+            "product": "",
+            "color": "#000000",
+            "horizontal": 30,
+            "vertical": 40
+          }
+        },
+        "828b6a9c-778b-49e4-b327-79ecf9701e1a": {
+          "type": "product",
+          "settings": {
+            "product": "24k-blue-rose",
+            "color": "#000000",
+            "horizontal": 30,
+            "vertical": 40
+          }
+        }
+      },
+      "block_order": [
+        "product-0",
+        "product-1",
+        "product-2",
+        "f0e0037e-550a-47d7-a9d2-0a53907afd08",
+        "828b6a9c-778b-49e4-b327-79ecf9701e1a"
+      ],
+      "settings": {
+        "heading": "Shop the Look",
+        "heading_size": "h1",
+        "layout": "image_first",
+        "text_box_position": "middle",
+        "text_alignment": "left",
+        "full_width": false,
+        "show_divider": false,
+        "mobile_text_alignment": "left",
+        "image_ratio": "portrait",
+        "image_position": "center center",
+        "enable_image_fill": true,
+        "show_secondary_image": true,
+        "show_vendor": true,
+        "show_rating": true,
+        "show_quick_buy": false,
+        "enable_quick_view": true,
+        "enable_color_swatches": true,
+        "enable_countdown": true,
+        "padding_top": 36,
+        "padding_bottom": 36
+      }
+    },
+    "lookbook": {
+      "type": "lookbook",
+      "disabled": true,
+      "blocks": {
+        "look-0": {
+          "type": "look",
+          "settings": {
+            "product": "24k-gold-dipped-red-rose-leather-box",
+            "enable_quick_view": true,
+            "color": "#bf0404",
+            "horizontal": 20,
+            "vertical": 16
+          }
+        },
+        "ca563abb-8bcc-4dd9-a515-b1ad2d843198": {
+          "type": "look",
+          "settings": {
+            "product": "red-1",
+            "enable_quick_view": true,
+            "color": "#bf0404",
+            "horizontal": 20,
+            "vertical": 55
+          }
+        },
+        "look-1": {
+          "type": "look",
+          "settings": {
+            "product": "cinna-bun-bun",
+            "enable_quick_view": true,
+            "color": "#bf0404",
+            "horizontal": 29,
+            "vertical": 60
+          }
+        },
+        "look-2": {
+          "type": "look",
+          "settings": {
+            "product": "original",
+            "enable_quick_view": true,
+            "color": "#bf0404",
+            "horizontal": 50,
+            "vertical": 84
+          }
+        },
+        "9bf04160-d18c-460e-bf8c-6060a5b4c054": {
+          "type": "look",
+          "settings": {
+            "product": "standard",
+            "enable_quick_view": true,
+            "color": "#bf0404",
+            "horizontal": 41,
+            "vertical": 56
+          }
+        },
+        "9a4493a7-6adb-4b80-9178-d383e45842d5": {
+          "type": "look",
+          "settings": {
+            "product": "red-frost-bear",
+            "enable_quick_view": true,
+            "color": "#bf0404",
+            "horizontal": 61,
+            "vertical": 40
+          }
+        }
+      },
+      "block_order": [
+        "look-0",
+        "ca563abb-8bcc-4dd9-a515-b1ad2d843198",
+        "look-1",
+        "look-2",
+        "9bf04160-d18c-460e-bf8c-6060a5b4c054",
+        "9a4493a7-6adb-4b80-9178-d383e45842d5"
+      ],
+      "settings": {
+        "image": "shopify:\/\/shop_images\/Step_3.jpg",
+        "full_width": true,
+        "show_divider": false,
+        "padding_top": 36,
+        "padding_bottom": 36
+      }
+    },
+    "2397016e-52dd-413c-8043-6b203262eb61": {
+      "type": "image-comparison",
+      "disabled": true,
+      "blocks": {
+        "template--15133426352172__2397016e-52dd-413c-8043-6b203262eb61-16661123527ce5543c-0": {
+          "type": "look",
+          "settings": {
+            "title": "",
+            "title_size": "small",
+            "title_position": "start"
+          }
+        },
+        "template--15133426352172__2397016e-52dd-413c-8043-6b203262eb61-16661123527ce5543c-1": {
+          "type": "look",
+          "settings": {
+            "title": "",
+            "title_size": "small",
+            "title_position": "start"
+          }
+        }
+      },
+      "block_order": [
+        "template--15133426352172__2397016e-52dd-413c-8043-6b203262eb61-16661123527ce5543c-0",
+        "template--15133426352172__2397016e-52dd-413c-8043-6b203262eb61-16661123527ce5543c-1"
+      ],
+      "settings": {
+        "heading": "Image comparison",
+        "heading_size": "h1",
+        "layout": "horizontal",
+        "full_width": false,
+        "show_divider": false,
+        "colors_line": "#ffffff",
+        "padding_top": 36,
+        "padding_bottom": 0
+      }
+    },
+    "image-comparison": {
+      "type": "image-comparison",
+      "disabled": true,
+      "blocks": {
+        "look-1": {
+          "type": "look",
+          "settings": {
+            "title": "",
+            "title_size": "small",
+            "title_position": "start"
+          }
+        },
+        "57af5feb-c725-4b02-9d00-75ea98f17df2": {
+          "type": "look",
+          "settings": {
+            "title": "",
+            "title_size": "small",
+            "title_position": "start"
+          }
+        }
+      },
+      "block_order": [
+        "look-1",
+        "57af5feb-c725-4b02-9d00-75ea98f17df2"
+      ],
+      "settings": {
+        "heading": "",
+        "heading_size": "h1",
+        "layout": "horizontal",
+        "full_width": false,
+        "show_divider": false,
+        "colors_line": "#ffffff",
+        "padding_top": 0,
+        "padding_bottom": 36
+      }
+    },
+    "bundle-products": {
+      "type": "bundle-products",
+      "disabled": true,
+      "blocks": {
+        "product-0": {
+          "type": "product",
+          "settings": {
+            "product": "black",
+            "show_vendor": false,
+            "enable_quick_view": true,
+            "image_ratio": "adapt",
+            "color": "#000000",
+            "horizontal": 23,
+            "vertical": 86
+          }
+        },
+        "product-1": {
+          "type": "product",
+          "settings": {
+            "product": "",
+            "show_vendor": true,
+            "enable_quick_view": true,
+            "image_ratio": "square",
+            "color": "#000000",
+            "horizontal": 70,
+            "vertical": 45
+          }
+        },
+        "product-2": {
+          "type": "product",
+          "settings": {
+            "product": "original",
+            "show_vendor": false,
+            "enable_quick_view": true,
+            "image_ratio": "square",
+            "color": "#000000",
+            "horizontal": 42,
+            "vertical": 91
+          }
+        }
+      },
+      "block_order": [
+        "product-0",
+        "product-1",
+        "product-2"
+      ],
+      "settings": {
+        "subheading": "SUBHEADING",
+        "heading": "Bundle Products",
+        "heading_size": "h1",
+        "image": "shopify:\/\/shop_images\/Step_3.jpg",
+        "layout": "text_first",
+        "text_box_position": "top",
+        "text_alignment": "left",
+        "full_width": false,
+        "show_divider": false,
+        "mobile_text_alignment": "left",
+        "padding_top": 36,
+        "padding_bottom": 36
+      }
+    },
+    "testimonials": {
+      "type": "testimonials",
+      "blocks": {
+        "testimonial-0": {
+          "type": "testimonial",
+          "settings": {
+            "icon": "5",
+            "text": "<p><strong>Ayyye I finally got one! <\/strong><\/p><p>They sell out every year and last year I was too late, but your boy decided to shop early this year. I luuuh you girrrl, I hope you love your Custom Heart. Happy Valentine’s Day!!! ♥️<\/p>",
+            "image": "shopify:\/\/shop_images\/Screen-Shot-2022-02-11-at-8.25.43-PM.jpg",
+            "author": "Tim Chantarangsu"
+          }
+        },
+        "testimonial-1": {
+          "type": "testimonial",
+          "settings": {
+            "icon": "5",
+            "text": "<p><strong>My Custom Heart is Worth It<\/strong><\/p><p>I was skeptical of spending the money for an online purchase, but it was worth every penny. EVERYTHING was beautiful, the pictures honestly don't do it justice. <\/p>",
+            "image": "shopify:\/\/shop_images\/pexels-serg-alesenko-13938529.jpg",
+            "author": "Max Scheiber"
+          }
+        },
+        "testimonial-2": {
+          "type": "testimonial",
+          "settings": {
+            "icon": "5",
+            "text": "<p><strong>The Jewelry Impressed Me<\/strong><\/p><p>I did not expect the jewelry to be so nice given the price. Each piece was intricate and really pops whenever my girlfriend wears it. The necklace and bracelet both look absolutely stunning on her. <\/p>",
+            "image": "shopify:\/\/shop_images\/pexels-pixabay-247908.jpg",
+            "author": "Andrew Lotz"
+          }
+        },
+        "testimonial-3": {
+          "type": "testimonial",
+          "settings": {
+            "icon": "5",
+            "text": "<p><strong>Mother's Day Gift For My Wife<\/strong><\/p><p>It was a Mother's day gift for my wife. She loves it!<\/p>",
+            "image": "shopify:\/\/shop_images\/testimonial3.jpg",
+            "author": "Terry"
+          }
+        },
+        "testimonial-4": {
+          "type": "testimonial",
+          "settings": {
+            "icon": "5",
+            "text": "<p><strong>A+ For My Boyfriend<\/strong><\/p><p>My boyfriend got me a custom heart for our first anniversary together, and from a women's perspective, wow this is the perfect gift for a girl you want to impress. The sapphire necklace he got me is beautiful and the rest of the gifts and heart packaging are great as well.<\/p>",
+            "image": "shopify:\/\/shop_images\/coupletestimonial.jpg",
+            "author": "Emily Scheff"
+          }
+        },
+        "6869667e-3ceb-4628-b0b1-3a22d34a3f38": {
+          "type": "testimonial",
+          "settings": {
+            "icon": "5",
+            "text": "<p><strong>High Quality Gift<\/strong><\/p><p>Such a great idea for gift giving to women. The heart container really is beautiful and high quality. The jewelry was also an amazing touch. <\/p>",
+            "image": "shopify:\/\/shop_images\/tes4.jpg",
+            "author": "Chris Tammel"
+          }
+        },
+        "d2ede420-d583-48cb-8a83-906290ceefc6": {
+          "type": "testimonial",
+          "settings": {
+            "icon": "5",
+            "text": "<p><strong>Great Anniversary Gift<\/strong><\/p><p>If you're trying to make your girl happy this is the gift to get her. When my wife saw the heart, her eyes lit up, once she opened the gift I swear her smile went past her ears, and when she opened the  beautiful necklace case, she gave me the most precious look in the world. Thank you My Custom Heart for making my wife the happiest I've seen her in a long time<\/p>",
+            "image": "shopify:\/\/shop_images\/test5.jpg",
+            "author": "Craig Jacobs"
+          }
+        },
+        "8fe74cc3-9b3c-4445-8116-84193f1eb689": {
+          "type": "testimonial",
+          "settings": {
+            "icon": "5",
+            "text": "<p><strong>GREAT CUSTOMER SERVICE!!<\/strong><\/p><p>CUSTOMER SERVICE AND SATISFACTION IS OBVIOUSLY THEIR NUMBER ONE PRIORITY!! I will DEFINITELY be ordering more just from this aspect!! And anyone else reading this, you will not be disappointed! Thank you My Custom Heart!!! (And Samantha!!)<\/p>",
+            "image": "shopify:\/\/shop_images\/test6.jpg",
+            "author": "Adam Julien"
+          }
+        }
+      },
+      "block_order": [
+        "testimonial-0",
+        "testimonial-1",
+        "testimonial-2",
+        "testimonial-3",
+        "testimonial-4",
+        "6869667e-3ceb-4628-b0b1-3a22d34a3f38",
+        "d2ede420-d583-48cb-8a83-906290ceefc6",
+        "8fe74cc3-9b3c-4445-8116-84193f1eb689"
+      ],
+      "settings": {
+        "heading": "Thousands of ★★★★★ Reviews From Happy Couples",
+        "heading_size": "h2",
+        "autorotate": true,
+        "autorotate_speed": 7,
+        "show_divider": false,
+        "padding_top": 36,
+        "padding_bottom": 36
+      }
+    },
+    "1948457d-83c1-41fa-809d-6e50cda9499c": {
+      "type": "images-with-text",
+      "blocks": {
+        "template--15133426352172__1948457d-83c1-41fa-809d-6e50cda9499c-16656672536b7f1a45-0": {
+          "type": "heading",
+          "settings": {
+            "heading": "Build Her The Bundle She Will Never Forget!",
+            "heading_size": "h1"
+          }
+        },
+        "template--15133426352172__1948457d-83c1-41fa-809d-6e50cda9499c-16656672536b7f1a45-1": {
+          "type": "text",
+          "settings": {
+            "text": "<p>We are your one-stop-shop for all your gifting needs. My Custom Heart provides you with a vast selection of top rated products for women and we also do all of the work for you! So go create a bundle, we promise it is fun! Then, you can finally relax and wait for the perfect gift to arrive.<\/p>",
+            "text_size": "typeset2",
+            "secondary_color": false
+          }
+        },
+        "template--15133426352172__1948457d-83c1-41fa-809d-6e50cda9499c-16656672536b7f1a45-2": {
+          "type": "button",
+          "settings": {
+            "button_label": "Build Her Gift",
+            "button_link": "https:\/\/mycustomheart.com\/apps\/builder?b=JZocbIym0TSaD21n2rZrFSHL",
+            "button_style_secondary": false
+          }
+        }
+      },
+      "block_order": [
+        "template--15133426352172__1948457d-83c1-41fa-809d-6e50cda9499c-16656672536b7f1a45-0",
+        "template--15133426352172__1948457d-83c1-41fa-809d-6e50cda9499c-16656672536b7f1a45-1",
+        "template--15133426352172__1948457d-83c1-41fa-809d-6e50cda9499c-16656672536b7f1a45-2"
+      ],
+      "settings": {
+        "image": "shopify:\/\/shop_images\/blackheart.jpg",
+        "image_2": "shopify:\/\/shop_images\/sunflowernecklace.jpg",
+        "image_3": "shopify:\/\/shop_images\/blackwhiterosebear.jpg",
+        "image_4": "shopify:\/\/shop_images\/357A7778.jpg",
+        "image_ratio": "square",
+        "image_position": "center center",
+        "layout": "image_first",
+        "text_box_position": "middle",
+        "text_alignment": "left",
+        "full_width": false,
+        "show_divider": false,
+        "mobile_text_alignment": "left",
+        "padding_top": 36,
+        "padding_bottom": 36
+      }
+    },
+    "b4f5e507-6105-43cd-ba2c-b1555e7bc4a6": {
+      "type": "newsletter",
+      "blocks": {
+        "template--15133426352172__b4f5e507-6105-43cd-ba2c-b1555e7bc4a6-166567828792ba02c2-0": {
+          "type": "heading",
+          "settings": {
+            "heading": "Subscribe to our emails"
+          }
+        },
+        "template--15133426352172__b4f5e507-6105-43cd-ba2c-b1555e7bc4a6-166567828792ba02c2-1": {
+          "type": "paragraph",
+          "settings": {
+            "paragraph": "<p>Be the first to know about new collections and exclusive offers.<\/p>"
+          }
+        },
+        "template--15133426352172__b4f5e507-6105-43cd-ba2c-b1555e7bc4a6-166567828792ba02c2-2": {
+          "type": "email_form",
+          "settings": {
+          }
+        }
+      },
+      "block_order": [
+        "template--15133426352172__b4f5e507-6105-43cd-ba2c-b1555e7bc4a6-166567828792ba02c2-0",
+        "template--15133426352172__b4f5e507-6105-43cd-ba2c-b1555e7bc4a6-166567828792ba02c2-1",
+        "template--15133426352172__b4f5e507-6105-43cd-ba2c-b1555e7bc4a6-166567828792ba02c2-2"
+      ],
+      "settings": {
+        "text_alignment": "left",
+        "mobile_text_alignment": "left",
+        "full_width": false,
+        "show_divider": false,
+        "colors_text": "#1a1b18",
+        "colors_border": "#d2d5d9",
+        "colors_background": "#efefef",
+        "padding_top": 36,
+        "padding_bottom": 36
+      }
+    },
+    "d25c82bc-9aba-4c7c-bd4b-49ed7704c53c": {
+      "type": "faq",
+      "blocks": {
+        "d51aa409-0203-4aa0-b0fe-fca03b3ea7af": {
+          "type": "question",
+          "settings": {
+            "title": "How do i know she will like this gift?",
+            "text": "<p>Well this is a tricky question. Only you know what she likes and our custom building process allows you to create the gift that is perfect for her. However, all of our products have been rated very highly by women as gifts. Over the years, we have put many products to the test and now we only sell the products that are the best of the best!<\/p>"
+          }
+        },
+        "template--15133426352172__d25c82bc-9aba-4c7c-bd4b-49ed7704c53c-1665678342b7530e6d-0": {
+          "type": "question",
+          "settings": {
+            "title": "How long will it take for my gift to arrive?",
+            "text": "<p>We pride ourselves in making custom gifts faster than ever! Your custom bundle will be built within 24 hours of your purchase and it will take 1-5 business days to arrive, based on the shipping method you select.<\/p>"
+          }
+        },
+        "a84b39b2-ba51-40b9-a3ed-740017ac9225": {
+          "type": "question",
+          "settings": {
+            "title": "How Do I Build a custom bundle?",
+            "text": "<p>You simply click the \"BUILD HER GIFT\" button above and it will take you to our easy to use interface where you can go step-by-step and build the gift from scratch. It's super simple and easy!<\/p>"
+          }
+        },
+        "template--15133426352172__d25c82bc-9aba-4c7c-bd4b-49ed7704c53c-1665678342b7530e6d-1": {
+          "type": "question",
+          "settings": {
+            "title": "How long do My Custom Heart roses last?",
+            "text": "<p>True love lasts an eternity, and we have designed our roses to do the same. All of our rose products are preserved through numerous techniques or they are made of a polymer material that will not go bad. Our roses are designed to keep their natural beauty for a lifetime.<\/p>"
+          }
+        }
+      },
+      "block_order": [
+        "d51aa409-0203-4aa0-b0fe-fca03b3ea7af",
+        "template--15133426352172__d25c82bc-9aba-4c7c-bd4b-49ed7704c53c-1665678342b7530e6d-0",
+        "a84b39b2-ba51-40b9-a3ed-740017ac9225",
+        "template--15133426352172__d25c82bc-9aba-4c7c-bd4b-49ed7704c53c-1665678342b7530e6d-1"
+      ],
+      "settings": {
+        "heading": "FAQs",
+        "heading_size": "h2",
+        "narrow": true,
+        "secondary_background": false,
+        "show_divider": false,
+        "padding_top": 36,
+        "padding_bottom": 36
+      }
+    },
+    "45b29572-69fc-4cd2-8b92-4f57c809512c": {
+      "type": "featured-blog",
+      "blocks": {
+        "template--15133426352172__45b29572-69fc-4cd2-8b92-4f57c809512c-166566928984612f58-0": {
+          "type": "title",
+          "settings": {
+            "show_date": true,
+            "show_author": false,
+            "show_comment_count": false
+          }
+        },
+        "template--15133426352172__45b29572-69fc-4cd2-8b92-4f57c809512c-166566928984612f58-1": {
+          "type": "summary",
+          "settings": {
+          }
+        },
+        "template--15133426352172__45b29572-69fc-4cd2-8b92-4f57c809512c-166566928984612f58-2": {
+          "type": "read_more",
+          "settings": {
+          }
+        }
+      },
+      "block_order": [
+        "template--15133426352172__45b29572-69fc-4cd2-8b92-4f57c809512c-166566928984612f58-0",
+        "template--15133426352172__45b29572-69fc-4cd2-8b92-4f57c809512c-166566928984612f58-1",
+        "template--15133426352172__45b29572-69fc-4cd2-8b92-4f57c809512c-166566928984612f58-2"
+      ],
+      "settings": {
+        "heading": "Blog posts",
+        "heading_size": "h2",
+        "blog": "our-blog",
+        "post_limit": 4,
+        "show_view_all": false,
+        "show_divider": false,
+        "columns_mobile": "1",
+        "swipe_on_mobile": true,
+        "show_image": true,
+        "image_ratio": "landscape",
+        "image_position": "center center",
+        "padding_top": 36,
+        "padding_bottom": 36
+      }
+    },
+    "2b3da001-f8f0-48d4-b832-6c85bda3e2be": {
+      "type": "image-with-text-overlay",
+      "blocks": {
+        "template--15133426352172__2b3da001-f8f0-48d4-b832-6c85bda3e2be-1665678343a1aeb6ee-0": {
+          "type": "heading",
+          "settings": {
+            "heading": "Our Story",
+            "heading_size": "h1"
+          }
+        },
+        "template--15133426352172__2b3da001-f8f0-48d4-b832-6c85bda3e2be-1665678343a1aeb6ee-1": {
+          "type": "text",
+          "settings": {
+            "text": "<p>While cultivating a culture of continuous improvement and constant innovation, My Custom Heart has been built for the sole purpose of providing its customers with the simplest way to create a perfect gift.<\/p>",
+            "text_size": "typeset2",
+            "secondary_color": false
+          }
+        },
+        "template--15133426352172__2b3da001-f8f0-48d4-b832-6c85bda3e2be-1665678343a1aeb6ee-2": {
+          "type": "button",
+          "disabled": true,
+          "settings": {
+            "button_label": "Learn More",
+            "button_link": "shopify:\/\/pages\/contact-us",
+            "button_style_secondary": true
+          }
+        }
+      },
+      "block_order": [
+        "template--15133426352172__2b3da001-f8f0-48d4-b832-6c85bda3e2be-1665678343a1aeb6ee-0",
+        "template--15133426352172__2b3da001-f8f0-48d4-b832-6c85bda3e2be-1665678343a1aeb6ee-1",
+        "template--15133426352172__2b3da001-f8f0-48d4-b832-6c85bda3e2be-1665678343a1aeb6ee-2"
+      ],
+      "settings": {
+        "image": "shopify:\/\/shop_images\/paintingmimidarker.jpg",
+        "image_position": "center center",
+        "text_box_position": "center",
+        "text_alignment": "center",
+        "image_ratio": "adapt",
+        "full_width": true,
+        "show_divider": false,
+        "mobile_text_box_position": "text_overlay",
+        "mobile_text_alignment": "center",
+        "mobile_image_ratio": "auto",
+        "colors_text": "#ffffff",
+        "colors_overlay": "#232323",
+        "colors_overlay_opacity": 0,
+        "padding_top": 36,
+        "padding_bottom": 0
+      }
+    }
+  },
+  "order": [
+    "10c1a504-9c8b-4feb-88f4-b34e80dd0a8b",
+    "scrolling-promotion",
+    "reveal-banner",
+    "tab-collage-0",
+    "guarantees",
+    "video-hero",
+    "countdown-timer",
+    "shop-the-look",
+    "lookbook",
+    "2397016e-52dd-413c-8043-6b203262eb61",
+    "image-comparison",
+    "bundle-products",
+    "testimonials",
+    "1948457d-83c1-41fa-809d-6e50cda9499c",
+    "b4f5e507-6105-43cd-ba2c-b1555e7bc4a6",
+    "d25c82bc-9aba-4c7c-bd4b-49ed7704c53c",
+    "45b29572-69fc-4cd2-8b92-4f57c809512c",
+    "2b3da001-f8f0-48d4-b832-6c85bda3e2be"
+  ]
+}

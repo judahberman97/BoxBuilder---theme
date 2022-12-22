@@ -1,0 +1,65 @@
+{%- assign theme_name = theme.name | downcase -%}
+
+{% if theme_name contains 'debut' %}
+<style>
+    /* CUSTOM STYLES FOR DEBUT */
+    .cart-shineon {
+        padding: 0;
+    }
+</style>
+
+
+{% elsif theme_name contains 'retina' %}
+<style>
+    /* CUSTOM STYLES FOR RETINA */
+    .so-product-wrap, .cart-shineon {
+        padding-top: 100px;
+    }
+</style>
+
+
+{% elsif theme_name contains 'turbo' %}
+<style>
+    /* CUSTOM STYLES FOR TURBO */
+    @media only screen and (max-width: 798px) {
+        #shopify-section-header {
+            padding-bottom: 40px;
+        }
+    }
+    #so-cart-items-table .list-view-item__title a{
+        font-weight: inherit;
+        color: #333333;
+    }
+    #so-cart-items-table th, #so-cart-items-table td {
+        padding: 12px 4px;
+    }
+
+    #so-cart-items-table .list-view-item__title{
+        font-family: Oswald, serif;
+        font-size: 24px;
+        font-weight: lighter;
+        font-style: normal;
+        text-transform: uppercase;
+        line-height: 1.5;
+        color: #333333;
+        display: block;
+        letter-spacing: 2px;
+        text-rendering: optimizeLegibility;
+        -webkit-font-smoothing: antialiased
+    }
+    #so-cart-items-table .cart__meta-text{
+        font-size: 13px;
+    }
+    #so-cart-items-table .cart__meta-text .label {
+        color: #8c8b8b;
+    }
+</style>
+
+
+{% elsif theme_name contains 'brooklyn' %}
+<style>
+    #shopify-section-cart-shineon .so-cart-shineon-form .so-proceed-checkout-btn {
+        font-size: 18px;
+    }
+</style>
+{% endif %}

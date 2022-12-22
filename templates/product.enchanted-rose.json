@@ -1,0 +1,372 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-product",
+      "blocks": {
+        "title": {
+          "type": "title",
+          "settings": {
+            "title_size": "h1"
+          }
+        },
+        "rating": {
+          "type": "rating",
+          "settings": {
+          }
+        },
+        "price": {
+          "type": "price",
+          "settings": {
+          }
+        },
+        "text-0": {
+          "type": "text",
+          "settings": {
+            "icon": "return",
+            "text": "30-day Money Back Guarantee",
+            "text_style": "body"
+          }
+        },
+        "text-1": {
+          "type": "text",
+          "settings": {
+            "icon": "truck",
+            "text": "Fast Shipping Within The US",
+            "text_style": "body"
+          }
+        },
+        "1426207a-f458-48a7-b4ec-968d7abed63f": {
+          "type": "text",
+          "settings": {
+            "icon": "star",
+            "text": "Top Seller",
+            "text_style": "body"
+          }
+        },
+        "buy_buttons": {
+          "type": "buy_buttons",
+          "settings": {
+            "show_quantity_selector": false,
+            "show_dynamic_checkout": true
+          }
+        },
+        "share": {
+          "type": "share",
+          "settings": {
+          }
+        },
+        "sticky_cart": {
+          "type": "sticky_cart",
+          "settings": {
+            "show_quantity_selector": false
+          }
+        }
+      },
+      "block_order": [
+        "title",
+        "rating",
+        "price",
+        "text-0",
+        "text-1",
+        "1426207a-f458-48a7-b4ec-968d7abed63f",
+        "buy_buttons",
+        "share",
+        "sticky_cart"
+      ],
+      "settings": {
+        "enable_sticky_info": true,
+        "media_size": "large",
+        "gallery_layout": "thumbnail_slider",
+        "image_ratio": "adapt",
+        "show_thumbnails": true,
+        "hide_variants": false,
+        "enable_image_zoom": true,
+        "enable_video_looping": false,
+        "mobile_image_ratio": "adapt_first",
+        "show_mobile_thumbnails": true,
+        "padding_top": 0,
+        "padding_bottom": 0
+      }
+    },
+    "a707205b-e295-4baa-9dc1-802e83ce0b7f": {
+      "type": "rich-text",
+      "settings": {
+        "text_alignment": "right",
+        "narrow": false,
+        "show_divider": false,
+        "mobile_text_alignment": "left",
+        "padding_top": 0,
+        "padding_bottom": 8
+      }
+    },
+    "3f8c7086-e483-4843-9e7f-a89a7536e5c3": {
+      "type": "scrolling-promotion",
+      "blocks": {
+        "template--15133426581548__3f8c7086-e483-4843-9e7f-a89a7536e5c3-1667926196006041b9-0": {
+          "type": "image",
+          "settings": {
+            "image": "shopify:\/\/shop_images\/a_copy.png",
+            "height": 52,
+            "link": ""
+          }
+        },
+        "template--15133426581548__3f8c7086-e483-4843-9e7f-a89a7536e5c3-1667926196006041b9-1": {
+          "type": "image",
+          "settings": {
+            "image": "shopify:\/\/shop_images\/heartfelt.png",
+            "height": 52,
+            "link": ""
+          }
+        },
+        "template--15133426581548__3f8c7086-e483-4843-9e7f-a89a7536e5c3-1667926196006041b9-2": {
+          "type": "image",
+          "settings": {
+            "image": "shopify:\/\/shop_images\/gift.png",
+            "height": 52,
+            "link": ""
+          }
+        },
+        "7bc1be2f-2ae6-4dcd-b952-804ea1ec29ef": {
+          "type": "image",
+          "settings": {
+            "image": "shopify:\/\/shop_images\/women.png",
+            "height": 52,
+            "link": ""
+          }
+        },
+        "template--15133426581548__3f8c7086-e483-4843-9e7f-a89a7536e5c3-1667926196006041b9-3": {
+          "type": "image",
+          "settings": {
+            "image": "shopify:\/\/shop_images\/love.png",
+            "height": 52,
+            "link": ""
+          }
+        }
+      },
+      "block_order": [
+        "template--15133426581548__3f8c7086-e483-4843-9e7f-a89a7536e5c3-1667926196006041b9-0",
+        "template--15133426581548__3f8c7086-e483-4843-9e7f-a89a7536e5c3-1667926196006041b9-1",
+        "template--15133426581548__3f8c7086-e483-4843-9e7f-a89a7536e5c3-1667926196006041b9-2",
+        "7bc1be2f-2ae6-4dcd-b952-804ea1ec29ef",
+        "template--15133426581548__3f8c7086-e483-4843-9e7f-a89a7536e5c3-1667926196006041b9-3"
+      ],
+      "settings": {
+        "direction": "left",
+        "speed": 1.6,
+        "show_divider": false,
+        "colors_text": "#1a1b18",
+        "colors_background": "#ffffff",
+        "padding_top": 36,
+        "padding_bottom": 36
+      }
+    },
+    "8a46f07e-734d-491a-bb2b-fa610121987e": {
+      "type": "image-banner",
+      "settings": {
+        "image": "shopify:\/\/shop_images\/lifestyle-gold-envelope-2.jpg",
+        "image_position": "center center",
+        "text_box_position": "middle-center",
+        "text_alignment": "center",
+        "image_ratio": "adapt",
+        "show_text_box": false,
+        "full_width": false,
+        "show_divider": false,
+        "mobile_text_alignment": "center",
+        "mobile_image_ratio": "auto",
+        "stack_images_on_mobile": true,
+        "show_text_below": true,
+        "colors_text": "#ffffff",
+        "colors_overlay": "#000000",
+        "colors_overlay_opacity": 28,
+        "padding_top": 20,
+        "padding_bottom": 0
+      }
+    },
+    "product-details": {
+      "type": "product-details",
+      "blocks": {
+        "product-details-1": {
+          "type": "collapsible_tab",
+          "settings": {
+            "heading": "Product Description",
+            "content": "<p>Our luxurious bundles include everything she would ever want in a gift. Don't think so? In that case you may create your own custom bundle that will be perfect for the woman you know best. Just click on \"CUSTOMIZE\" and see what you can come up with!<\/p>",
+            "page": ""
+          }
+        },
+        "product-details-3": {
+          "type": "collapsible_tab",
+          "settings": {
+            "heading": "Shipping Details",
+            "content": "<p>Whether you order a pre-made bundle or you customize your own, your order will be shipped out within 24 hours of purchase and will be delivered within 1-5 business days. Your more accurate estimated time of delivery will be shown at checkout. Made and shipped from the US!<\/p>",
+            "page": ""
+          }
+        },
+        "product-details-2": {
+          "type": "collapsible_tab",
+          "settings": {
+            "heading": "What's Inside?",
+            "content": "<p>The highest quality gifting items you will find. We source every single product from the best manufacturers around the entire world. Our premium grade quality won't disappoint you!<\/p>",
+            "page": ""
+          }
+        },
+        "70403a84-045e-4349-90df-da2c905753f5": {
+          "type": "collapsible_tab",
+          "settings": {
+            "heading": "Customize?",
+            "content": "<p>Yes, you may customize your own bundle step-by-step from the container to every single item that is added into the bundle. Click on the \"COSTUMIZE\" button to create your own bundle.<\/p>",
+            "page": ""
+          }
+        }
+      },
+      "block_order": [
+        "product-details-1",
+        "product-details-3",
+        "product-details-2",
+        "70403a84-045e-4349-90df-da2c905753f5"
+      ],
+      "settings": {
+        "heading": "",
+        "heading_size": "h1",
+        "padding_top": 36,
+        "padding_bottom": 16
+      }
+    },
+    "d0a03152-c4aa-453c-befe-530c5939447a": {
+      "type": "countdown-timer",
+      "blocks": {
+        "template--15164659597356__d0a03152-c4aa-453c-befe-530c5939447a-1668016396a2ce5565-0": {
+          "type": "heading",
+          "settings": {
+            "heading": "50% Off Sale Ends In",
+            "heading_size": "h1"
+          }
+        },
+        "template--15164659597356__d0a03152-c4aa-453c-befe-530c5939447a-1668016396a2ce5565-1": {
+          "type": "countdown",
+          "settings": {
+            "date": "12-23-2022",
+            "number_size": "medium",
+            "message": "",
+            "message_size": "typeset2"
+          }
+        }
+      },
+      "block_order": [
+        "template--15164659597356__d0a03152-c4aa-453c-befe-530c5939447a-1668016396a2ce5565-0",
+        "template--15164659597356__d0a03152-c4aa-453c-befe-530c5939447a-1668016396a2ce5565-1"
+      ],
+      "settings": {
+        "image": "shopify:\/\/shop_images\/lifestyle_gold_envelope_3.jpg",
+        "image_position": "center center",
+        "layout": "image_first",
+        "text_box_position": "middle",
+        "text_alignment": "left",
+        "image_ratio": "650px",
+        "full_width": true,
+        "show_divider": false,
+        "mobile_layout": "image_first",
+        "mobile_text_alignment": "left",
+        "mobile_image_ratio": "300px",
+        "colors_text": "#ffffff",
+        "colors_background": "#a60311",
+        "padding_top": 36,
+        "padding_bottom": 36
+      }
+    },
+    "5b1e4da9-b1f8-4865-975e-29752b862b47": {
+      "type": "image-comparison",
+      "disabled": true,
+      "blocks": {
+        "template--15164659597356__5b1e4da9-b1f8-4865-975e-29752b862b47-16680168340d2e90ad-0": {
+          "type": "look",
+          "settings": {
+            "image": "shopify:\/\/shop_images\/finalCG-0922-023.jpg",
+            "title": "",
+            "title_size": "small",
+            "title_position": "start"
+          }
+        },
+        "template--15164659597356__5b1e4da9-b1f8-4865-975e-29752b862b47-16680168340d2e90ad-1": {
+          "type": "look",
+          "settings": {
+            "image": "shopify:\/\/shop_images\/finalCG-0922-0233.jpg",
+            "title": "",
+            "title_size": "small",
+            "title_position": "start"
+          }
+        }
+      },
+      "block_order": [
+        "template--15164659597356__5b1e4da9-b1f8-4865-975e-29752b862b47-16680168340d2e90ad-0",
+        "template--15164659597356__5b1e4da9-b1f8-4865-975e-29752b862b47-16680168340d2e90ad-1"
+      ],
+      "settings": {
+        "heading": "",
+        "heading_size": "h1",
+        "layout": "horizontal",
+        "full_width": false,
+        "show_divider": false,
+        "colors_line": "#ffffff",
+        "padding_top": 36,
+        "padding_bottom": 36
+      }
+    },
+    "product-recommendations": {
+      "type": "product-recommendations",
+      "disabled": true,
+      "settings": {
+        "heading": "You May Also Like",
+        "heading_size": "h2",
+        "show_divider": false,
+        "columns_mobile": "2",
+        "swipe_on_mobile": true,
+        "image_ratio": "portrait",
+        "image_position": "center center",
+        "enable_image_fill": true,
+        "show_secondary_image": false,
+        "show_vendor": false,
+        "show_rating": true,
+        "show_quick_buy": true,
+        "enable_quick_view": true,
+        "enable_color_swatches": true,
+        "enable_countdown": true,
+        "padding_top": 36,
+        "padding_bottom": 36
+      }
+    },
+    "1668004464fde0d477": {
+      "type": "apps",
+      "blocks": {
+        "e16e9cae-aa66-4881-8ee1-f09cb1ead676": {
+          "type": "shopify:\/\/apps\/ryviu-aliexpress-reviews-app\/blocks\/ryviu-product-reviews\/807ad6ed-1a6a-4559-abea-ed062858d9da",
+          "settings": {
+            "product": "romantic-gift-bundle-2",
+            "r_wapper": "",
+            "r_max_width": 1920,
+            "r_padding_block": 0
+          }
+        }
+      },
+      "block_order": [
+        "e16e9cae-aa66-4881-8ee1-f09cb1ead676"
+      ],
+      "settings": {
+        "include_margins": true,
+        "show_divider": false,
+        "padding_top": 36,
+        "padding_bottom": 36
+      }
+    }
+  },
+  "order": [
+    "main",
+    "a707205b-e295-4baa-9dc1-802e83ce0b7f",
+    "3f8c7086-e483-4843-9e7f-a89a7536e5c3",
+    "8a46f07e-734d-491a-bb2b-fa610121987e",
+    "product-details",
+    "d0a03152-c4aa-453c-befe-530c5939447a",
+    "5b1e4da9-b1f8-4865-975e-29752b862b47",
+    "product-recommendations",
+    "1668004464fde0d477"
+  ]
+}

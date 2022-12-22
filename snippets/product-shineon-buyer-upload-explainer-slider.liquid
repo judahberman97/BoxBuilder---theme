@@ -1,0 +1,190 @@
+
+{% assign variant_gold = false %}
+{% if product.selected_variant.metafields.shineon.gold == 1 %}
+{% assign variant_gold = true %}
+{% endif %}
+{% assign thumbnail_carousel_eplainer = 'explainer-graphics-slider-slick-thumbnail' %}
+
+{% if show_gallery_thumbnails %}
+<style>
+  #{{ thumbnail_carousel_eplainer }} .so_slick-slide:not(.so_slick-current) {
+    opacity: .7;
+  }
+  #{{ thumbnail_carousel_eplainer }} .so_slick-slide:not(.so_slick-current) img{
+    cursor: pointer;
+  }
+  #{{ thumbnail_carousel_eplainer }} .so_slick-slide img.so-static-thumbnails {
+    cursor: default;
+    pointer-events: none;
+  }
+  #{{ thumbnail_carousel_eplainer }}.so_slick-prev.so_slick-arrow {
+    margin: auto;
+    top: -30px;
+    right: 50%;
+    transform: translateX(150%) rotate(90deg);
+    filter: invert(100%);
+  }
+  #{{ thumbnail_carousel_eplainer }}.so_slick-next.so_slick-arrow {
+    margin: auto;
+    top: 100%;
+    right: 50%;
+    transform: translateX(50%) translateY(50%) rotate(90deg);
+    filter: invert(100%);
+  }
+  @media(max-width: 767px) {
+    #explainer-graphics-slider-slick:not(.so-hidden) {
+      display: flex;
+      flex-direction: column-reverse;
+    }
+    #{{ thumbnail_carousel_eplainer }} .so_slick-track .so_slick-slide + .so_slick-slide {
+      margin-left: 10px;
+    }
+    {% if product.images.size <= section.settings.image_slides %}
+    .so-col-images-thumb-wrap .so_slick-track {
+      display: flex;
+    }
+    {% endif %}
+  }
+</style>
+{% endif %}
+
+<div id="explainer-graphics-slider-slick" class="so-row">
+  {% if section.settings.image_thumbnails != 'none' and so_bu_product_explainer_images.size > 1 %}
+    <div class="so-col-2 so-col-images-thumb-wrap {% if section.settings.image_thumbnails == 'none' %}so-hidden{% elsif section.settings.image_thumbnails == 'desktop' %}so-hidden-sm{% endif %}">
+      <div id="explainer-graphics-slider-slick-thumbnail"
+         data-image_slides="{{ section.settings.image_slides }}"
+         data-image_thumbnails="{{ section.settings.image_thumbnails }}">
+        {% for image in so_bu_product_explainer_images %}
+          <div>
+            <img class="so-carousel-img"
+               style="width: 100%; height: auto;"
+               data-index="{% increment so_bu_product_explainer_images_index_th %}"
+               data-image_id="{{ image.id }}"
+               src="{{ image }}"
+            >
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  {% endif %}
+  <div class="so-col-10 so-col-images-featured-wrap">
+    {% if so_bu_product_explainer_images.size > 0 %}
+      {% include 'product-shineon-scripts' with 'upload-design-wizard' %}
+    {% endif %}
+    <div class="so-product-images-featured-wrap">
+      {% if so_bu_product_explainer_images.size > 1 %}
+        <div id="explainer-graphics-slider-slick-featured"
+           data-image_dots="{% if section.settings.image_dots == true and product.images.size > 1 %}true{% else %}false{% endif %}">
+          {% for image in so_bu_product_explainer_images %}
+            <div>
+              <img class="so-carousel-img"
+                 style="width: 100%; height: auto;"
+                 data-index="{% increment so_bu_product_explainer_images_index_featured %}"
+                 data-image_id="{{ image.id }}"
+                 src="{{ image }}"
+              >
+            </div>
+          {% endfor %}
+        </div>
+      {% elsif so_bu_product_explainer_images.size == 1 %}
+        <div class="so-product-images-featured-wrap">
+          <img src="{{ so_bu_product_explainer_images | first }}"
+             class="so-featured-image">
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+jQuery( document ).ready(function($) {
+
+  window.shineon = window.shineon || {};
+    window.shineon.explainer_carousels = {
+      $thumbnail_carousel: null,
+      $featured_carousel: null,
+      init: function () {
+        this.$thumbnail_carousel = $('#explainer-graphics-slider-slick-thumbnail');
+        this.$featured_carousel = $('#explainer-graphics-slider-slick-featured');
+        var is_variant_gold = {{ variant_gold | json }};
+        var thumbnail_carousel = this.$thumbnail_carousel.length
+          ? this.$thumbnail_carousel.so_slick({
+            slidesToShow: parseInt(this.$thumbnail_carousel.data('image_slides')),
+            slidesToScroll: 1,
+            arrows: false,
+            vertical: true,
+            centerMode: false,
+            responsive: [
+                {
+                    breakpoint: 767,
+                    settings: {
+                        vertical: false
+                    }
+                }
+            ]
+          }).get(0).so_slick
+          : null;
+        var featured_carousel = this.$featured_carousel.length
+          ? this.$featured_carousel.so_slick({
+            arrows: true,
+            dots: this.$featured_carousel.data('image_dots'),
+            prevArrow: '<button type="button" class="so_slick-prev so_slick-arrow">{% include "shineon-app-icons" with "chevron-left" %}</button>',
+            nextArrow: '<button type="button" class="so_slick-next so_slick-arrow">{% include "shineon-app-icons" with "chevron-right" %}</button>'
+          }).get(0).so_slick
+          : null;
+
+        if(is_variant_gold == true)
+        {
+          featured_carousel.slickGoTo(1);
+          thumbnail_carousel.slickGoTo(1);
+        }
+        this.$thumbnail_carousel.on('afterChange', function (event, slick) {
+          if (featured_carousel && featured_carousel.currentSlide !== thumbnail_carousel.currentSlide) {
+            featured_carousel.slickGoTo(slick.currentSlide);
+          }
+        });
+
+        this.$featured_carousel.on('afterChange', function (event, slick) {
+          if (thumbnail_carousel && thumbnail_carousel.currentSlide !== featured_carousel.currentSlide) {
+            thumbnail_carousel.slickGoTo(slick.currentSlide);
+          }
+        });
+
+        this.$thumbnail_carousel.on('click', '.so-carousel-img', function () {
+          var index = parseInt(jQuery(this).data('index'));
+          thumbnail_carousel.slickGoTo(index);
+          featured_carousel.slickGoTo(index);
+        });
+      },
+      destroy: function () {
+        if (this.$thumbnail_carousel.length) {
+          this.$thumbnail_carousel.so_slick('destroy');
+          this.$thumbnail_carousel.off('click afterChange');
+        }
+        if (this.$featured_carousel.length) {
+          this.$featured_carousel.so_slick('destroy');
+          this.$featured_carousel.off('afterChange');
+        }
+      }
+    };
+
+    shineon.explainer_carousels.init();
+
+    document.addEventListener('shopify:section:unload', function() {
+      shineon.explainer_carousels.destroy();
+    });
+
+    document.addEventListener('shopify:section:load', function() {
+      shineon.explainer_carousels.init();
+    });
+
+    document.addEventListener('shopify:section:select', function() {
+      shineon.explainer_carousels.destroy();
+      shineon.explainer_carousels.init();
+    });
+  }(jQuery));
+});
+
+
+</script>

@@ -1,0 +1,1666 @@
+<!-- PRODUCT FORM EGU SHINEON {% render 'shineon-version' %} -->
+<!-- DO NOT MODIFY THIS FILE -->
+
+{% if shop.metafields.shineon.is_shineon_brand == true and shop.metafields.shineon.is_shineon_brand != blank %}
+  {% if warranty_tag != false %}
+  {% assign is_warranty_added = false %}
+  {% assign warranty_prod = all_products['warranty'] %}
+  {% for item in cart.items %}
+    {% if item.product_id == warranty_prod.id %}
+      {% assign is_warranty_added = true %}
+    {% endif %}
+  {% endfor %}
+  {% endif %}
+{% endif %}
+
+{% assign iso_639_1 = shop_locale.iso_code | slice: 0,2 %}
+
+{% assign display_option1_metal = false %}
+{% assign display_option2 = false %}
+{% assign display_option3 = false %}
+
+{% assign featured_engraved_img = false %}
+{% assign featured_gold_img = false %}
+
+{% assign variant_gold = false %}
+{% assign variant_gold_engraved = false %}
+{% assign variant_stainless = false %}
+{% assign variant_stainless_engraved = false %}
+
+{% assign has_gold_swatch = false %}
+
+{% for variant in product.variants %}
+  {% if variant.metafields.shineon.gold == 1 %}
+    {% assign has_gold_swatch = true %}
+  {% endif %}
+{% endfor %}
+
+{% assign sweetest_product_design = false %}
+{% if so_current_variant.metafields.shineon.ipcs contains 'E060S' or so_current_variant.metafields.shineon.ipcs contains 'E060SG' or so_current_variant.metafields.shineon.attachment contains 'sweetest-hearts-necklace' or so_current_variant.metafields.shineon.ipcs contains 'C30102' %}
+  {% assign sweetest_product_design = true %}
+{% endif %}
+
+{% comment %} GET ENGRAVED AND GOLD FEATURE IMAGES {% endcomment %}
+{% for variant in product.variants %}
+  {% if variant.metafields.shineon.engravable == 1 and featured_engraved_img == false %}
+  {% assign featured_engraved_img = variant.featured_image %}
+  {% endif %}
+  {% if variant.metafields.shineon.engravable == 1 and variant.metafields.shineon.gold == 1 and featured_gold_img == false %}
+  {% assign featured_gold_img = variant.featured_image %}
+  {% endif %}
+  {% if variant_gold == false and variant.metafields.shineon.gold == 1 and variant.metafields.shineon.engravable == 0 %}
+  {% assign variant_gold = variant %}
+  {% endif %}
+  {% if variant_gold_engraved == false and variant.metafields.shineon.gold == 1 and variant.metafields.shineon.engravable == 1 %}
+  {% assign variant_gold_engraved = variant %}
+  {% endif %}
+  {% if variant_stainless == false and variant.metafields.shineon.gold == 0 and variant.metafields.shineon.engravable == 0 %}
+  {% assign variant_stainless = variant %}
+  {% endif %}
+  {% if variant_stainless_engraved == false and variant.metafields.shineon.gold == 0 and variant.metafields.shineon.engravable == 1 %}
+  {% assign variant_stainless_engraved = variant %}
+  {% endif %}
+{% endfor %}
+
+{% assign upsell_engraving_price = variant_stainless_engraved.price | minus: variant_stainless.price %}
+{% assign upsell_gold_price = variant_gold.price | minus: variant_stainless.price %}
+
+{% if section.settings.modal_engraving_savings_percentage > 0 %}
+  {% assign decimal = section.settings.modal_engraving_savings_percentage | divided_by: 100.0 %}
+  {% assign divisor = 1.0 | minus: decimal %}
+  {% assign upsell_engraving_original_price = upsell_engraving_price | divided_by: divisor %}
+{% else %}
+  {% assign upsell_engraving_original_price = upsell_engraving_price %}
+{% endif %}
+{% if section.settings.modal_gold_savings_percentage > 0 %}
+  {% assign decimal = section.settings.modal_gold_savings_percentage | divided_by: 100.0 %}
+  {% assign divisor = 1.0 | minus: decimal %}
+  {% assign upsell_gold_original_price = upsell_gold_price | divided_by: divisor %}
+{% else %}
+  {% assign upsell_gold_original_price = upsell_gold_price %}
+{% endif %}
+
+{% comment %} FAILOVER TO DEFAULT FEATURED IMAGE {% endcomment %}
+{% if featured_engraved_img == false %}
+  {% assign featured_engraved_img = featured_img %}
+{% endif %}
+{% if featured_gold_img == false %}
+  {% assign featured_gold_img = featured_img %}
+{% endif %}
+
+{% if product.options.size >= 1 and option1_list.size > 1 and one_style != 1 %}
+  {% if has_multiple_metals == true %}
+  {% assign display_option1_metal = true %}
+  {% endif %}
+{% elsif one_style == 1 and has_multiple_metals == true %}
+  {% assign display_option1_metal = true %}
+{% endif %}
+
+{% if product.options.size >= 2 and option2_list.size > 1 %}
+  {% assign display_option2 = true %}
+{% endif %}
+
+{% if product.options.size == 3 and option3_list.size > 1 %}
+  {% assign display_option3 = true %}
+{% endif %}
+
+
+{% if section.settings.modal_red_color != Nil %}
+<style>.so-modal-red { color: {{ section.settings.modal_red_color }} }</style>
+{% endif %}
+
+<div class="so-product-form-wrap">
+
+  <div id="{{ product_form_id }}-wrap" class="so-product-form">
+  {% comment %} BEGIN: DISPLAY PLACEHOLDER FORM {% endcomment %}
+
+  {% include 'product-info-shineon' with 'product-title-with-rating' %}
+  
+  {% if section.settings.show_gift_bag_kit != false %}
+    {% include 'product-info-shineon' with 'gift-bag-kit' %}
+  {% endif %}
+  {% if cro_design_product != false %}
+  {% include 'product-info-shineon' with 'review-sub-text' %}
+  {% endif %}
+
+  {% if section.settings.product_usps_checkbox == true and cro_design_product == false %}
+  <div class="so-usps-w so-hidden-sm">
+    {% include 'badges-shineon' with 'product-usps' %}
+  </div>
+  {% endif %}
+
+  <!-- {% increment option_number %} -->
+
+  <div id="product-form-options-wrap" {% if product.metafields.shineon.uploadable == 1 %}class="so-hidden"{% endif %}>
+
+    <div class="so-product-variants-wrap">
+    
+      {% if display_option1_metal %}
+      <div class="so-field-wrap so-option1 so-option1-metal">
+
+        {% if has_multiple_metals == true %}
+        <label for="so-option1-input-value" class="so-option-label so-option-label-metal">
+          {% if section.settings.copy_option_numbers and option1_list.size > 1 %}
+            <span class="so-option-number"
+              style="background-color: {{ section.settings.primary_color }};">
+              {% increment option_number %}
+            </span>
+          {% endif %}
+          {{ 'purchase_form_copy_option1_metal_label' | t }}
+        </label>
+
+        <div class="so-option-fieldset so-swatch-picker so-swatch-metal-picker so-row">
+
+          {% for variant in product.variants %}
+            {% assign out_of_stock = false %}
+            {% if variant.available == false and variant.inventory_management != null %}
+              {% assign out_of_stock = true %}
+            {% endif %}
+
+            {% if has_multiple_metals == true and variant.metafields.shineon.gold == so_current_variant.metafields.shineon.gold %}
+              {% assign data_metal = 'gold' %}
+              {% assign data_metal_gold = 1 %}
+            {% endif %}
+
+            {% if variant.id == so_current_variant.id %}
+              {% assign variant_selected = 'selected' %}
+              {% assign variant_active = 'so-active-metal' %}
+              {% assign variant_visibility = '' %}
+            {% else %}
+              {% assign variant_selected = '' %}
+              {% assign variant_active = '' %}
+              {% if variant.option2 == so_current_variant.option2 %}
+                {% assign variant_visibility = '' %}
+              {% else %}
+                {% assign variant_visibility = 'so-hidden' %}
+              {% endif %}
+            {% endif %}
+
+            {% assign data_metal_gold = 0 %}
+            {% assign variant_attachment = variant.metafields.shineon.metal | lowercase %}
+            {% if variant_attachment contains 'gold' %}
+              {% assign data_metal = 'gold' %}
+              {% assign data_metal_gold = 1 %}
+            {% elsif variant_attachment contains 'stainless' %}
+              {% assign data_metal = 'stainless' %}
+            {% else %}
+              {% assign data_metal = 'silver' %}
+            {% endif %}
+            {% assign data_metal = variant.metafields.shineon.metal %}
+
+            {% if variant.metafields.shineon.metal == 'stainless' %}
+              {% assign data_metal = 'stainless' %}
+            {% endif %}
+
+            {% comment %} Screwdriver {% endcomment %}
+            {% if variant.metafields.shineon.ipcs contains 'E078TK' %}
+              {% assign data_metal = 'black' %}   
+            {% endif %}
+            
+            {% assign input_index_max = inputs.size | minus: 1 %}
+            {% assign data_accessory_quantity = inputs[input_index].name %}
+            {% if product_birthstone_multiple == true %}
+            {% assign data_accessory_quantity = product_type | append: '-' | append: birthstone_multiple_quantity_arr[forloop.index0] %}
+            {% endif %}
+            {% if input_index == input_index_max %}
+              {% assign input_index = 0 %}
+            {% else %}
+              {% assign input_index = input_index | plus: 1 %}
+            {% endif %}
+
+            {% if variant.metafields.shineon.engravings == 0 %}
+
+              {% assign metal_label = 'purchase_form_copy_option1_metal_' | append: data_metal | append: '_label' %}
+              {% include 'product-info-shineon' with 'swatches' and has_gold_swatch %}
+
+            {% endif %}
+
+          {% endfor %}
+
+        </div>
+
+        {% endif %}
+
+      </div><!-- END so-field-wrap so-option1 so-option1-metal -->
+
+      {% else %}
+
+        {% if product.variants.size != product.options.size %}
+        <div class="so-field-wrap so-option1 so-option1-style" {% if sweetest_product_design %}style="display:none;"{% endif %}>
+          <label for="so-option1-input-value" class="so-option-label">
+          {% if section.settings.copy_option_numbers %}
+            {% if has_multiple_metals == true and option1_list.size > 2 %}
+            <span class="so-option-number"
+                style="background-color: {{ section.settings.primary_color }};">
+              {% increment option_number %}
+            </span>
+            {% elsif product.options.size >= 2 %}
+            <span class="so-option-number"
+                style="background-color: {{ section.settings.primary_color }};">
+               {% increment option_number %}
+            </span>
+            {% endif %}
+          {% endif %}
+          {% if is_options_detected != true and is_wooden_box == true %}
+            {{ 'purchase_form_copy_option1_metal_label' | t }}
+          {% else %}
+            {{ 'purchase_form_copy_option1_label' | t }}
+          {% endif %}
+          </label>
+
+          <fieldset id="so-option1-picker" data-option="option1" class="so-row so-option-fieldset so-swatch-picker">
+            {% assign input_index = 0 %}
+            {% for variant in product.variants %}
+              {% assign out_of_stock = false %}
+              {% if variant.available == false and variant.inventory_management != null %}
+                {% assign out_of_stock = true %}
+              {% endif %}
+
+              {% if has_multiple_metals == true and variant.metafields.shineon.gold == so_current_variant.metafields.shineon.gold %}
+                {% assign variant_metal_visibility = '' %}
+                {% assign data_metal = 'gold' %}
+                {% assign data_metal_gold = 1 %}
+              {% endif %}
+
+              {% if variant.id == so_current_variant.id %}
+                {% assign variant_selected = 'selected' %}
+                {% assign variant_active = 'so-active' %}
+                {% assign variant_visibility = '' %}
+              {% else %}
+                {% assign variant_selected = '' %}
+                {% assign variant_active = '' %}
+                {% if variant.option2 == so_current_variant.option2 %}
+                  {% assign variant_visibility = '' %}
+                {% else %}
+                  {% assign variant_visibility = 'so-hidden' %}
+                {% endif %}
+              {% endif %}
+
+              {% assign data_metal_gold = 0 %}
+              {% if so_current_variant.metafields.shineon.ipcs contains 'E060S' or so_current_variant.metafields.shineon.ipcs contains 'E060SG' or so_current_variant.metafields.shineon.attachment contains 'sweetest-{{ variant_accessory_type }}s-necklace' or so_current_variant.metafields.shineon.ipcs contains 'C30102' %}
+                {% if variant.metafields.shineon.ipcs contains 'E060SG' or variant.metafields.shineon.ipcs contains 'C30102TG' %}
+                  {% assign data_metal = 'gold' %}
+                {% else %}
+                  {% assign data_metal = variant.metafields.shineon.metal %}
+                {% endif %}
+              {% else %}
+                {% if variant.metafields.shineon.gold == 1 %}
+                  {% assign data_metal = 'gold' %}
+                  {% assign data_metal_gold = 1 %}
+                {% else %}
+                  {% assign data_metal = 'silver' %}
+                {% endif %}
+                {% assign data_metal = variant.metafields.shineon.metal %}
+              {% endif %}
+
+              {% assign input_index_max = inputs.size | minus: 1 %}
+              {% assign data_accessory_quantity = inputs[input_index].name %}
+              {% if product_birthstone_multiple == true %}
+              {% assign data_accessory_quantity = product_type | append: '-' | append: birthstone_multiple_quantity_arr[forloop.index0] %}
+              {% endif %}
+              {% if input_index == input_index_max %}
+                {% assign input_index = 0 %}
+              {% else %}
+                {% assign input_index = input_index | plus: 1 %}
+              {% endif %}
+
+              {% assign data_metal = variant.metafields.shineon.metal %}
+
+              {% include 'product-info-shineon' with 'swatches' %}
+              
+            {% endfor %}
+          </fieldset>
+        </div><!-- END so-field-wrap so-option1 so-option1-style -->
+        {% endif %}
+      {% endif %}
+
+      {% comment %}
+      Metafields 2.0
+      {% endcomment %}
+      {% assign product_schema_v2_obj = product.metafields.shineon.schema_v2.value | default: product.metafields.shineon.schema_v2 %}
+      {% assign pt_id = 'pt_' | append: product_schema_v2_obj.product_template_id %}
+      {% assign shop_pt_id_obj = shop.metafields.shineon[pt_id].value | default: shop.metafields.shineon[pt_id] %}
+      {% assign product_cf_obj = shop_pt_id_obj.custom_fields %}
+      {% comment %}
+      ./ Metafields 2.0
+      {% endcomment %}
+
+      {% if so_current_variant_generated_properties.size > 0 or product_cf_obj.size > 0 %}
+        <!-- If has generated properties in metafields -->
+        {% assign engraved = false %}
+        {% assign ring_size = false %}
+        {% assign birthstone = false %}
+        {% assign is_any_field_required = false %}
+        {% if product_cf_obj.size > 0 %}
+          {% assign inputs = product_cf_obj %}
+        {% endif %}
+        {% for input_item in inputs %}
+          {% if product_cf_obj.size > 0 %}
+            {% assign input = shop.metafields.shineon[input_item.key].value | default: shop.metafields.shineon[input_item.key] %}
+          {% else %}
+            {% assign input = input_item %}
+          {% endif %}
+          {% if input.field_type == "engraving" and input.required == 1 %}
+            {% assign engraved = true %}
+          {% endif %}
+          {% if input.field_type == "ring_size" %}
+            {% assign ring_size = true %}
+          {% endif %}
+          {% if input.field_type == "birthstone" %}
+            {% assign birthstone = true %}
+          {% endif %}
+        {% endfor %}
+        {% if engraved == true or ring_size or birthstone %}
+          <div class="so-custom-fields-wrap">
+            {% comment %}
+            Metafields 2.0
+            {% endcomment %}
+            {% assign product_schema_v2_obj = product.metafields.shineon.schema_v2.value | default: product.metafields.shineon.schema_v2 %}
+            {% assign pt_id = 'pt_' | append: product_schema_v2_obj.product_template_id %}
+            {% assign shop_pt_id_obj = shop.metafields.shineon[pt_id].value | default: shop.metafields.shineon[pt_id] %}
+            {% assign product_cf_obj = shop_pt_id_obj.custom_fields %}
+            {% comment %}
+            ./ Metafields 2.0
+            {% endcomment %}
+            {% if product_cf_obj.size > 0 %}
+              {% assign inputs = product_cf_obj %}
+            {% endif %}
+
+            {% for input_item in inputs %}
+              {% if product_cf_obj.size > 0 %}
+                {% assign input = shop.metafields.shineon[input_item.key].value | default: shop.metafields.shineon[input_item.key] %}
+              {% else %}
+                {% assign input = input_item %}
+              {% endif %}
+              {% assign required = "" %}
+              {% if input.required == 1 %}
+                {% assign required = "required" %}
+              {% endif %}
+              {% assign input_label = input.label %}
+              {% assign input_placeholder = input.placeholder %}
+              {% for locale in input.locales %}
+                {% if shop.locale contains locale[0] %}
+                  {% assign input_label = locale[1].label %}
+                  {% assign input_placeholder = locale[1].placeholder %}
+                {% endif %}
+              {% endfor %}
+              {% if input.field_type == "ring_size" %}
+                <div class="so-custom-field-wrap {{ input.grid }}">
+                  <label for="{{ input.id }}">{{ input_label }}</label>
+                  <select name="properties[{{ input.name }}]" id="{{ input.id }}" class="{{ input.class }}" {{ required }}>
+                    <option selected disabled>{{ input_placeholder }}</option>
+                    {% for option in input.options %}
+                      <option value="{{ option }}">{{ option }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+              {% elsif input.field_type == "birthstone" %}
+                <div class="so-custom-field-wrap">
+                  <label class="so-option-label">{{ input.label }}</label>
+                  <div class="so-custom-field-birthstone-wrap">
+                    {% for option in input.options %}
+                      <label for="so-custom-field-radio-{{ option }}" class="so-custom-field-birthstone-label">
+                        <input
+                            id="so-custom-field-radio-{{ option }}"
+                            class="{{ input.class }}"
+                            type="radio"
+                            name="properties[{{ input.name }}]"
+                            value="{{ option }}"
+                            data-src-bigimg="https://cdn.shopify.com/s/files/1/0077/2420/4096/files/bs-{{ option }}_x100.png"
+                            {{ required }}
+                             />
+                        {% if section.settings.birthstone_style_selector != "no-stones" %}
+                          <div class="so-custom-field-birthstone-circle {{ option }}"></div>
+                        {% endif %}
+                        {% if section.settings.birthstone_style_selector != "no-months" %}
+                          {{ option | truncate: 3, "" }}
+                        {% endif %}
+                      </label>
+                    {% endfor %}
+                    <div id="big-img-w" style="display: none; min-height: 100px;">
+                      <img src="" id="big-img">
+                    </div>
+                  </div>
+                </div>
+              {% elsif input.field_type == 'engraving' %}
+                <div class="so-custom-field-wrap {{ input.grid }}">
+                  <label for="{{ input.id }}">{{ input_label }}</label>
+                  <input
+                      type="{{ input.type }}"
+                      name="properties[{{ input.name }}]"
+                      id="{{ input.id }}"
+                      class="{{ input.class }}"
+                      placeholder="{{ input_placeholder }}"
+                      maxlength="{{ input.maxlength }}"
+                      minlength="{{ input.minlength }}"
+                      form="{{ product_form_id }}"
+                      {{ required }} />
+                </div>
+              {% endif %}
+            {% endfor %}
+          </div>
+        {% endif %}
+      {% endif %}
+
+      {{ section.settings.snippet_below_options }}
+
+    </div><!-- END so-product-variants-wrap -->
+
+    {% if is_roman_numeral_date == true %}
+      {% include 'product-info-shineon' with 'roman-date' %}
+    {% endif %}
+
+    {% if is_roman_numeral_map == true %}
+      {% include 'product-info-shineon' with 'map-coordinates' %}
+    {% endif %}
+
+    {% if shop.metafields.shineon.is_shineon_brand == true and shop.metafields.shineon.is_shineon_brand != blank %}
+      {% if warranty_tag != false %}
+        {% include 'product-info-shineon' with 'warranty' %}
+      {% endif %}
+    {% endif %}
+
+    {% if cro_design_product == false %}
+
+      {% include 'product-info-shineon'
+        with 'so-product-price'
+        and quantity_selector
+        and tag_text
+      %}
+
+    {% endif %}
+    
+    {% comment %}
+    Display coupon discount
+    {% endcomment %}
+    {% capture snippet_content %}{% include 'shineon-addons-placement' with 'shineon-above-atc' %}{% endcapture %}
+    {% unless snippet_content contains "Liquid error" %}
+      {{ snippet_content }}
+    {% endunless %}
+
+    {% capture snippet_content %}{% include 'shineon-above-atc' %}{% endcapture %}
+    {% unless shineon_above_atc_snippet_content contains "Liquid error" %}
+      {{ shineon_above_atc_snippet_content }}
+    {% endunless %}
+    
+    {% include 'product-info-shineon' with 'button-atc' %}
+
+    {% capture shineon_below_atc_snippet_content %}{% include 'shineon-below-atc' %}{% endcapture %}
+    {% unless shineon_below_atc_snippet_content contains "Liquid error" %}
+      {{ snippet_content }}
+    {% endunless %}
+
+    {% if section.settings.payment_options %}
+    <div class="below-atc">
+    {% include 'product-info-shineon' with 'payment-icons' %}
+    </div>
+    {% endif %}
+
+    {% if free_shipping == true and settings.free_shipping_position != 'badge' %}
+    {% include 'product-info-shineon' with 'free-shipping' %}
+    {% endif %}
+
+    {% unless shop.permanent_domain contains 'shineon-platform' %}
+      {% if product.available == true %}
+      {% include 'product-informations-alert-shineon' with section_type: 'discount-message' %}
+      {% endif %}
+    {% endunless %}
+
+    {% capture snippet_content %}{% include 'shineon-addons-placement' with 'shineon-below-atc' %}{% endcapture %}
+    {% unless snippet_content contains "Liquid error" %}
+      {{ snippet_content }}
+    {% endunless %}
+
+  </div><!-- END product-form-options-wrap -->
+
+  {{ section.settings.snippet_below_atc }}
+
+  {% if section.settings.informations_alert_enable == true %}
+  <div class="text-center">
+    {% include 'product-informations-alert-shineon' with almost_gone_max_value: section.settings.almost_gone_max_value, almost_gone_interval: section.settings.almost_gone_interval, section_type: 'hurry_up' %}
+  </div>
+  {% endif %}
+
+  {% if section.settings.show_badges_as_section != false and section.settings.show_about_us_review_list != true and section.settings.trust_section_type == 'single_image' %}
+    {% include 'badges-shineon' with 'trust-single-image' %}
+  {% endif %}
+
+  {% if section.settings.product_usps_checkbox == true %}
+  <div class="so-usps-w so-hidden-md">
+    {% include 'badges-shineon' with 'product-usps' %}
+  </div>
+  {% endif %}
+
+  {% if section.settings.show_about_us_review_list != true %}
+    <div id="so-product-payment-and-description" {% if product.metafields.shineon.uploadable == 1 %}class="so-hidden"{% endif %}>
+
+      {% include 'product-info-shineon' with 'description' %}
+
+    </div><!-- END so-product-payment-and-description -->
+  {% endif %}
+      
+  {% comment %} END: DISPLAY PLACEHOLDER FORM {% endcomment %}
+
+  {% assign so_modal_upsell_text_heading = 'purchase_form_modal_callout_engraving_primary' | t %}
+  
+  {% if so_current_variant.metafields.shineon.gold == 1 %}
+    {% assign so_modal_product_featured_img = featured_gold_img.src | img_url: 'x650' %}
+  {% else %}
+    {% assign so_modal_product_featured_img = featured_engraved_img.src | img_url: 'x650' %}
+  {% endif %}
+
+  {% include 'product-info-shineon' with 'upsell-modal' %}
+
+  {% if shop.metafields.shineon.is_shineon_brand == true and shop.metafields.shineon.is_shineon_brand != blank %}
+    {% if warranty_tag != false %}
+      {% include 'product-info-shineon' with 'info-modal', product_handle: 'warranty' %}
+    {% endif %}
+  {% endif %}
+
+  </div><!-- END so-product-form -->
+
+</div><!-- END so-product-form-wrap -->
+
+<script>
+  document.addEventListener("DOMContentLoaded", function(event) {
+  jQuery( document ).ready(function($) {
+    if (typeof $ === 'undefined') {
+    alert("jQuery is required for ShineOn Engraving Product Templates. Please Install jQuery.");
+    return;
+    }
+
+    if (!Array.prototype.diff) {
+    Object.defineProperty(Array.prototype, 'diff', {
+      enumerable: false, // default is false
+      value: function (a) {
+      return this.filter(function (i) {
+        return a.indexOf(i) < 0;
+      });
+      }
+    });
+    }
+
+    $('body').addClass('body-{% if product.template_suffix != null %}{{ product.template_suffix }}{% else %}product{% endif %}');
+    {% if has_engraving != false and has_maxlength %}
+        function showTooltipEngraving(parent, message) {
+          var tooltipElem = document.createElement("div");
+              tooltipElem.classList += 'required-input-tooltip';
+
+          $(tooltipElem).css({
+            'position': 'absolute',
+            'white-space': 'nowrap',
+            'background-color': '{{ section.settings.input_error_color }}',
+            'color': '#fff',
+            'font-size': '14px',
+            'text-align': 'center',
+            'padding': '3px 10px',
+            'width': '100%'
+          });
+          parent.css('position', 'relative');
+          parent.addClass('input-error');
+          if($(parent).find('.required-input-tooltip').length < 1)
+          {
+            parent[0].insertBefore(tooltipElem, parent.find('input')[0]);
+            tooltipElem.innerText = message;
+            $(tooltipElem).show();
+          }
+          return $(tooltipElem)
+        }
+        $('.so-engraving-input').on('click, focusout',function(){
+          $(this).prev().remove();
+          $('.input-error').removeClass('input-error');
+          $('.required-input-tooltip').remove();
+        });
+        $('.so-engraving-input').on('keydown', function(e){
+          $(this).prev().remove();
+          $('.input-error').removeClass('input-error');
+          $('.required-input-tooltip').remove();
+
+          let input_max = parseInt($(this).attr('maxlength'));
+          if($(this).val().length == input_max)
+          {
+            if (e.which <= 90 && e.which >= 48)
+            {
+              showTooltipEngraving($(this).closest('.so-custom-field-wrap'), '{{ "purchase_form_engraving_done_tooltip" | t }}');
+            }
+          }
+        });
+        $('#so-modal-btn-add-to-cart-{{ product.id }}').click(function(e)
+        {
+          e.preventDefault();
+
+          let engraving_empty = false,
+              engraving_input_has_text = false;
+          const input = $(this).parent().parent().find('.so-engraving-input')[0];
+          if($(input).val().length < 1)
+          {
+            engraving_empty = true;
+            if(!engraving_input_has_text)
+            {
+              showTooltipEngraving($(input).closest('.so-custom-field-wrap'), '{{ "purchase_form_engraving_required_tooltip" | t }}');
+            }
+          }
+          else
+          {
+            engraving_input_has_text = true;
+          }
+          if(!engraving_input_has_text)
+          {
+            e.preventDefault();
+          }
+          else
+          {
+            $('.input-error').removeClass('input-error');
+            $('.required-input-tooltip').remove();
+            $(this).submit();
+          }
+        });
+      {% endif %}
+
+    var $wrap = $('#so-options-form'),
+      $form = $('#{{ product_form_id }}'),
+      $modal = $('#modal-{{ product_form_id }}');
+
+    // Warranty checkbox
+    {% assign addons = product.metafields.shineon.addons.value | default: product.metafields.shineon.addons %}
+    
+    {% if addons.items.size > 0 %}
+      function getAddonsSubtotal()
+      {
+        var quantity = parseInt($form.find('input[name=quantity]').val()),
+            addonsPrice = 0;
+
+        $('.addon_product-label').each(function()
+        {
+          var addon = $(this).find('.form-checkbox');
+          if (addon.is(':checked'))
+          {
+            if ($(this).hasClass('addon__quantity-label'))
+            {
+              addonsPrice += addon.data('addon-price') * quantity;
+            }
+            else
+            {
+              addonsPrice += addon.data('addon-price');
+            }
+          }
+        });
+
+        return addonsPrice
+      }
+
+      function updateAddonsSubtotal()
+      {
+        var subtotalElem = $('.product-additions-subtotal'),
+            addonsTotalPrice = getAddonsSubtotal(),
+            quantity = parseInt($form.find('input[name=quantity]').val());
+        subtotalElem.find('strong').html(product.formatMoney(product.current_variant.price * quantity + addonsTotalPrice));
+        updateShopPay(product.current_variant.price * quantity + addonsTotalPrice, product);
+      }
+      $wrap.find('.addon_product-label .form-checkbox').off('change').on('change', function (e) {
+        updateAddonsSubtotal();
+
+        if($wrap.find('.addon_product-label .form-checkbox:checked').length > 0)
+        {
+          $('.product-additions-subtotal').show();
+        }
+        else
+        {
+          $('.product-additions-subtotal').hide();
+        }
+      });
+    {% else %}
+      $wrap.find('.so-warranty-add-remove').off('change').on('change', function (e) {
+        if (product.settings.warrantyProduct.variants && product.settings.warrantyTag != false)
+        {
+          var quantity = parseInt($form.find('input[name=quantity]').val()),
+              priceTimesQuantity = product.settings.warrantyProduct.price + product.current_variant.price * quantity;
+          if (this.checked)
+          {
+            $('.product-additions-subtotal').show();
+            product.getCartUpadatedData();
+            product.settings.isWarrantyAdded = 1;
+          }
+          else
+          {
+            $('.product-additions-subtotal').hide();
+            product.removeWarranty();
+            product.settings.isWarrantyAdded = 0;
+          }
+          calculateWarranty(product);
+        }
+      });
+    {% endif %}
+
+    function calculateWarranty(p)
+    {
+      var quantity = parseInt($form.find('input[name=quantity]').val()),
+          priceTimesQuantity = p.current_variant.price * quantity;
+
+      {% if warranty_tag != false %}
+        priceTimesQuantity = p.settings.warrantyProduct.price + p.current_variant.price * quantity;
+
+        if (p.settings.isWarrantyAdded === 0 || !$('.so-warranty-add-remove').is(':checked'))
+        {
+          priceTimesQuantity -= p.settings.warrantyProduct.price;
+        }
+      {% endif %}
+
+      $('.price-with-additions').text(p.formatMoney(priceTimesQuantity));
+
+      updateShopPay(priceTimesQuantity, p);
+    }
+
+    function updateShopPay(price, p)
+    {
+      if ($('.so-shoppay-text').length > 0)
+      {
+        $('.so-shoppay-text span.money, .so-popup-back .popup-price').text(p.formatMoney(price /4));
+      }
+      else
+      {
+        return false
+      }
+    }
+
+    $('#so-btn-add-to-cart-{{ product.id }}').off('click').on('click', function(e){
+    e.stopImmediatePropagation();
+    e.preventDefault();
+    $modal.so_modal('show');
+    });
+
+    $modal.insertAfter($('div.page-container').length ? 'div.page-container' : 'body');
+
+    var initForm = function () {
+    var product = {
+      base_variant: {{ base_variant | json }},
+      current_variant: null,
+      $form: $form,
+      settings: {
+      section: {{ section.settings | json }},
+      engraving: {
+        option: {{ engraving_option | json }},
+        option_index: {{ engraving_option_index | json }},
+        option_yes: '{{ engraving_option_yes }}',
+        option_no: '{{ engraving_option_no }}'
+      },
+      packageProtectionProd: {{ all_products['purchase-protection-route-replacement'] | json }},
+      warrantyProduct: {{ all_products['warranty'] | json }},
+      warrantyTag: {{ warranty_tag }},
+      isWarrantyAdded: false
+      },
+      getVariant: function (variant_id) {
+      for (var i = 0, len = this.variants.length, variant = undefined; i < len; i++) {
+        if (this.variants[i].id == variant_id) {
+        variant = this.variants[i];
+        break;
+        }
+      }
+
+      return variant;
+      },
+      getVariantsMatching: function (obj, metafield_obj) {
+      var variants = [], key;
+      VariantsLoop: for (var i = 0; i < this.variants.length; i++) {
+        for (key in obj) {
+        if (!obj.hasOwnProperty(key) || obj[key] !== this.variants[i][key]) {
+          continue VariantsLoop;
+        }
+        }
+
+        if (typeof metafield_obj !== 'undefined') {
+        for (key in metafield_obj) {
+          if (!metafield_obj.hasOwnProperty(key) || metafield_obj[key] !== this.variants[i].metafields[key]) {
+          continue VariantsLoop;
+          }
+        }
+        }
+
+        // All options match? Cool, we found it.
+        variants.push(this.variants[i]);
+      }
+
+      return variants;
+      },
+      getRespectiveEngravingVariant: function (state) {
+        // Are we looking for the engraved version or non-engraved version?
+        if (typeof state === 'undefined') {
+          state = true;
+        }
+
+        if (this.currentVariantHasEngraving() && state) {
+          return this.current_variant;
+        } else if (!this.currentVariantHasEngraving() && !state) {
+          return this.current_variant;
+        }
+
+        var match_options = ['option1', 'option2', 'option3'].diff([this.settings.engraving.option]);
+
+        for (var i = 0, variant = undefined; i < this.variants.length; i++) {
+          // Skip the current
+          if (this.current_variant.id == this.variants[i].id) {
+          continue;
+          }
+
+          // Check if all options match
+          var assertion = state;
+          for (j = 0; j < match_options.length; j++) {
+          var match_option = match_options[j];
+          if (this.current_variant[match_option] != this.variants[i][match_option]) {
+            assertion = !state;
+            break;
+          }
+          }
+
+          // All options match? Cool, we found it.
+          if (assertion == state) {
+          variant = this.variants[i];
+          break;
+          }
+        }
+
+        // If nothing is found, stay on the current variant
+        return variant || this.current_variant;
+      },
+      currentVariantHasEngraving: function () {
+      return this.current_variant[this.settings.engraving.option] === this.settings.engraving.option_yes;
+      },
+      currentVariantHasBox: function () {
+        return this.current_variant[this.settings.box_option.option] === this.settings.box_option.option_yes;
+      },
+      getOptionVariant: function () {
+        for (var i = 0, variant = undefined; i < this.variants.length; i++) {
+          if (this.current_variant['option1'] == this.variants[i]['option1'] && this.current_variant['option2'] != this.variants[i]['option2']) {
+            variant = this.variants[i];
+            break;
+          }
+        }
+
+        // If nothing is found, stay on the current variant
+        return variant || this.current_variant;
+      },
+      changeVariant: function (variant) {
+      if (typeof variant !== 'object') {
+        variant = this.getVariant(variant);
+      }
+
+      this.current_variant = variant;
+
+      this.$form.trigger('variant_changed', [this, this.current_variant]);
+
+      // long variant names or more than 2 options
+      product.overflowSwatchText();
+
+      return this;
+      },
+      remember: function () {
+      var $line1_input = this.$form.find('input.so-engraving-line1'),
+        $line2_input = this.$form('input.so-engraving-line2');
+
+      $line1_input.data('old', $line1_input.val());
+      $line2_input.data('old', $line2_input.val());
+      $line1_input.val('');
+      $line2_input.val('');
+      },
+      refill: function () {
+      var $line1_input = this.$form.find('input.so-engraving-line1'),
+        $line2_input = this.$form.find('input.so-engraving-line2');
+
+      if ($line1_input.val().length === 0 && $line1_input.data('old')) {
+        $line1_input.val($line1_input.data('old'));
+      }
+
+      if ($line2_input.val().length === 0 && $line2_input.data('old')) {
+        $line2_input.val($line2_input.data('old'));
+      }
+      },
+      displayEngravingFields: function (state) {
+      // When Yes / No hidden, Inputs always show.
+      if (this.settings.section.option2_selection === 'show_inputs_only') {
+        return;
+      }
+
+      this.$form.find('.so-engraving-lines').toggle(state);
+      this.$form.find('.so-engraving-line1-wrap').prop('required', state);
+      },
+      formatMoney: function (cents, format) {
+      if (typeof cents === 'string') {
+       cents = cents.replace('.', '');
+      }
+      var value = '',
+        placeholderRegex = /\{\{\s*(\w+)\s*\}\}/,
+        formatString = format || {{ shop.money_format | json }};
+
+      function formatWithDelimiters(number, precision, thousands, decimal) {
+        thousands = thousands || ',';
+        decimal = decimal || '.';
+
+        if (isNaN(number) || number === null) {
+        return 0;
+        }
+
+        number = (number / 100.0).toFixed(precision);
+
+        var parts = number.split('.');
+        var dollarsAmount = parts[0].replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1' + thousands);
+        var centsAmount = parts[1] ? decimal + parts[1] : '';
+
+        return dollarsAmount + centsAmount;
+      }
+
+      switch (formatString.match(placeholderRegex)[1]) {
+        case 'amount':
+        value = formatWithDelimiters(cents, 2);
+        break;
+        case 'amount_no_decimals':
+        value = formatWithDelimiters(cents, 0);
+        break;
+        case 'amount_with_comma_separator':
+        value = formatWithDelimiters(cents, 2, '.', ',');
+        break;
+        case 'amount_no_decimals_with_comma_separator':
+        value = formatWithDelimiters(cents, 0, '.', ',');
+        break;
+        case 'amount_no_decimals_with_space_separator':
+        value = formatWithDelimiters(cents, 0, ' ');
+        break;
+      }
+
+      return formatString.replace(placeholderRegex, value);
+      },
+        overflowSwatchText: function()
+        {
+          function overflowSwatch()
+          {
+            var $options1 = $wrap.find('.so-label-cell-pad:not(.so-hidden)'),
+                hasOverFlowingElements = false;
+            {% if sweetest_product_design != false %}
+              $options1 = $wrap.find('.so-label-cell-pad.so-{{ variant_accessory_type }}-metal');
+            {% endif %}
+            $options1.each(function (k, el) {
+              var soLabelSymbolWrap = $(el).find('.so-label-symbol-wrap');
+              {% if sweetest_product_design != false %}
+                soLabelSymbolWrap = $(el).find('.so-translation-with-metal');
+              {% endif %}
+              if (soLabelSymbolWrap.length > 0)
+              {
+                var soTranslationWidth = soLabelSymbolWrap.find('.so-translation').innerWidth();
+                let cssSwatch = soLabelSymbolWrap.find('.so-swatch-metal:visible').length;
+                let svgSwatch = soLabelSymbolWrap.find('.so-swatch-metal-icon:visible').length;
+                let swatchWidth = 0;
+                if(cssSwatch > 0 || svgSwatch > 0)
+                {
+                  swatchWidth = 28;
+                }
+                {% if section.settings.option1_metal_swatches == true %}
+                  var soTranslationWidth = soTranslationWidth + swatchWidth;
+                {% endif %}
+                if($('.so-translation-with-metal .metal').length) {
+                  soTranslationWidth += $('.so-translation-with-metal .metal').outerWidth(true);
+                }
+                if (soLabelSymbolWrap.innerWidth() < soTranslationWidth)
+                {
+                  hasOverFlowingElements = true;
+                }
+              }
+            });
+            if ($options1.length != 1 && hasOverFlowingElements === true) {
+              $options1.removeClass(function (index, className) {
+                return (className.match(/(^|\s)so-col-\S+/g) || []).join(' ');
+              }).addClass('so-col-12 text-overflowed');
+              {% if display_option1_metal and section.settings.option1_metal_swatches == true %}
+                $('.so-custom-property-flex-wrap.so-field-wrap.so-option-fieldset').addClass('so-row').removeClass('so-custom-property-flex-wrap');
+              {% endif %}
+            }
+          }
+          overflowSwatch();
+          window.addEventListener('resize', overflowSwatch);
+        },
+      getCartUpadatedData: function() {
+        $.getJSON('/cart.js', function(data, success, response) {})
+          .done(function(data)
+          {
+            var warrantyQuantity = product.cartProductsTotal(data).quantity ? product.cartProductsTotal(data).quantity : 1,
+                addWarrantyData = {
+                  id: product.settings.warrantyProduct.variants[0].id,
+                  quantity: warrantyQuantity
+                };
+            product.addWarranty(addWarrantyData);
+          })
+          .fail(function (response) {
+            console.error('GET cart.js error', response);
+          })
+          .always(function () {
+          });
+      },
+      cartProductsTotal: function (cart) {
+        var cart_items_obj = {},
+            cart_items_total = 0,
+            cart_items_quantity = 0;
+        $.each(cart.items, function (index, item) {
+          if (item.product_id != product.settings.packageProtectionProd.id && item.product_id != product.settings.warrantyProduct.id && false)
+          {
+            cart_items_total += item.price * item.quantity;
+            cart_items_quantity += item.quantity;
+          }
+        });
+
+        cart_items_obj['quantity'] = cart_items_quantity;
+        cart_items_obj['total'] = cart_items_total;
+
+        return cart_items_obj
+      },
+      addWarranty: function (addWarrantyData) {
+        if (product.settings.warrantyProduct.variants && product.settings.warrantyTag != false)
+        {
+          var self = this;
+
+          $.ajax({
+            type: 'POST',
+            url: '/cart/add.js',
+            dataType: 'json',
+            data: addWarrantyData
+          })
+            .done(function (data) {
+            })
+            .fail(function (response) {
+              console.error('add error', response);
+            })
+        }
+      },
+      removeWarranty: function () {
+        if (product.settings.warrantyProduct.variants && product.settings.warrantyTag != false)
+        {
+          var data = {
+            id: product.settings.warrantyProduct.variants[0].id,
+            quantity: 0
+          }
+          $.ajax({
+            type: 'POST',
+            url: '/cart/change.js',
+            dataType: 'json',
+            data: data
+          })
+            .done(function (cart) {
+            })
+            .fail(function (response) {
+              console.error('add error', response);
+            })
+        }
+      }
+    };
+
+    $.extend(product, {{ product | json }});
+
+    product.variants = [];
+
+    // Filter out hidden variants (if any)
+    {% for variant in product.variants %}
+      {% unless hidden_variants contains variant.id %}
+      // Add metafield info
+      var variant = {{ variant | json }};
+      variant.metafields = {{ variant.metafields.shineon | json }};
+      if (variant.metafields.transformations) {
+        variant.metafields.transformations = JSON.parse({{ variant.metafields.shineon.transformations | json }});
+      }
+      if (variant.metafields.engravable_fonts) {
+        variant.metafields.engravable_fonts = JSON.parse({{ variant.metafields.shineon.engravable_fonts | json }});
+      }
+      product.variants.push(variant);
+      {% endunless %}
+    {% endfor %}
+
+    $.extend(product, {
+      has_silver_variants: {{ has_silver_variants | json }},
+      has_gold_variants: {{ has_gold_variants | json }},
+      has_multiple_metals: {{ has_multiple_metals | json }},
+      metafields: {{ product.metafields.shineon | json }},
+      template_suffix: '{{ template.suffix }}',
+      base_variant: {{ base_variant | json }}
+    });
+    product.current_variant = product.getVariant({{ so_current_variant.id }}) || product.variants[0];
+
+    // if Variant AVAILABLE or OUT OF STOCK
+    {% if so_current_variant.available == false %}
+      product.current_variant = product.getVariant({{ product.first_available_variant.id }}) || product.variants[0];
+    {% else %}
+      product.current_variant = product.getVariant({{ so_current_variant.id }}) || product.variants[0];
+    {% endif %}
+    
+    function negativeClosePopup (event) {
+      $('#so-gallery-wrap').show();
+      event.preventDefault();
+      if(product.current_variant.metafields.metal == 'gold')
+      {
+        var switch_gold_not_engraved = {{ variant_gold | json }};
+        if (switch_gold_not_engraved) {
+          var current_variant = switch_gold_not_engraved.id;
+        }
+      }
+      else
+      {
+        var switch_stainless_not_engraved = {{ variant_stainless | json }};
+        if (switch_stainless_not_engraved) {
+          var current_variant = switch_stainless_not_engraved.id;
+        }
+      }
+      product.changeVariant(current_variant);
+      $form.submit();
+    }
+
+    //Close
+    function closeUpsellPopup (e) {
+      const inputs = $('.so-product-form .so-engraving-input');
+      let input_fill = false,
+          required_fill = false;
+      $(inputs).each(function(index, item){
+        if($(item).val().length > 0)
+        {
+          if(index == 0)
+          {
+            required_fill = true;
+          }
+          input_fill = true;
+        }
+      });
+      if(e.type == 'hide')
+      {
+        if (!input_fill)
+        {
+          $form.submit();
+        }
+        else
+        {
+          e.preventDefault();
+        }
+      }
+    }
+    // Modal Events
+    $modal.on('click', '.so-modal-btn-add-base-to-cart', negativeClosePopup);
+
+    $modal.on('hide.bs.so-modal', closeUpsellPopup);
+
+    $('button[data-modal="close"]').on('click', negativeClosePopup);
+
+    $modal.on('show.bs.so-modal', function (e) {
+      //$('#so-gallery-wrap').hide();
+      product.changeVariant(product.current_variant.id);
+    });
+
+    // DOM Events
+    $('.so-custom-field-birthstone-label').click(function (e) {
+      $('.so-custom-field-birthstone-label').removeClass('so-custom-field-birthstone-selected');
+      $(e.currentTarget).addClass('so-custom-field-birthstone-selected');
+    });
+
+    $('.so-tabs').off('click', 'li a')
+      .on('click', 'li a', function () {
+        if (!$(this).parents('li').hasClass('so-active'))
+        {
+          var $anchor = $(this),
+            $tab = $anchor.parents('li').first(),
+            $tabs = $tab.parent().children('li'),
+            panel = $anchor.data('panel'),
+            $panel = $('#' + panel),
+            $panels = $panel.parent().children('li');
+
+          $tabs.filter('.so-active').removeClass('so-active');
+          $tab.addClass('so-active');
+
+          $panels.filter(':visible').hide();
+          $panel.show();
+        }
+
+        // Prevent the href.
+        return false;
+      });
+
+    // IMPORTANT, the so-engraving-input class can be in a metafield
+    $form.off('input', '.so-engraving-input')
+      .on('input', '.so-engraving-input', function () {
+      var $inputs = $('.so-engraving-input'),
+        engraving_length = $inputs.get().reduce(function (carry, next) {
+          return carry + $(next).val().length;
+        }, 0);
+
+      if (engraving_length) {
+        if (!product.currentVariantHasEngraving()) {
+        product.changeVariant(product.getRespectiveEngravingVariant());
+        $inputs.addClass('so-engraving-active');
+        }
+      } else {
+        if (product.currentVariantHasEngraving()) {
+        product.changeVariant(product.getRespectiveEngravingVariant(false));
+        $inputs.removeClass('so-engraving-active');
+        }
+      }
+      });
+
+    $wrap.off('click', '.so-variant-change-metal:not(.out-of-stock)')
+      .on('click', '.so-variant-change-metal:not(.out-of-stock)', function () {
+      var $this = $(this),
+        metal = $this.data('metal').toLowerCase(),
+        gold = ['silver', 'stainless'].indexOf(metal) === -1 ? 1 : 0,
+        $metalChangeBtns = $('.so-variant-change-metal'),
+        $variants = $form.find('[data-variant_id][data-metal]'),
+        variants;
+
+      variants = product.getVariantsMatching({
+        option2: product.current_variant.option2,
+        option3: product.current_variant.option3
+      }, {
+        metal: metal,
+        type: product.current_variant.metafields.type
+      });
+
+      if (variants.length !== 1) {
+        // fallback v0.1.1
+        // using attachment metafield instead
+        var attachment = product.current_variant.metafields.attachment.match(/-silver$/)
+          ? product.current_variant.metafields.attachment.replace('silver', 'gold')
+          : product.current_variant.metafields.attachment.replace('gold', 'silver');
+
+        variants = product.getVariantsMatching({
+          option2: product.current_variant.option2,
+          option3: product.current_variant.option3
+        }, {
+          attachment: attachment
+        });
+      }
+
+      if (variants.length === 0) {
+        console.error('No variants found ', metal);
+        return;
+      } else if (variants.length > 1) {
+        console.error('matched more than 1 variant', variants);
+        return;
+      }
+
+      // Hide/Show
+      $metalChangeBtns.removeClass('so-active-metal');
+      $this.addClass('so-active-metal');
+      $variants.filter('[data-metal != "' + metal + '"][data-gold != "' + gold + '"]').addClass('so-inactive-metal');
+      $variants.filter('[data-metal = "' + metal + '"][data-gold = "' + gold + '"]').removeClass('so-inactive-metal');
+
+      product.changeVariant(variants[0].id);
+
+      if(gold)
+      {
+        $('.so-modal-product-featured-img').attr('src', '{{ featured_gold_img | img_url: "x650" }}');
+      }
+      else
+      {
+        $('.so-modal-product-featured-img').attr('src', '{{ featured_engraved_img | img_url: "x650" }}');
+      }
+      });
+
+    // Handle changing hidden variant id input when swatch labels are clicked
+    $wrap.off('click', '.so-variant-change:not(.out-of-stock)')
+      .on('click', '.so-variant-change:not(.out-of-stock)', function () {
+        product.changeVariant($(this).data('variant_id'));
+      });
+
+    $form.off('input change', 'select.so-variant-selector')
+      .on('input change', 'select.so-variant-selector', function () {
+      product.changeVariant($(this).val());
+      });
+
+    $wrap.off('click', '.so-quantity-change').on('click', '.so-quantity-change', function () {
+      var $input = $form.find('input[name=quantity]'),
+        $vanity = $wrap.find('input.so-cart-qty-input'),
+        value = parseInt($input.val());
+
+      if ($(this).data('quantity') === 'minus') {
+      if (value > 1) {
+        $input.val(value - 1);
+      }
+      } else {
+      $input.val(value + 1);
+      }
+
+      $vanity.val($input.val());
+
+      $form.trigger('quantity_changed');
+    });
+
+    var last_input_so_cart_qty_value;
+
+    $form.find('input.so-cart-qty-input')
+      .off('input').on('input', function () {
+      if (this.value > 0) {
+        $form.trigger('quantity_changed');
+      }
+      })
+      .off('blur').on('blur', function(){
+      if (this.value <= 0){
+        // invalid value
+        this.value = last_input_so_cart_qty_value;
+      }
+      });
+
+    $form.off('so-product-set-current-variant').on('so-product-set-current-variant', function () {
+      product.changeVariant(product.current_variant);
+    });
+
+    $form.off('quantity_changed.atc_text variant_changed.atc_text')
+      .on('quantity_changed.atc_text variant_changed.atc_text', function () {
+      var $preATC = $wrap.find('.so-btn-add-to-cart-vanity-prefix'),
+        $sufATC = $wrap.find('.so-btn-add-to-cart-vanity-suffix'),
+        price = product.current_variant.price,
+        quantity = parseInt($form.find('input[name=quantity]').val());
+
+        last_input_so_cart_qty_value = quantity;
+
+      {% if cro_design_product == false %}
+      $wrap.find('.so-btn-add-to-cart-vanity-copy').html('{{ 'purchase_form_add_to_cart_text' | t }}'+'&nbsp;');
+      {% else %}
+      $wrap.find('.so-btn-add-to-cart-vanity-copy').html('{{ 'purchase_form_add_to_cart_text_cro' | t }}'+'&nbsp;');
+      {% endif %}
+
+      if ($preATC.length) {
+        $preATC.html(product.formatMoney(price * quantity) + ' -&nbsp;');
+      }
+
+      if ($sufATC.length) {
+        var label = quantity === 1 ? $sufATC.data('singular') : $sufATC.data('plural');
+        $sufATC.text(' (' + quantity + ' ' + label + ')');
+      }
+
+      {% assign addons = product.metafields.shineon.addons.value | default: product.metafields.shineon.addons %}
+  
+      {% if addons.items.size > 0 %}
+        updateAddonsSubtotal();
+      {% else %}
+        calculateWarranty(product);
+      {% endif %}
+
+      return true;
+      });
+
+    // The current_variant changed on the product object.
+    $form.off('variant_changed.form')
+      .on('variant_changed.form', function (e, p, v) {
+
+      /*** 2393 BU Upsell Modal ***/
+      {% if product.metafields.shineon.uploadable == 1 %}
+      var featured_image_engraving_id,
+          metafields_transform = product.getRespectiveEngravingVariant().metafields.transformations_json ? product.getRespectiveEngravingVariant().metafields.transformations_json : product.getRespectiveEngravingVariant().metafields.transformations;
+
+      if(!metafields_transform.id)
+      {
+        for(prop in metafields_transform)
+        {
+          featured_image_engraving_id = metafields_transform[prop].id;
+        }
+      }
+      else
+      {
+        featured_image_engraving_id = metafields_transform.id
+      }
+
+      var featured_image_modal = $('#so-slick-featured-carousel-' + product.id).find('img[data-transformation_id=' + featured_image_engraving_id + ']').attr('src');
+      $('.so-modal-engraving-featured-img-wrap').css('max-width', '497px');
+      $('.so-modal-product-featured-img').attr('src', featured_image_modal);
+      {% endif %}
+      /*** /. 2393 BU Upsell Modal ***/
+
+      var $input = $form.find('input[name=id]'),
+        $formTemplate = $('#so-options-form'),
+        $compare_at = $formTemplate.find('.so-compare-at-label'),
+        $compare_at_savings = $formTemplate.find('.so-compare-at-savings-label-money'),
+        $price = $formTemplate.find('.so-product-pricing span.money'),
+        $priceSaveMoney = $formTemplate.find('.saved-amount-money'),
+        $priceSavePercent = $formTemplate.find('.saved-amount-percent');
+
+      // engraving fields
+      p.displayEngravingFields(p.currentVariantHasEngraving());
+
+      // price
+      $price.html(product.formatMoney(v.price));
+      $priceSaveMoney.html(product.formatMoney(v.compare_at_price - v.price));
+      $priceSavePercent.html(Math.round(((v.compare_at_price - v.price)/v.compare_at_price)*100));
+      $compare_at.html(product.formatMoney(v.compare_at_price));
+      $compare_at_savings.html(product.formatMoney(v.compare_at_price - v.price));
+
+      // Make the select variant active and visible in every fieldset
+      $input.val(v.id);
+      $wrap.find('.so-variant-change.so-active').removeClass('so-active');
+      $wrap.find('.so-variant-change[data-variant_id=' + v.id + ']').addClass('so-active').removeClass('so-hidden');
+
+      // Hide show variants with other options that match the clicked option's values
+
+      $wrap.find('.so-variant-change:not(.so-active)').each(function () {
+        var $label = $(this),
+          option = $label.data('option'),
+          visible = ['option1', 'option2', 'option3']
+            .diff([option])
+            .map(function (opt) {
+              return (!$label.data(opt) && !v[opt]) || $label.data(opt) == v[opt] ? 1 : 0;
+            })
+            .reduce(function (matches, value) {
+              return matches + value;
+            }) == 2;
+        $label.toggleClass('so-hidden', !visible);
+      });
+
+      $form.find('input[name=id]').trigger('input');
+
+      // update variant id on query string
+      if (window.history && window.history.replaceState) {
+        var key = 'variant',
+          value = v.id,
+          re = new RegExp("([?&])" + key + "=.*?(&|#|$)", "i"),
+          newurl;
+        if (window.location.href.match(re)) {
+        newurl = window.location.href.replace(re, '$1' + key + "=" + value + '$2');
+        } else {
+        var separator = window.location.href.indexOf('?') !== -1 ? "&" : "?";
+        newurl = window.location.href + separator + key + "=" + value;
+        }
+        window.history.replaceState({path: newurl}, '', newurl);
+      }
+
+      {% if has_engraving and product.metafields.shineon.uploadable != 1 and engraved_variants_arr_js.size > 0 %}
+        try {
+          var engraved_variants_arr_js = '{{ engraved_variants_arr_js }}'.split('--next-prop--'),
+              engraved_img = engraved_variants_arr_js.find(image => image.split('---')[0] == product.current_variant.metafields.metal).split('---')[1].split('products/')[1].split('.')[0],
+              engraved_img_ext = engraved_variants_arr_js.find(image => image.split('---')[0] == product.current_variant.metafields.metal).split('---')[1].split('products/')[1].split('.')[1],
+              current_modal_img = $('.so-modal-product-featured-img').attr('src').split('products/')[1].split('_x')[0],
+              engraved_img_resulted = $('.so-modal-product-featured-img').attr('src').replace(current_modal_img, engraved_img),
+              current_modal_img_ext = engraved_img_resulted.split('.')[engraved_img_resulted.split('.').length-1].split('?v=')[0];
+              if (current_modal_img_ext != engraved_img_ext)
+              {
+                engraved_img_resulted = engraved_img_resulted.replace(current_modal_img_ext, engraved_img_ext);
+              }
+          $('.so-modal-product-featured-img').attr('src', engraved_img_resulted);
+        }
+        catch(e)
+        {
+          console.log('upsell image is missing from engraved_variants_arr_js', e);
+        }
+      {% endif %}
+
+      {% if boxed_variants_arr_js.size > 0 and product.metafields.shineon.uploadable != 1 %}
+        try {
+          var boxed_variants_arr_js = '{{ boxed_variants_arr_js }}'.split('--next-prop--'),
+              boxed_img = boxed_variants_arr_js.find(image => image.split('---')[0] == product.current_variant.metafields.metal).split('---')[1].split('products/')[1].split('.')[0],
+              boxed_img_ext = boxed_variants_arr_js.find(image => image.split('---')[0] == product.current_variant.metafields.metal).split('---')[1].split('products/')[1].split('.')[1],
+              current_modal_img = $('.so-modal-product-featured-img').attr('src').split('products/')[1].split('_x')[0],
+              boxed_img_resulted = $('.so-modal-product-featured-img').attr('src').replace(current_modal_img, boxed_img),
+              current_modal_img_ext = boxed_img_resulted.split('.')[boxed_img_resulted.split('.').length-1].split('?v=')[0];
+              if (current_modal_img_ext != boxed_img_ext)
+              {
+                boxed_img_resulted = boxed_img_resulted.replace(current_modal_img_ext, boxed_img_ext);
+              }
+          $('.so-modal-product-featured-img').attr('src', boxed_img_resulted);
+        }
+        catch(e)
+        {
+          console.log('boxed_variants_arr_js emtpy image', e);
+        }
+      {% endif %}
+
+      {% assign addons = product.metafields.shineon.addons.value | default: product.metafields.shineon.addons %}
+  
+      {% if addons.items.size > 0 %}
+        updateAddonsSubtotal();
+      {% else %}
+        calculateWarranty(product);
+      {% endif %}
+
+      return true;
+      });
+
+    if ($form.data('uploadable') !== 1) {
+      // edge case: current_variant has engraving, if buyer doesn't
+      // enter any engraving text, he will make an engraving order without engraving text
+      $form.find('.so-engraving-input:first').trigger('input');
+      // Trigger form change on load to set any additional state.
+      $form.trigger('variant_changed', [product, product.current_variant]);
+    }
+
+    // Continue Without Customization link in the modal submits the form
+    $('.so-btn-add-base-to-cart')
+      .off('click')
+      .on('click', function() {
+      product.changeVariant(product.variants[0].id);
+      $form.submit();
+      });
+
+    /**
+     * Form Submit Event Handlers
+     */
+
+    // Toggle engraving fields
+    $form.off('submit').on('submit', function () {
+      $form.find('.so-engraving-line1-wrap input, .so-engraving-line2-wrap input')
+      .prop('disabled', !product.currentVariantHasEngraving());
+      $form.find('.so-engraving-input').prop('disabled', !product.currentVariantHasEngraving());
+    });
+
+    var formSubmitDefs = []; // deffereds array
+
+    $form.on('shineon/add_submit_deferred', function(evt, promise){
+      formSubmitDefs.push(promise);
+    });
+
+    {% include 'product-shineon-scripts' with 'analytics-events-form-submit-listeners' %}
+
+    if (
+      $form.data('uploadable') !== 1 &&
+      ($form.data('use_shineon_cart_page_eng') === true || $form.data('express_checkout') === true )
+    ) {
+      var def_cart_with_ajax = new $.Deferred();
+      formSubmitDefs.push(def_cart_with_ajax.promise());
+
+      $form.one('submit', function () {
+      $.ajax({
+        type: 'POST',
+        url: '/cart/add.js',
+        dataType: 'json',
+        data: $form.serialize()
+      })
+      .done(function () {
+        $form.data('submitted_with_ajax', 1);
+        def_cart_with_ajax.resolve({df_form_submit_non_bu: true});
+      })
+      .fail(function (jqxhr) {
+        console.error(jqxhr);
+        def_cart_with_ajax.reject(jqxhr);
+      });
+
+      return false;
+      });
+    }
+
+    // Form Submit Event Listeners Deferreds
+    // Force that all of them complete before proceeding
+    $form.one('submit', function () {
+      $.when.apply(null, formSubmitDefs)
+      .done(function () {
+        if ($form.data('express_checkout') === true) {
+        document.location.href = '/cart/checkout';
+        } else if ($form.data('submitted_with_ajax') === 1) {
+        document.location.href = '/cart?view=shineon';
+        } else {
+        $form.trigger('submit');
+        }
+        {% if shop.metafields.shineon.is_shineon_brand == true and shop.metafields.shineon.is_shineon_brand != blank %}
+        var quantity = parseInt($form.find('input[name=quantity]').val());
+        pintrk('track', 'addtocart', {
+          value: quantity,
+          currency: '{{ cart.currency.iso_code }}'
+        });
+        {% endif %}
+      }).fail(function () {
+        console.error(arguments);
+        $form.trigger('submit');
+      });
+    });
+
+    /** JS theme fixes/hacks */
+    // Single image 'slider'
+    if ($('.so-product-images-featured-single').length) {
+      $('.so-col-images-thumb-wrap').addClass('so-hidden');
+      $('.so-col-images-featured-wrap').removeClass('so-col-10').addClass('so-col-12');
+    }
+    // long variant names or more than 2 options
+    product.overflowSwatchText();
+
+    // Lazy load images
+    $('img.so-lazy[data-src]').each(function(){
+      var $this = $(this);
+      $this.prop('src', $this.data('src')).removeAttr('data-src');
+    });
+
+    // Some themes have an event listener for all input[type=number]
+    // that adds the quantity change buttons +/-
+    // hack: dom starts with input type="text", js changes it to type="number"
+    $wrap.find('input.so-cart-qty-input').attr('type', 'number');
+
+    // add product object to window
+    window.shineon = window.shineon || {};
+    window.shineon.product = product;
+
+    // 2726 Warranty Info Popup
+      if (product.settings.warrantyProduct.variants && product.settings.warrantyTag != false)
+      {
+        $modal_info = $('#modal-info');
+        $modal_info.insertAfter($('div.page-container').length ? 'div.page-container' : 'body');
+        $('.info-icon').off('click').on('click', function () {
+          $modal_info.so_modal('show');
+
+          return false
+        });
+      }
+    };
+
+    initForm();
+
+    // Position buttons fixed after buyer scrolls past them
+    if ($(window).width() < 768)
+    {
+      $(window).on('scroll', function() {
+        // #so-bu-information .so-upload-button-wrap, #so-step-buttons, #so-btn-add-to-cart-w
+        $('.so-btn-action-fixed')
+          .each(function() {
+            var $offset = $(this),
+              offsetBottom = $offset.offset().top + $offset.outerHeight();
+
+            if ($('#chat-button').length)
+            {
+              $('#chat-button').toggleClass('fixed', $(window).scrollTop() >= offsetBottom);
+            }
+            $('#'+$offset.data('id')).toggleClass('fixed', $(window).scrollTop() >= offsetBottom);
+            $('body').css('padding-bottom', $('.so-btn-add-to-cart-wrap.fixed').outerHeight());
+          });
+      });
+    }
+
+    document.addEventListener('shopify:section:load', initForm);
+
+  }(jQuery)); // END initForm = function ()
+  });
+</script>
+
+{% include 'product-shineon-scripts' with 'modal' %}

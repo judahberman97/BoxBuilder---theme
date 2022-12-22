@@ -1,0 +1,43 @@
+<script>
+
+    document.addEventListener("DOMContentLoaded", function(event) {
+        /* var isMobile = function () {
+            try {document.createEvent("TouchEvent");return true;}
+            catch (e) {return false;}
+        };
+
+        if (isMobile()) {
+            // disable zoom on mobile
+            return;
+        } */
+
+        /*!
+            Zoom 1.7.21
+            license: MIT
+            http://www.jacklmoore.com/zoom
+            namespaced to 'so_zoom'
+        */
+        !function(o){var t={url:!1,callback:!1,target:!1,duration:120,on:"mouseover",touch:!0,onZoomIn:!1,onZoomOut:!1,magnify:1};o.so_zoom=function(t,n,e,i){var u,s,c,a,r,m,l,f=o(t),h=f.css("position"),d=o(n);return t.style.position=/(absolute|fixed)/.test(h)?h:"relative",t.style.overflow="hidden",e.style.width=e.style.height="",o(e).addClass("zoomImg").css({position:"absolute",top:0,left:0,opacity:0,width:e.width*i,height:e.height*i,border:"none",maxWidth:"none",maxHeight:"none"}).appendTo(t),{init:function(){s=f.outerWidth(),u=f.outerHeight(),n===t?(a=s,c=u):(a=d.outerWidth(),c=d.outerHeight()),r=(e.width-s)/a,m=(e.height-u)/c,l=d.offset()},move:function(o){var t=o.pageX-l.left,n=o.pageY-l.top;n=Math.max(Math.min(n,c),0),t=Math.max(Math.min(t,a),0),e.style.left=t*-r+"px",e.style.top=n*-m+"px"}}},o.fn.so_zoom=function(n){return this.each(function(){var e=o.extend({},t,n||{}),i=e.target&&o(e.target)[0]||this,u=this,s=o(u),c=document.createElement("img"),a=o(c),r="mousemove.so_zoom",m=!1,l=!1;if(!e.url){var f=u.querySelector("img");if(f&&(e.url=f.getAttribute("data-src")||f.currentSrc||f.src),!e.url)return}s.one("so_zoom.destroy",function(o,t){s.off(".so_zoom"),i.style.position=o,i.style.overflow=t,c.onload=null,a.remove()}.bind(this,i.style.position,i.style.overflow)),c.onload=function(){var t=o.so_zoom(i,u,c,e.magnify);function n(n){t.init(),t.move(n),a.stop().fadeTo(o.support.opacity?e.duration:0,1,!!o.isFunction(e.onZoomIn)&&e.onZoomIn.call(c))}function f(){a.stop().fadeTo(e.duration,0,!!o.isFunction(e.onZoomOut)&&e.onZoomOut.call(c))}"grab"===e.on?s.on("mousedown.so_zoom",function(e){1===e.which&&(o(document).one("mouseup.so_zoom",function(){f(),o(document).off(r,t.move)}),n(e),o(document).on(r,t.move),e.preventDefault())}):"click"===e.on?s.on("click.so_zoom",function(e){return m?void 0:(m=!0,n(e),o(document).on(r,t.move),o(document).one("click.so_zoom",function(){f(),m=!1,o(document).off(r,t.move)}),!1)}):"toggle"===e.on?s.on("click.so_zoom",function(o){m?f():n(o),m=!m}):"mouseover"===e.on&&(t.init(),s.on("mouseenter.so_zoom",n).on("mouseleave.so_zoom",f).on(r,t.move)),e.touch&&s.on("touchstart.so_zoom",function(o){o.preventDefault(),l?(l=!1,f()):(l=!0,n(o.originalEvent.touches[0]||o.originalEvent.changedTouches[0]))}).on("touchmove.so_zoom",function(o){o.preventDefault(),t.move(o.originalEvent.touches[0]||o.originalEvent.changedTouches[0])}).on("touchend.so_zoom",function(o){o.preventDefault(),l&&(l=!1,f())}),o.isFunction(e.callback)&&e.callback.call(c)},c.setAttribute("role","presentation"),c.alt="",c.src=e.url})},o.fn.so_zoom.defaults=t}(window.jQuery);
+
+        (function ($) {
+
+            // trigger zoom for featured images
+            window.shineon = window.shineon || {};
+            window.shineon.zoom = {
+                $featuredImages: $('.so-product-images-featured-wrap img'),
+                init: function(){
+                    this.$featuredImages.parent().so_zoom();
+                }
+            };
+            shineon.zoom.init();
+
+            // live editor
+            document.addEventListener('shopify:section:load', function() {
+                shineon.zoom.init();
+            });
+
+        })(window.jQuery);
+
+
+    });
+</script>
